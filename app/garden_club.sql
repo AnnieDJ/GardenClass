@@ -10,6 +10,9 @@ CREATE TABLE IF NOT EXISTS member (
     email VARCHAR(100),
     address VARCHAR(100),
     date_of_birth DATE,
+    subscription_date DATE,
+    type VARCHAR(100),
+    expiry_date DATE
 );
 
 CREATE TABLE IF NOT EXISTS instructor (
@@ -23,7 +26,7 @@ CREATE TABLE IF NOT EXISTS instructor (
     email VARCHAR(100),
     address VARCHAR(100),
     instructor_profile TEXT,
-    instructor_image LONGBLOB,
+    instructor_image LONGBLOB
 );
 
 CREATE TABLE IF NOT EXISTS manager (
@@ -35,6 +38,8 @@ CREATE TABLE IF NOT EXISTS manager (
     position VARCHAR(100),
     phone_number VARCHAR(20),
     email VARCHAR(100),
+    profile_image LONGBLOB,
+    gardering_experience TEXT
 );
 
 CREATE TABLE IF NOT EXISTS user (

@@ -3,7 +3,7 @@ from flask import render_template
 
 @app.route("/member/dashboard")
 def member_dashboard():
-    return render_template('member/smemberdashboard.html')
+    return render_template('/member/memberdashboard.html')
 
 @app.route("/member/profile")
 def member_profile():

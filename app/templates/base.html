@@ -11,8 +11,8 @@
 	<body>
 		<nav class="navtop">
 			<div>
-				<h1>Horticulture</h1>
-                {% if role == 'Manger' %}
+				<h1>Welcome</h1>
+                {% if role == 'Manager' %}
                 <a href="{{ url_for('manager_dashboard') }}"><i class="fas fa-home"></i>Home</a>
                 <a href="{{ url_for('manager_profile') }}"><i class="fas fa-user-circle"></i>Profile</a>
                 {% elif role == 'Instructor' %}

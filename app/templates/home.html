@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Gardening</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+        }
+        
+        .navbar {
+            background-color: #4A724A; /* Dark green background */
+            padding: 10px 20px;
+            color: white;
+        }
+        
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: 'Georgia', serif; /* Adjust as necessary */
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+        
+        .main-nav ul {
+            list-style: none;
+            display: flex;
+        }
+        
+        .main-nav li {
+            margin-left: 20px;
+        }
+        
+        .nav-item {
+            text-decoration: none;
+            color: white;
+            font-size: 1em;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-item:hover, .nav-item:focus {
+            color: #A2C3A2; /* Lighter green for hover/focus */
+        }
+        
+        @media screen and (max-width: 768px) {
+            .main-nav ul {
+                display: none; /* Hide the navigation on small screens */
+            }
+            /* Add burger icon and JavaScript for mobile menu here */
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-container">
+            <h1 class="logo">Rākau Gardening Society</h1>
+            <nav class="main-nav">
+                <ul>
+                    <li>Home</li>
+                    <li>Gardening</li>
+                    <li>Lesson</li>
+                    <li>Workshop</li>
+                    <li>Login</li>
+                    <li>Register</li>
+                    <li>Contact</li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <!-- The rest of your content goes here -->
+</body>
+</html>

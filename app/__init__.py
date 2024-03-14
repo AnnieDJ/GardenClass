@@ -2,6 +2,8 @@ from flask import Flask
 
 app = Flask(__name__)
 
+app.secret_key = 'the first secret key for schwifty'
+
 from app import member_views
 from app import manager_views
 from app import instructor_views

@@ -22,7 +22,7 @@
                     <li><a href="{{ url_for('instructor_dashboard') }}"><i class="fas fa-home"></i>Home</a></li>
                     <li><a href="{{ url_for('instructor_profile') }}"><i class="fas fa-user-circle"></i>Profile</a></li>
                     <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
-                    {% elif role == 'Instructor' %}
+                    {% elif role == 'Member' %}
                     <li><a href="{{ url_for('member_dashboard') }}"><i class="fas fa-home"></i>Home</a></li>
                     <li><a href="{{ url_for('member_profile') }}"><i class="fas fa-user-circle"></i>Profile</a></li>
                     <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
@@ -32,7 +32,7 @@
                     <li>Gardening</li>
                     <li>Lesson</li>
                     <li>Workshop</li>
-                    <li>Login</li>
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
                     <li>Register</li>
                     <li>Contact</li>
                     </ul>

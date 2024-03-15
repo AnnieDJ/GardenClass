@@ -2,8 +2,11 @@
 from app import connect
 import mysql.connector
 from flask_hashing import Hashing
+from app import app
 
 hashing = Hashing()
+
+app.secret_key = 'secret key of neal first assessment'
 
 dbconn = None
 connection = None

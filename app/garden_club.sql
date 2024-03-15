@@ -152,3 +152,9 @@ CREATE TABLE IF NOT EXISTS news (
     author_id INT,
     FOREIGN KEY (author_id) REFERENCES manager(manager_id) ON DELETE CASCADE
 );
+
+INSERT INTO member (user_name, title, first_name, last_name, position, phone_number, email, address, date_of_birth, subscription_date, type, expiry_date) 
+VALUES ('john_doe', 'Mr', 'John', 'Doe', 'Member', '1234567890', 'john@example.com', '123 Main St', '1990-01-01', '2024-02-23', 'Regular', '2025-02-23');
+
+INSERT INTO user (user_name, password, role, related_member_id) 
+VALUES ('john_doe', 'cee7498757b4bcb505ee4c90093f37454daf9579f80c29d18b455d80e57ffad0', 'Member', LAST_INSERT_ID());

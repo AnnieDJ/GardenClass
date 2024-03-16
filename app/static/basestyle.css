@@ -62,3 +62,19 @@ body {
     /* Add burger icon and JavaScript for mobile menu here */
 }
 
+ /* Add this CSS to basestyle.css or create a new CSS file and link it */
+
+        /* Make all text white */
+        .navbar-container ul li a {
+            color: white;
+        }
+        
+        /* Make login button blue */
+        .navbar-container ul li a.login {
+            color: blue;
+        }
+        
+        /* Uniform font size */
+        .navbar-container ul li a {
+            font-size: 16px; /* Adjust font size as needed */
+        }

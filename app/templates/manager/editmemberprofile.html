@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-5">Edit Detail: {{ member[1] }}</h1>
+    <form method="post" >
+        <div class="form-group">
+            <label for="title">Status:</label>
+            <select class="form-control" id="title" name="title" required>
+                <option value="Mr" {% if member[2] == 'Mr' %} selected {% endif %}>Mr</option>
+                <option value="Mrs" {% if member[2] == 'Mrs' %} selected {% endif %}>Mrs</option>
+                <option value="Miss" {% if member[2] == 'Miss' %} selected {% endif %}>Miss</option>
+                <option value="Dr." {% if member[2] == 'Dr.' %} selected {% endif %}>Dr.</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="first_name">First Name:</label>
+            <input type="text" class="form-control" id="first_name" name="first_name" value="{{ member[3] }}" required>
+        </div>
+        <div class="form-group">
+            <label for="last_name">Last Name:</label>
+            <input type="text" class="form-control" id="last_name" name="last_name" value="{{ member[4] }}" required>
+        </div>
+        <div class="form-group">
+            <label for="position">Position:</label>
+            <input type="text" class="form-control" id="position" name="position" value="{{ member[5] }}" required>
+        </div>
+        <div class="form-group">
+            <label for="phone_number">Phone Number:</label>
+            <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ member[6] }}" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" name="email" value="{{ member[7] }}" required>
+        </div>
+        <div class="form-group">
+            <label for="address">Adderss:</label>
+            <input type="text" class="form-control" id="address" name="address" value="{{ member[8] }}" required>
+        </div>
+        <div class="form-group">
+            <label for="date_of_birth">Date of birth:</label>
+            <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" value="{{ member[9] }}" required>
+        </div>
+        <div class="form-group">
+            <label for="subscription_date">Subscription Date:</label>
+            <input type="date" class="form-control" id="subscription_date" name="subscription_date" value="{{ member[10] }}" required>
+        </div>
+        <div class="form-group">
+            <label for="type">Type:</label>
+            <input type="text" class="form-control" id="type" name="type" value="{{ member[11] }}" required>
+        </div>
+        <div class="form-group">
+            <label for="expiry_date">Expiry Date:</label>
+            <input type="date" class="form-control" id="expiry_date" name="expiry_date" value="{{ member[12] }}" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" class="form-control" name="password" id="password" 
+                   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" 
+                   title="Password must be at least 8 characters long and have a mix of character types(at lease 1 digital,1 lower case and 1 upper case)" 
+             >
+        </div>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+</div>
+{% endblock %}

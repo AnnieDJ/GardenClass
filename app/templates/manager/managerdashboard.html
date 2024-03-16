@@ -49,8 +49,8 @@
 <div class="sidebar">
   <a href="#" class="dropdown-btn">Profile Management</a>
   <div class="dropdown-container">
-    <a href="#">View Members</a>
-    <a href="#">View Instructors</a>
+    <a href="{{ url_for('instructor_profile_list') }}">Instructor Profile Management</a>
+    <a href="{{ url_for('member_profile_list') }}">Member Profile Management</a>
   </div>
 
   <a href="#" class="dropdown-btn">Financial Reports</a>

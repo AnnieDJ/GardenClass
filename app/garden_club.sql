@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS instructor (
     email VARCHAR(100),
     address VARCHAR(100),
     instructor_profile TEXT,
+    instructor_image_name VARCHAR(100),
     instructor_image LONGBLOB
 );
 
@@ -44,6 +45,7 @@ CREATE TABLE IF NOT EXISTS manager (
     position VARCHAR(100),
     phone_number VARCHAR(20),
     email VARCHAR(100),
+    manager_image_name VARCHAR(100),
     profile_image LONGBLOB,
     gardering_experience TEXT
 );

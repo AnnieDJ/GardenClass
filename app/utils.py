@@ -5,6 +5,7 @@ from flask_hashing import Hashing
 from app import app
 
 hashing = Hashing()
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 app.secret_key = 'secret key of neal first assessment'
 
@@ -18,3 +19,6 @@ def getCursor():
     database=connect.dbname, autocommit=True)
     dbconn = connection.cursor()
     return dbconn
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS

@@ -23,8 +23,8 @@ def member_profile():
         return redirect(url_for('login'))
     
 
-@app.route('/member/edit_member_profile', methods=['GET', 'POST'])
-def edit_member_profile():
+@app.route('/member/member_edit_profile', methods=['GET', 'POST'])
+def member_edit_profile():
     if 'loggedin' in session and session['loggedin']:
         
         cursor = utils.getCursor()

@@ -9,4 +9,4 @@ def member_dashboard():
 
 @app.route('/member/profile')
 def member_profile():
-    return "Member Profile"
+    return render_template('/member/memberprofile.html', username=session['username'], role=session['role'])

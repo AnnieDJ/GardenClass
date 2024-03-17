@@ -5,7 +5,7 @@
   .sidebar {
     background-color: #4a724a; /* Green color for the sidebar */
     color: white;
-    width: 160px;
+    width: 130px;
     position: fixed;
     top: 55px; /* Align with the top of the page */
     bottom: 0;
@@ -18,23 +18,18 @@
     padding: 10px 15px;
     text-decoration: none;
     font-size: 15px; /* Set font size to 15px */
-    color: #000500; /* Text color is white */
+    color: #fdfffd; /* Text color is white */
     display: block;
   }
 
   .sidebar a:hover,
   .dropdown-btn:hover {
-    background-color: #a8a6a6; /* Dark grey color for hover state */
-  }
-
-  .active,
-  .dropdown-btn:focus {
-    background-color: #fafafa; /* Light green color for active state */
+    background-color: #69a869; /* Dark grey color for hover state */
   }
 
   .dropdown-container {
     display: none;
-    background-color: #cccaca; /* Slightly lighter grey color for dropdown items */
+    /* Slightly lighter grey color for dropdown items */
   }
 
   .dropdown-container a {
@@ -49,22 +44,24 @@
 <div class="sidebar">
   <a href="#" class="dropdown-btn">Profile Management</a>
   <div class="dropdown-container">
-    <a href="{{ url_for('instructor_profile_list') }}">Instructor Profile Management</a>
+    <a href="{{ url_for('instructor_profile_list') }}"
+      >Instructor Profile Management</a
+    >
     <a href="{{ url_for('member_profile_list') }}">Member Profile Management</a>
   </div>
-
+  <b></b>
   <a href="#" class="dropdown-btn">Financial Reports</a>
-
+  <b></b>
   <a href="#" class="dropdown-btn">Subscription Status</a>
-
+  <b></b>
   <a href="#" class="dropdown-btn">Workshop & Lesson Management</a>
   <div class="dropdown-container">
     <a href="#">Manage Workshops</a>
     <a href="#">Manage Lessons</a>
   </div>
-
+  <b> </b>
   <a href="#" class="dropdown-btn">News Management</a>
-
+  <b></b>
   <a href="#" class="dropdown-btn">Settings Management</a>
   <div class="dropdown-container">
     <a href="#">Manage Locations</a>

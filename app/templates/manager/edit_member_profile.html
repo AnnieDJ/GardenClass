@@ -11,6 +11,7 @@
                 <option value="Mrs" {% if member[2] == 'Mrs' %} selected {% endif %}>Mrs</option>
                 <option value="Miss" {% if member[2] == 'Miss' %} selected {% endif %}>Miss</option>
                 <option value="Dr." {% if member[2] == 'Dr.' %} selected {% endif %}>Dr.</option>
+                <option value="Prof." {% if member[2] == 'Prof.' %} selected {% endif %}>Prof.</option>
             </select>
         </div>
         <div class="form-group">
@@ -32,6 +33,7 @@
         <div class="form-group">
             <label for="email">Email:</label>
             <input type="email" class="form-control" id="email" name="email" value="{{ member[7] }}" required>
+            <small id="emailMessage"></small> 
         </div>
         <div class="form-group">
             <label for="address">Adderss:</label>
@@ -63,4 +65,5 @@
         <button type="submit" class="btn btn-primary">Save Changes</button>
     </form>
 </div>
+<script src="{{ url_for('static', filename='js/email_validation.js') }}"></script>
 {% endblock %}

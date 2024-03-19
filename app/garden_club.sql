@@ -154,3 +154,5 @@ CREATE TABLE IF NOT EXISTS news (
     author_id INT,
     FOREIGN KEY (author_id) REFERENCES manager(manager_id) ON DELETE CASCADE
 );
+
+

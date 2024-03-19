@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template,redirect,url_for
-from flask import session,request
+from flask import session,request,jsonify
 from app import utils
 from werkzeug.utils import secure_filename
 import base64
@@ -8,7 +8,7 @@ import base64
 @app.route('/manager/dashboard')
 def manager_dashboard():
     if 'loggedin' in session and session['loggedin']:
-        return render_template("/manager/managerdashboard.html", username=session['username'], role=session['role'])
+        return render_template("/manager/mgr_dashboard.html", username=session['username'], role=session['role'])
 
 @app.route('/manager/profile')
 def manager_profile():
@@ -32,7 +32,7 @@ def instructor_profile_list():
             else:
                 encoded_instructor_profile.append((instructor[0], instructor[1],instructor[2],instructor[3], instructor[4], instructor[5],instructor[6],instructor[7],instructor[8],instructor[9],instructor[10],None))
             
-        return render_template("manager/manageinstructorprofile.html", instructor_profile=encoded_instructor_profile, role = session['role'])
+        return render_template("manager/manage_instr_profile.html", instructor_profile=encoded_instructor_profile, role = session['role'])
     else:
         return redirect(url_for('login'))
 
@@ -80,9 +80,9 @@ def edit_instructor_profile(instructor_id):
             return redirect(url_for('instructor_profile_list'))
             
         else:
-            cursor.execute("SELECT * FROM instructor;")      
+            cursor.execute("SELECT * FROM instructor WHERE instructor_id = %s;",(instructor_id,))      
             instructor = cursor.fetchone()
-            return render_template("/manager/editinstructorprofile.html", instructor=instructor, role = session['role'])
+            return render_template("/manager/edit_instr_profile.html", instructor=instructor, role = session['role'])
         
        
     else:
@@ -111,7 +111,7 @@ def member_profile_list():
         member_profile = cursor.fetchall()
         
             
-        return render_template("manager/managememberprofile.html", member_profile=member_profile, role = session['role'])
+        return render_template("manager/manage_member_profile.html", member_profile=member_profile, role = session['role'])
     else:
         return redirect(url_for('login'))
     
@@ -146,9 +146,9 @@ def edit_member_profile(member_id):
             return redirect(url_for('member_profile_list'))
             
         else:
-            cursor.execute("SELECT * FROM member;")      
+            cursor.execute('SELECT * FROM member WHERE member_id = %s;',(member_id,))      
             member = cursor.fetchone()
-            return render_template("/manager/editmemberprofile.html", member=member, role = session['role'])
+            return render_template("/manager/edit_member_profile.html", member=member, role = session['role'])
         
        
     else:
@@ -166,3 +166,21 @@ def delete_member_profile(member_id):
         return redirect(url_for('member_profile_list'))
     else:
         return redirect(url_for('login'))
+
+#For checking email is unique and has to be unique  
+@app.route('/check_email', methods=['POST'])
+def check_email():
+    if 'loggedin' in session and session['loggedin']:
+        email = request.form['email']
+    
+        cursor = utils.getCursor()   
+        cursor.execute('SELECT email FROM instructor;')
+        email_list = cursor.fetchall()
+        
+       # return any(email == row[0] for row in email_list)
+        if any(email == row[0] for row in email_list):
+          return jsonify({'valid': False})
+        else:
+         return jsonify({'valid': True})
+    
+    

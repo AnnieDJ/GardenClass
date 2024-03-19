@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template,redirect,url_for
-from flask import session,request
+from flask import session,request,jsonify
 from app import utils
 from werkzeug.utils import secure_filename
 import base64
@@ -80,7 +80,7 @@ def edit_instructor_profile(instructor_id):
             return redirect(url_for('instructor_profile_list'))
             
         else:
-            cursor.execute("SELECT * FROM instructor;")      
+            cursor.execute("SELECT * FROM instructor WHERE instructor_id = %s;",(instructor_id,))      
             instructor = cursor.fetchone()
             return render_template("/manager/edit_instr_profile.html", instructor=instructor, role = session['role'])
         
@@ -146,7 +146,7 @@ def edit_member_profile(member_id):
             return redirect(url_for('member_profile_list'))
             
         else:
-            cursor.execute("SELECT * FROM member;")      
+            cursor.execute('SELECT * FROM member WHERE member_id = %s;',(member_id,))      
             member = cursor.fetchone()
             return render_template("/manager/edit_member_profile.html", member=member, role = session['role'])
         
@@ -166,3 +166,21 @@ def delete_member_profile(member_id):
         return redirect(url_for('member_profile_list'))
     else:
         return redirect(url_for('login'))
+
+#For checking email is unique and has to be unique  
+@app.route('/check_email', methods=['POST'])
+def check_email():
+    if 'loggedin' in session and session['loggedin']:
+        email = request.form['email']
+    
+        cursor = utils.getCursor()   
+        cursor.execute('SELECT email FROM instructor;')
+        email_list = cursor.fetchall()
+        
+       # return any(email == row[0] for row in email_list)
+        if any(email == row[0] for row in email_list):
+          return jsonify({'valid': False})
+        else:
+         return jsonify({'valid': True})
+    
+    

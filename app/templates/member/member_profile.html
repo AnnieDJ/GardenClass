@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %} {% block content %}
 
 <div class="container rounded bg-white mt-5 mb-5">
@@ -24,7 +23,7 @@
                     </div>
                 
                 <div class="row mt-2">
-                    <div class="col-md-6"><label class="labels">First Name</label><input type="text" class="form-control" placeholder="first name" value=""></div>
+                    <div class="col-md-6"><label class="labels">First Name</label><input type="text" class="form-control" placeholder="first name" value="{{member_profile[]}}"></div>
                     <div class="col-md-6"><label class="labels">Last Name</label><input type="text" class="form-control" placeholder="last name" value=""></div>
                 </div>
                 <div class="row mt-3">
@@ -48,5 +47,4 @@
 
 
 {% endblock %}
-
 

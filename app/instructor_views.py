@@ -5,8 +5,8 @@ from flask import session
 @app.route('/instructor/dashboard')
 def instructor_dashboard():
      if 'loggedin' in session and session['loggedin']:
-         return render_template("/instructor/instructordashboard.html", username=session['username'], role=session['role'])
+         return render_template("/instructor/instr_dashboard.html", username=session['username'], role=session['role'])
 
 @app.route('/instructor/profile')
 def instructor_profile():
-     return render_template("/instructor/instructorprofile.html", username=session['username'], role=session['role'])
+     return render_template("/instructor/instr_profile.html", username=session['username'], role=session['role'])

@@ -7,7 +7,7 @@ from datetime import date
 @app.route('/')
 @app.route('/home')
 def home():
-    return render_template('home.html')
+    return render_template('index.html')
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # Check if the message exists in the session

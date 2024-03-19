@@ -1,189 +1,207 @@
 {% extends 'base.html' %} {% block content %}
 
 <style>
-  /* Sidebar styles */
-  .sidebar {
-    background-color: #4a724a; /* Green color for the sidebar */
-    color: white;
-    width: 130px;
-    position: fixed;
-    top: 55px; /* Align with the top of the page */
-    bottom: 0;
-    overflow-y: auto;
-    padding-top: 20px;
+    /* Sidebar styles */
+    .sidebar {
+      background-color: #4a724a; /* Green color for the sidebar */
+      color: white;
+      width: 130px;
+      position: fixed;
+      top: 55px; /* Align with the top of the page */
+      bottom: 0;
+      overflow-y: auto;
+      padding-top: 20px;
+    }
+
+    .sidebar a,
+    .dropdown-btn {
+      padding: 10px 15px;
+      text-decoration: none;
+      font-size: 15px; /* Set font size to 15px */
+      color: #fdfffd; /* Text color is white */
+      display: block;
+    }
+
+    .sidebar a:hover,
+    .dropdown-btn:hover {
+      background-color: #69a869; /* Dark grey color for hover state */
+    }
+
+    .dropdown-container {
+      display: none;
+      /* Slightly lighter grey color for dropdown items */
+    }
+
+    .dropdown-container a {
+      padding-left: 35px;
+    }
+
+    .main-content {
+      margin-left: 250px; /* Same width as the sidebar */
+      padding: 20px;
+    }
+    body {
+      font-family: "Arial", sans-serif;
+      background-color: #d5e4d3;
+      margin: 0;
+      padding: 0;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background-color: #ffffff;
+      border: 2px solid #c8d0b8;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height:720px; /* Adjust the height as needed to make them equal */
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between; /* 水平分布对齐，使得子元素位于两端 */
+      align-items: center; /* 垂直居中对齐 */
+      padding: 10px 0;
+    }
+
+    .card h2 {
+      background-color: #e7f4e4; /* A light green background to match the theme */
+      color: #333; /* Darker text for contrast */
+      padding: 20px; /* Padding to match the card's padding */
+      margin: -20px -20px 20px -20px; /* Negative margin to align with the card's edge */
+      text-align: center;
+      border-radius: 10px 10px 0 0; /* Radius to match the card's top corners */
+      font-size: 18px; /* Adjust font-size for better readability */
+      font-weight: bold; /* Make the title bold */
+    }
+    .card h3 {
+      font-size: 35px;
+      justify-content: center;
+    }
+    .timetable {
+      display: flex;
+      flex-direction: column;
+      gap: 3px; /* 为每个时间表项之间提供一些间隙 */
+    }
+
+    .timetable-item {
+      border: 1px solid #c8d0b8; /* 给时间表项添加边框 */
+      padding: 10px;
+      border-radius: 5px; /* 轻微的圆角效果 */
+      background-color: #f9f9f9; /* 轻微的背景颜色差异 */
+    }
+
+    .lesson-actions {
+      gap: 10px;
+      margin-top: 10px  /* 在按钮和时间表信息之间提供一点空间 */
+    }
+    .add-lesson {
+      background-color: #4a724a;
+      margin-left: auto; /* Blue background for add buttons */
+    }
+
+    .news-card {
+      order: 2; /* Places the News card in the middle without specifying the column */
+    }
+
+    .news-link {
+      color: #4a724a;
+      text-decoration: none;
+    }
+
+    .news-link:hover {
+      text-decoration: underline;
+    }
+    .news-actions {
+      display: flex;
+      justify-content: flex-end; /* 将编辑和取消按钮放在右侧 */
+      gap: 10px; /* 添加按钮之间的间隙 */
+      padding-top: 10px;
+    }
+    .add-news {
+      background-color: #4a724a;
+      color: white;
+      padding: 8px 12px;
+      font-size: 16px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+    }
+    .btn {
+      padding: 8px 12px;
+      font-size: 16px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      margin-right: 5px;
+      margin-top: 10px;
+      color: white;
+    }
+    .btn-left {
+      margin-right: auto;
+    }
+
+    .news-link-right {
+      margin-left: auto; /* 对齐到容器的结束位置 */
+    }
+    .edit-lesson {
+      background-color: #3ad33a; /* Green background for edit buttons */
+    }
+
+    .cancel-lesson {
+      background-color: #da5551; /* Red background for cancel buttons */
+    }
+
+    /* ...other styles... */
+
+    .register-button {
+      background-color: #287fe2; /* Deep green background for the register button */
+      color: white;
+      padding: 10px 15px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      margin-right: 26px; /* Make the button take the full container width */
+    }
+
+    .lesson-actions, .news-actions {
+      display: flex;
+      width: 100%; /* 确保容器宽度为100% */
+      justify-content: space-between; /* 在两个按钮之间提供空间 */
   }
 
-  .sidebar a,
-  .dropdown-btn {
-    padding: 10px 15px;
-    text-decoration: none;
-    font-size: 15px; /* Set font size to 15px */
-    color: #fdfffd; /* Text color is white */
-    display: block;
-  }
-
-  .sidebar a:hover,
-  .dropdown-btn:hover {
-    background-color: #69a869; /* Dark grey color for hover state */
-  }
-
-  .dropdown-container {
-    display: none;
-    /* Slightly lighter grey color for dropdown items */
-  }
-
-  .dropdown-container a {
-    padding-left: 35px;
-  }
-
-  .main-content {
-    margin-left: 250px; /* Same width as the sidebar */
-    padding: 20px;
-  }
-  body {
-    font-family: "Arial", sans-serif;
-    background-color: #d5e4d3;
-    margin: 0;
-    padding: 0;
-  }
-
-  .dashboard {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .card {
-    background-color: #ffffff;
-    border: 2px solid #c8d0b8;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height:720px; /* Adjust the height as needed to make them equal */
-  }
-
-  .card-footer {
-    display: flex;
-    justify-content: space-between; /* 水平分布对齐，使得子元素位于两端 */
-    align-items: center; /* 垂直居中对齐 */
-    padding: 10px 0;
-  }
-
-  .card h2 {
-    background-color: #e7f4e4; /* A light green background to match the theme */
-    color: #333; /* Darker text for contrast */
-    padding: 20px; /* Padding to match the card's padding */
-    margin: -20px -20px 20px -20px; /* Negative margin to align with the card's edge */
-    text-align: center;
-    border-radius: 10px 10px 0 0; /* Radius to match the card's top corners */
-    font-size: 18px; /* Adjust font-size for better readability */
-    font-weight: bold; /* Make the title bold */
-  }
-  .card h3 {
-    font-size: 35px;
-    justify-content: center;
-  }
-  .timetable {
-    display: flex;
-    flex-direction: column;
-    gap: 3px; /* 为每个时间表项之间提供一些间隙 */
-  }
-
-  .timetable-item {
-    border: 1px solid #c8d0b8; /* 给时间表项添加边框 */
-    padding: 10px;
-    border-radius: 5px; /* 轻微的圆角效果 */
-    background-color: #f9f9f9; /* 轻微的背景颜色差异 */
-  }
-
-  .lesson-actions {
-    gap: 10px;
-    margin-top: 10px  /* 在按钮和时间表信息之间提供一点空间 */
-  }
-  .add-lesson {
-    background-color: #4a724a;
-    margin-left: auto; /* Blue background for add buttons */
-  }
-
-  .news-card {
-    order: 2; /* Places the News card in the middle without specifying the column */
-  }
-
-  .news-link {
-    color: #4a724a;
-    text-decoration: none;
-  }
-
-  .news-link:hover {
-    text-decoration: underline;
-  }
-  .news-actions {
-    display: flex;
-    justify-content: flex-end; /* 将编辑和取消按钮放在右侧 */
-    gap: 10px; /* 添加按钮之间的间隙 */
-    padding-top: 10px;
-  }
-  .add-news {
-    background-color: #4a724a;
-    color: white;
-    padding: 8px 12px;
-    font-size: 16px;
-    border-radius: 4px;
-    border: none;
-    cursor: pointer;
-  }
-  .btn {
-    padding: 8px 12px;
-    font-size: 16px;
-    border-radius: 4px;
-    border: none;
-    cursor: pointer;
-    margin-right: 5px;
-    margin-top: 10px;
-    color: white;
-  }
-  .btn-left {
-    margin-right: auto;
-  }
-
-  .news-link-right {
-    margin-left: auto; /* 对齐到容器的结束位置 */
-  }
   .edit-lesson {
-    background-color: #3ad33a; /* Green background for edit buttons */
+      order: -1; /* 确保编辑按钮总是在左侧 */
   }
 
   .cancel-lesson {
-    background-color: #da5551; /* Red background for cancel buttons */
+      margin-left: auto; /* 将取消按钮推到右侧 */
   }
 
-  /* ...other styles... */
 
-  .register-button {
-    background-color: #287fe2; /* Deep green background for the register button */
-    color: white;
-    padding: 10px 15px;
-    border-radius: 4px;
-    border: none;
-    cursor: pointer;
-    margin-right: 26px; /* Make the button take the full container width */
-  }
 
-  /* ...other styles... */
 
-  @media (max-width: 768px) {
-    .dashboard {
-      grid-template-columns: 1fr; /* Stacks the cards on smaller screens */
-    }
-    .news-card {
-      order: 0; /* Resets the position for the News card on smaller screens */
-    }
+
+    /* ...other styles... */
+
+    @media (max-width: 768px) {
+      .dashboard {
+        grid-template-columns: 1fr; /* Stacks the cards on smaller screens */
+      }
+      .news-card {
+        order: 0; /* Resets the position for the News card on smaller screens */
+      }
 </style>
 <div class="sidebar">
   <a href="#" class="dropdown-btn">Profile Management</a>

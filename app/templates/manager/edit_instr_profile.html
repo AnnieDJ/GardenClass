@@ -51,6 +51,14 @@
              >
         </div>
         <div class="form-group">
+            <label for="comfirnm_password">Confirm Password:</label>
+            <input type="password" class="form-control" name="comfirnm_password" id="comfirnm_password" 
+                   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" 
+                   title="Password must be at least 8 characters long and have a mix of character types(at lease 1 digital,1 lower case and 1 upper case)" 
+             >
+             <div id="passwordMessage"></div>
+        </div>
+        <div class="form-group">
             <label for="instructor_image" class="form-label">Image Upload:</label>
             <input type="file" id="instructor_image" name="instructor_image" class="form-control">
         </div>

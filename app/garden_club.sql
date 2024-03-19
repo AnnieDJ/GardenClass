@@ -1,6 +1,6 @@
 --DROP SCHEMA IF EXISTS garden_club;
 --CREATE SCHEMA garden_club;
---sUSE garden_club;
+--USE garden_club;
 
 -- Create member table
 CREATE TABLE IF NOT EXISTS member (

@@ -6,7 +6,7 @@ from app import utils
 @app.route('/member/dashboard')
 def member_dashboard():
     if 'loggedin' in session and session['loggedin']:
-        return render_template('/member/memberdashboard.html', username=session['username'], role=session['role'])
+        return render_template('/member/member_dashboard.html', username=session['username'], role=session['role'])
 
 @app.route('/member/profile')
 def member_profile():
@@ -18,7 +18,7 @@ def member_profile():
         
         member_profile = cursor.fetchone()
         
-        return render_template('/member/memberprofile.html', member_profile = member_profile, role=session['role'])
+        return render_template('/member/member_profile.html', member_profile = member_profile, role=session['role'])
         
     else:
         return redirect(url_for('login'))

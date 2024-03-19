@@ -10,6 +10,7 @@ def member_dashboard():
 
 @app.route('/member/profile')
 def member_profile():
+
     if 'loggedin' in session and session['loggedin']:
         
         cursor = utils.getCursor()

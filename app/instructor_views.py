@@ -9,4 +9,4 @@ def instructor_dashboard():
 
 @app.route('/instructor/profile')
 def instructor_profile():
-    return "instructor Profile"
+     return render_template("/instructor/instructorprofile.html", username=session['username'], role=session['role'])

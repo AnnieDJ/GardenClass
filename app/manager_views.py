@@ -5,16 +5,64 @@ from app import utils
 from werkzeug.utils import secure_filename
 import base64
 
+## Manager Dashboard ##
 @app.route('/manager/dashboard')
 def manager_dashboard():
     if 'loggedin' in session and session['loggedin']:
         return render_template("/manager/mgr_dashboard.html", username=session['username'], role=session['role'])
 
+
+
+## Manger view own profile ##
 @app.route('/manager/profile')
 def manager_profile():
-    return "Manager Profile"
+    if 'loggedin' in session and session['loggedin']:
+        
+        cursor = utils.getCursor()
+        cursor.execute("SELECT * FROM manager WHERE user_name = %s", (session['username'],))
+        
+        manager_profile = cursor.fetchone()
+        
+        return render_template('/manager/managerprofile.html', manager_profile = manager_profile, role=session['role'])
+        
+    else:
+        return redirect(url_for('login'))
 
 
+
+## Manager edit own profile ##
+@app.route('/manager/editmanagerprofile', methods=['GET', 'POST'])
+def editmanagerprofile():
+    if 'loggedin' in session and session['loggedin']:
+        cursor = utils.getCursor()
+        
+        if request.method == 'POST':
+            title = request.form.get('title')
+            first_name = request.form.get('first_name')
+            last_name = request.form.get('last_name')
+            position = request.form.get('position')
+            phone_number = request.form.get('phone_number')
+            email = request.form.get('email')
+            gardering_experience = request.form.get('gardering_experience')
+            
+            cursor.execute("UPDATE manager SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s, gardering_experience = %s \
+                WHERE user_name = %s", (title, first_name, last_name, position, phone_number, email, gardering_experience, session['username'],))
+
+            return redirect(url_for('manager_profile'))
+        else:
+            cursor.execute("SELECT * FROM manager WHERE user_name = %s", (session['username'],))
+            manager_profile = cursor.fetchone()
+        
+            return render_template('/manager/editmanagerprofile.html', manager_profile = manager_profile, role=session['role'])
+        
+    else:
+        return redirect(url_for('login'))
+
+    
+
+
+
+## Manaer view instructors list ##
 @app.route('/manager/instructor_profile_list')
 def instructor_profile_list():
     
@@ -36,6 +84,9 @@ def instructor_profile_list():
     else:
         return redirect(url_for('login'))
 
+
+
+## Manager edit/update instructor profile ##
 @app.route('/manager/edit_instructor_profile/<int:instructor_id>', methods=['GET', 'POST'])
 def edit_instructor_profile(instructor_id):
     
@@ -88,6 +139,9 @@ def edit_instructor_profile(instructor_id):
     else:
         return redirect(url_for('login'))
     
+    
+  
+## Manager delete instructor profile ##    
 @app.route('/manager/delete_instructor_profile/<int:instructor_id>')
 def delete_instructor_profile(instructor_id):
     
@@ -101,6 +155,8 @@ def delete_instructor_profile(instructor_id):
     else:
         return redirect(url_for('login'))
 
+
+## Manager view members list ##
 @app.route('/manager/member_profile_list')
 def member_profile_list():
     
@@ -114,7 +170,9 @@ def member_profile_list():
         return render_template("manager/manage_member_profile.html", member_profile=member_profile, role = session['role'])
     else:
         return redirect(url_for('login'))
-    
+ 
+ 
+## Manager edit/update member profile ##   
 @app.route('/manager/edit_member_profile/<int:member_id>', methods=['GET', 'POST'])
 def edit_member_profile(member_id):
     
@@ -154,6 +212,9 @@ def edit_member_profile(member_id):
     else:
         return redirect(url_for('login'))
     
+    
+    
+## Manager delete member profile ##    
 @app.route('/manager/delete_member_profile/<int:member_id>')
 def delete_member_profile(member_id):
     

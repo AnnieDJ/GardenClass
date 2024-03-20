@@ -1,44 +1,90 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+
+{% block content %}
 
 <style>
-  .profile-pic {
-    width: 200px;
-    height: auto;
-  }
+    .profile-pic {
+        width: 200px;
+        height: auto;
+    }
+
+    .alert-info {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+    }
+
+    .btn-primary {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+    .btn-primary:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+        border-color: #545b62;
+    }
 </style>
 
 <div class="container">
-  <h1 class="mt-5">
-    Manager Profile: {{ manager_profile[3] }} {{ manager_profile[4] }}
-  </h1>
+    <h1 class="mt-5">Manager Profile: {{ manager_profile[0][3] }} {{ manager_profile[0][4] }}</h1>
 
-  <div class="profile-image">
-    <img
-      src="{{ url_for('static', filename='img/manager.jpg') }}"
-      alt="Profile Picture"
-      class="profile-pic"
-    />
-  </div>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="alert alert-info" role="alert">
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    {% endwith %}
 
-  <div class="profile-detail">
-    <p><strong>Staff ID:</strong> {{ manager_profile[0] }}</p>
-    <p><strong>Username:</strong> {{ manager_profile[1] }}</p>
-    <p><strong>Title:</strong> {{ manager_profile[2] }}</p>
-    <p><strong>First Name:</strong> {{ manager_profile[3] }}</p>
-    <p><strong>Last Name:</strong> {{ manager_profile[4] }}</p>
-    <p><strong>Position:</strong> {{ manager_profile[5] }}</p>
-    <p><strong>Phone Number:</strong> {{ manager_profile[6] }}</p>
-    <p><strong>Email:</strong> {{ manager_profile[7] }}</p>
-    <p><strong>Gardening Experience:</strong> {{ manager_profile[10] }}</p>
-  </div>
+    <div class="profile-image">
+        {% if manager_profile[0][8] is not none %}
+        {% if manager_profile[0][8].endswith('.jpg') %}
+        <img class="card-img-top profile-pic" src="data:image/jpg;base64,{{ manager_profile[0][9] }}"
+            alt="{{ manager_profile[0][1] }}">
+        {% elif manager_profile[0][8].endswith('.jpeg') %}
+        <img class="card-img-top profile-pic" src="data:image/jpeg;base64,{{ manager_profile[0][9] }}"
+            alt="{{ manager_profile[0][1] }}">
+        {% elif manager_profile[0][8].endswith('.png') %}
+        <img class="card-img-top profile-pic" src="data:image/png;base64,{{ manager_profile[0][9] }}"
+            alt="{{ manager_profile[0][1] }}">
+        {% elif manager_profile[0][8].endswith('.gif') %}
+        <img class="card-img-top profile-pic" src="data:image/gif;base64,{{ manager_profile[0][9] }}"
+            alt="{{ manager_profile[0][1] }}">
+        {% endif %}
+        {% else %}
+        <img src="{{ url_for('static', filename='img/manager.jpg') }}" alt="Profile Picture" class="profile-pic" />
+        {% endif %}
+    </div>
 
-  <a href="{{ url_for('editmanagerprofile') }}" class="btn btn-primary"
-    >Update Profile</a
-  >
+    <div class="profile-detail">
+        <p><strong>Staff ID:</strong> {{ manager_profile[0][0] }}</p>
+        <p><strong>Username:</strong> {{ manager_profile[0][1] }}</p>
+        <p><strong>Title:</strong> {{ manager_profile[0][2] }}</p>
+        <p><strong>First Name:</strong> {{ manager_profile[0][3] }}</p>
+        <p><strong>Last Name:</strong> {{ manager_profile[0][4] }}</p>
+        <p><strong>Position:</strong> {{ manager_profile[0][5] }}</p>
+        <p><strong>Phone Number:</strong> {{ manager_profile[0][6] }}</p>
+        <p><strong>Email:</strong> {{ manager_profile[0][7] }}</p>
+        <p><strong>Gardening Experience:</strong> {{ manager_profile[0][10] }}</p>
+    </div>
 
-  <a href="{{ url_for('manager_dashboard') }}" class="btn btn-secondary"
-    >Back to List</a
-  >
+    <a href="{{ url_for('editmanagerprofile') }}" class="btn btn-primary">Update Profile</a>
+
+    <a href="{{ url_for('manager_dashboard') }}" class="btn btn-secondary">Back to List</a>
 </div>
 
 {% endblock %}

@@ -17,16 +17,26 @@ def manager_dashboard():
 @app.route('/manager/profile')
 def manager_profile():
     if 'loggedin' in session and session['loggedin']:
-        
+        encoded_manager_profile = []
+
         cursor = utils.getCursor()
         cursor.execute("SELECT * FROM manager WHERE user_name = %s", (session['username'],))
-        
         manager_profile = cursor.fetchone()
-        
-        return render_template('/manager/mgr_profile.html', manager_profile = manager_profile, role=session['role'])
-        
+
+        if manager_profile:
+            if manager_profile[8] is not None and manager_profile[8] != '':
+                image_encode = base64.b64encode(manager_profile[9]).decode('utf-8')
+                encoded_manager_profile.append((manager_profile[0], manager_profile[1], manager_profile[2], manager_profile[3], manager_profile[4], manager_profile[5], manager_profile[6], manager_profile[7], manager_profile[8], image_encode, manager_profile[10]))
+            else:
+                encoded_manager_profile.append((manager_profile[0], manager_profile[1], manager_profile[2], manager_profile[3], manager_profile[4], manager_profile[5], manager_profile[6], manager_profile[7], manager_profile[8], None, manager_profile[10]))
+
+            return render_template('/manager/mgr_profile.html', manager_profile=encoded_manager_profile, role=session['role'])
+        else:
+            flash('Manager profile not found', 'error')
+            return redirect(url_for('login'))
     else:
         return redirect(url_for('login'))
+
 
 
 
@@ -43,24 +53,36 @@ def editmanagerprofile():
             position = request.form.get('position')
             phone_number = request.form.get('phone_number')
             email = request.form.get('email')
-            gardering_experience = request.form.get('gardering_experience')
+            gardering_experience = request.form.get('gardening_experience')
+            manager_image = request.files['manager_image']
             
-            cursor.execute("UPDATE manager SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s, gardering_experience = %s \
-                WHERE user_name = %s", (title, first_name, last_name, position, phone_number, email, gardering_experience, session['username'],))
+            if manager_image:
+                
+                if utils.allowed_file(manager_image.filename):
+                    filename = secure_filename(manager_image.filename)
+                    image_data = manager_image.read()
+                    
+                    cursor.execute("UPDATE manager SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s, gardering_experience = %s, manager_image_name = %s, profile_image = %s  \
+                        WHERE user_name = %s", (title, first_name, last_name, position, phone_number, email, gardering_experience, filename,image_data, session['username'],))
+                    
+                else:
+                    flash('Invalid file type, please upload a valid image file')
+                    
+                return redirect(url_for('manager_profile'))
+                    
+            else:
+                cursor.execute("UPDATE manager SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s, gardering_experience = %s \
+                   WHERE user_name = %s", (title, first_name, last_name, position, phone_number, email, gardering_experience, session['username'],))
 
-            return redirect(url_for('manager_profile'))
+                return redirect(url_for('manager_profile'))
         else:
             cursor.execute("SELECT * FROM manager WHERE user_name = %s", (session['username'],))
             manager_profile = cursor.fetchone()
         
-            return render_template('/manager/editmanagerprofile.html', manager_profile = manager_profile, role=session['role'])
+            return render_template('/manager/edit_mgr_profile.html', manager_profile = manager_profile, role=session['role'])
         
     else:
         return redirect(url_for('login'))
-
-    
-
-
 
 ## Manaer view instructors list ##
 @app.route('/manager/instructor_profile_list')

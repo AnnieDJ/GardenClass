@@ -12,19 +12,15 @@
   }
 
 </style>
-
 <div class="container">
   <h1 class="mt-5">Manager Profile: {{ manager_profile[3] }} {{ manager_profile[4] }}</h1>
 
-    <form action="{{ url_for('editmanagerprofile') }}" method="post" enctype="multipart/form-data">
-        <div class="profile-image">
-            <img src="{{ url_for('static', filename='img/manager.jpg') }}" alt="Profile Picture" class="profile-pic">
-        </div>
-        
+    <form action="{{ url_for('editmanagerprofile') }}" method="post" enctype="multipart/form-data">  
         <!-- Photo Upload Section -->
         <div class="row align-items-center">
             <div class="col-md-9 text-center">
-                <input type="file" class="form-control-file" id="photo" name="photo" style="width: auto; max-width: 250px;">
+                <label for="manager_image" class="form-label">Image Upload:</label>
+                <input type="file" class="form-control-file" id="manager_image" name="manager_image" style="width: auto; max-width: 250px;">
             </div>
         </div>
 

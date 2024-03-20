@@ -31,8 +31,8 @@
   }
 
   .card-footer {
-    align-items: flex-start; /* 若card-footer有多行内容，保证它们在交叉轴上靠上对齐 */
-    justify-content: flex-start; /* 确保内容在主轴（这里是水平方向）上靠左对齐 */
+    align-items: flex-start;
+    justify-content: flex-start; /* Ensure the content is aligned to the left along the main axis (in this case, the horizontal direction*/
   }
 
   .card h2 {
@@ -52,20 +52,20 @@
   .timetable {
     display: flex;
     flex-direction: column;
-    gap: 3px; /* 为每个时间表项之间提供一些间隙 */
+    gap: 3px; /* Provide some spacing between each timetable entry. */
   }
 
   .timetable-item {
-    border: 1px solid #c8d0b8; /* 给时间表项添加边框 */
+    border: 1px solid #c8d0b8; /* Add borders to the timetable entries. */
     padding: 10px;
-    border-radius: 5px; /* 轻微的圆角效果 */
-    background-color: #f9f9f9; /* 轻微的背景颜色差异 */
+    border-radius: 5px; /* Slight rounded corners effect.*/
+    background-color: #f9f9f9; /* Slight background color variation.*/
   }
 
   .lesson-actions {
     display: flex;
-    justify-content: flex-end; /* 将编辑和取消按钮推到右侧 */
-    margin-top: 5px; /* 在按钮和时间表信息之间提供一点空间 */
+    justify-content: flex-end; /* Push the edit and cancel buttons to the right side. */
+    margin-top: 5px; /* Provide some space between the buttons and the timetable information.*/
   }
   .add-lesson {
     background-color: #4a724a; /* Blue background for add buttons */

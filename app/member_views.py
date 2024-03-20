@@ -45,7 +45,7 @@ def member_edit_profile():
             cursor.execute("SELECT * FROM member WHERE user_name = %s", (session['username'],))
             member_profile = cursor.fetchone()
         
-            return render_template('/member/editmemberprofile.html', member_profile = member_profile, role=session['role'])
+            return render_template('/member/edit_member_profile.html', member_profile = member_profile, role=session['role'])
         
     else:
         return redirect(url_for('login'))

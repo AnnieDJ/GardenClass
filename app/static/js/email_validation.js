@@ -59,3 +59,16 @@ document.getElementById('email').addEventListener('blur', function() {
         }
     }
 });
+
+document.getElementById('comfirnm_password').addEventListener('input', function() {
+    var password = document.getElementById('password').value;
+    var confirmPassword = this.value;
+    var passwordMessage = document.getElementById('passwordMessage');
+
+    if (password !== confirmPassword) {
+        passwordMessage.textContent = 'Passwords do not match';
+        passwordMessage.style.color = 'red';
+    } else {
+        passwordMessage.textContent = '';
+    }
+});

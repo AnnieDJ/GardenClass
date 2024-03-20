@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template,redirect,url_for
-from flask import session,request,jsonify
+from flask import session,request,jsonify,flash
 from app import utils
 from werkzeug.utils import secure_filename
 import base64
@@ -183,5 +183,115 @@ def check_email():
         else:
          return jsonify({'valid': True})
     
-    
-  
+@app.route('/instr_search')
+def instr_search():
+    if 'loggedin' in session and session['loggedin']:
+        query = request.args.get('search', '')
+        results = []
+      
+        cursor = utils.getCursor()
+        cursor.execute('SELECT user_name, email, address, position FROM instructor;')
+        users = cursor.fetchall()
+        
+        if query is None or query == '':
+            return redirect(url_for('instructor_profile_list'))
+        
+        for user in users:
+            if query.lower() in user[0].lower():
+               cursor.execute("SELECT * FROM instructor WHERE user_name LIKE CONCAT('%', %s, '%');",(user[0],))
+               instructor_profile_list = cursor.fetchall()
+             
+               for instructor in instructor_profile_list:
+                   if instructor[10] is not None and instructor[10] != '':
+                      image_encode = base64.b64encode(instructor[11]).decode('utf-8')
+                      results.append((instructor[0], instructor[1],instructor[2] ,instructor[3], instructor[4], instructor[5],instructor[6],instructor[7],instructor[8],instructor[9],instructor[10],image_encode))
+                   else:
+                      results.append((instructor[0], instructor[1],instructor[2],instructor[3], instructor[4], instructor[5],instructor[6],instructor[7],instructor[8],instructor[9],instructor[10],None))
+            
+               return render_template("manager/manage_instr_profile.html", instructor_profile=results, role = session['role'])
+           
+            elif query.lower() in user[1].lower():
+               cursor.execute("SELECT * FROM instructor WHERE email LIKE CONCAT('%', %s, '%');",(user[1],))
+               instructor_profile_list = cursor.fetchall()
+              
+               for instructor in instructor_profile_list:
+                   if instructor[10] is not None and instructor[10] != '':
+                      image_encode = base64.b64encode(instructor[11]).decode('utf-8')
+                      results.append((instructor[0], instructor[1],instructor[2] ,instructor[3], instructor[4], instructor[5],instructor[6],instructor[7],instructor[8],instructor[9],instructor[10],image_encode))
+                   else:
+                      results.append((instructor[0], instructor[1],instructor[2],instructor[3], instructor[4], instructor[5],instructor[6],instructor[7],instructor[8],instructor[9],instructor[10],None))
+            
+               return render_template("manager/manage_instr_profile.html", instructor_profile=results, role = session['role'])
+           
+            elif query.lower() in user[2].lower():
+                cursor.execute("SELECT * FROM instructor WHERE address LIKE CONCAT('%', %s, '%');",(user[2],))
+                instructor_profile_list = cursor.fetchall()
+                
+                for instructor in instructor_profile_list:
+                   if instructor[10] is not None and instructor[10] != '':
+                      image_encode = base64.b64encode(instructor[11]).decode('utf-8')
+                      results.append((instructor[0], instructor[1],instructor[2] ,instructor[3], instructor[4], instructor[5],instructor[6],instructor[7],instructor[8],instructor[9],instructor[10],image_encode))
+                   else:
+                      results.append((instructor[0], instructor[1],instructor[2],instructor[3], instructor[4], instructor[5],instructor[6],instructor[7],instructor[8],instructor[9],instructor[10],None))
+            
+                return render_template("manager/manage_instr_profile.html", instructor_profile=results, role = session['role'])
+            
+            elif query.lower() in user[3].lower():
+                cursor.execute("SELECT * FROM instructor WHERE position LIKE CONCAT('%', %s, '%');",(user[3],))
+                instructor_profile_list = cursor.fetchall()
+                
+                for instructor in instructor_profile_list:
+                   if instructor[10] is not None and instructor[10] != '':
+                      image_encode = base64.b64encode(instructor[11]).decode('utf-8')
+                      results.append((instructor[0], instructor[1],instructor[2] ,instructor[3], instructor[4], instructor[5],instructor[6],instructor[7],instructor[8],instructor[9],instructor[10],image_encode))
+                   else:
+                      results.append((instructor[0], instructor[1],instructor[2],instructor[3], instructor[4], instructor[5],instructor[6],instructor[7],instructor[8],instructor[9],instructor[10],None))
+            
+                return render_template("manager/manage_instr_profile.html", instructor_profile=results, role = session['role'])
+            
+        flash('User does not exist.')
+        return redirect(url_for('instructor_profile_list'))
+    else:
+         return redirect(url_for('login'))
+
+@app.route('/member_search')
+def member_search():
+    if 'loggedin' in session and session['loggedin']:
+        query = request.args.get('search', '')
+      
+        cursor = utils.getCursor()
+        cursor.execute('SELECT user_name, email, address, position FROM member;')
+        users = cursor.fetchall()
+        
+        if query is None or query == '':
+            return redirect(url_for('member_profile_list'))
+        
+        matched_profiles = []
+        for user in users:
+            if query.lower() in user[0].lower():
+               cursor.execute("SELECT * FROM member WHERE user_name LIKE CONCAT('%', %s, '%');",(user[0],))
+               member_profile_list = cursor.fetchall()
+               matched_profiles.extend(member_profile_list)
+            
+            elif query.lower() in user[1].lower():
+               cursor.execute("SELECT * FROM member WHERE email LIKE CONCAT('%', %s, '%');",(user[1],))
+               member_profile_list = cursor.fetchall()
+               matched_profiles.extend(member_profile_list)
+            
+            elif query.lower() in user[2].lower():
+                cursor.execute("SELECT * FROM member WHERE address LIKE CONCAT('%', %s, '%');",(user[2],))
+                member_profile_list = cursor.fetchall()
+                matched_profiles.extend(member_profile_list)
+            
+            elif query.lower() in user[3].lower():
+                cursor.execute("SELECT * FROM member WHERE position LIKE CONCAT('%', %s, '%');",(user[3],))
+                member_profile_list = cursor.fetchall()
+                matched_profiles.extend(member_profile_list)
+        
+        if not matched_profiles:
+            flash('No matching users found.', 'info')
+            return redirect(url_for('member_profile_list'))
+        else:
+            return render_template("manager/manage_member_profile.html", member_profile=matched_profiles, role=session['role'])
+    else:
+         return redirect(url_for('login'))

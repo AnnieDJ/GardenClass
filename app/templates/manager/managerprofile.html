@@ -1,0 +1,44 @@
+{% extends 'base.html' %} {% block content %}
+
+<style>
+  .profile-pic {
+    width: 200px;
+    height: auto;
+  }
+</style>
+
+<div class="container">
+  <h1 class="mt-5">
+    Manager Profile: {{ manager_profile[3] }} {{ manager_profile[4] }}
+  </h1>
+
+  <div class="profile-image">
+    <img
+      src="{{ url_for('static', filename='img/manager.jpg') }}"
+      alt="Profile Picture"
+      class="profile-pic"
+    />
+  </div>
+
+  <div class="profile-detail">
+    <p><strong>Staff ID:</strong> {{ manager_profile[0] }}</p>
+    <p><strong>Username:</strong> {{ manager_profile[1] }}</p>
+    <p><strong>Title:</strong> {{ manager_profile[2] }}</p>
+    <p><strong>First Name:</strong> {{ manager_profile[3] }}</p>
+    <p><strong>Last Name:</strong> {{ manager_profile[4] }}</p>
+    <p><strong>Position:</strong> {{ manager_profile[5] }}</p>
+    <p><strong>Phone Number:</strong> {{ manager_profile[6] }}</p>
+    <p><strong>Email:</strong> {{ manager_profile[7] }}</p>
+    <p><strong>Gardening Experience:</strong> {{ manager_profile[10] }}</p>
+  </div>
+
+  <a href="{{ url_for('editmanagerprofile') }}" class="btn btn-primary"
+    >Update Profile</a
+  >
+
+  <a href="{{ url_for('manager_dashboard') }}" class="btn btn-secondary"
+    >Back to List</a
+  >
+</div>
+
+{% endblock %}

@@ -108,23 +108,31 @@ def edit_instructor_profile(instructor_id):
             if password is not None and password != '':
                hashed_password = utils.hashing.hash_value(password , salt='schwifty')
                
-               if instructor_image and utils.allowed_file(instructor_image.filename):
+               if instructor_image: 
                    
-                   filename = secure_filename(instructor_image.filename)
-                   image_data = instructor_image.read()
-                   cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s,  address = %s, instructor_profile = %s, instructor_image_name = %s, instructor_image = %s WHERE instructor_id = %s",(title,first_name,last_name,position,phone_number,email,address,instructor_profile,filename,image_data,instructor_id,))
-                   cursor.execute("UPDATE user SET password = %s WHERE related_instructor_id = %s",(hashed_password,instructor_id,))
+                  if utils.allowed_file(instructor_image.filename):
+                     filename = secure_filename(instructor_image.filename)
+                     image_data = instructor_image.read()
+                     cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s,  address = %s, instructor_profile = %s, instructor_image_name = %s, instructor_image = %s WHERE instructor_id = %s",(title,first_name,last_name,position,phone_number,email,address,instructor_profile,filename,image_data,instructor_id,))
+                     cursor.execute("UPDATE user SET password = %s WHERE related_instructor_id = %s",(hashed_password,instructor_id,))
+                  else:
+                      flash("This is not a valid Image!")
+                      return redirect(url_for('instructor_profile_list'))
                    
                else:
                    cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s,  address = %s, instructor_profile = %s WHERE instructor_id = %s",(title,first_name,last_name,position,phone_number,email,address,instructor_profile,instructor_id,))
                    cursor.execute("UPDATE user SET password = %s WHERE related_instructor_id = %s",(hashed_password,instructor_id,))
             else:
-                if instructor_image and utils.allowed_file(instructor_image.filename):
+                if instructor_image:
                    
-                   filename = secure_filename(instructor_image.filename)
-                   image_data = instructor_image.read()
-                   cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s,  address = %s, instructor_profile = %s, instructor_image_name = %s, instructor_image = %s WHERE instructor_id = %s",(title,first_name,last_name,position,phone_number,email,address,instructor_profile,filename,image_data,instructor_id,))
+                   if utils.allowed_file(instructor_image.filename):
                    
+                      filename = secure_filename(instructor_image.filename)
+                      image_data = instructor_image.read()
+                      cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s,  address = %s, instructor_profile = %s, instructor_image_name = %s, instructor_image = %s WHERE instructor_id = %s",(title,first_name,last_name,position,phone_number,email,address,instructor_profile,filename,image_data,instructor_id,))
+                   else:
+                       flash("This is not a valid Image!")
+                       return redirect(url_for('instructor_profile_list',))
                 else:
                    cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s,  address = %s, instructor_profile = %s WHERE instructor_id = %s",(title,first_name,last_name,position,phone_number,email,address,instructor_profile,instructor_id,))
              

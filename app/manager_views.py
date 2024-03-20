@@ -23,7 +23,7 @@ def manager_profile():
         
         manager_profile = cursor.fetchone()
         
-        return render_template('/manager/managerprofile.html', manager_profile = manager_profile, role=session['role'])
+        return render_template('/manager/mgr_profile.html', manager_profile = manager_profile, role=session['role'])
         
     else:
         return redirect(url_for('login'))

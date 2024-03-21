@@ -3,11 +3,14 @@ from flask import render_template, redirect, url_for
 from flask import session,request
 from app import utils
 
+## Member dashboard ##
 @app.route('/member/dashboard')
 def member_dashboard():
     if 'loggedin' in session and session['loggedin']:
         return render_template('/member/member_dashboard.html', username=session['username'], role=session['role'])
 
+
+## Member own profile ##
 @app.route('/member/profile')
 def member_profile():
 
@@ -23,7 +26,9 @@ def member_profile():
     else:
         return redirect(url_for('login'))
     
-
+    
+    
+## Member edit own profile ##
 @app.route('/member/member_edit_profile', methods=['GET', 'POST'])
 def member_edit_profile():
     if 'loggedin' in session and session['loggedin']:
@@ -38,7 +43,8 @@ def member_edit_profile():
             address = request.form.get('address')
             date_of_birth = request.form.get('date_of_birth')
         
-            cursor.execute("UPDATE member SET title = %s, first_name = %s,  last_name = %s, phone_number = %s, email = %s,address = %s, date_of_birth = %s WHERE user_name = %s", (title, first_name, last_name,phone_number, email, address,date_of_birth,session['username'],))       
+            cursor.execute("UPDATE member SET title = %s, first_name = %s,  last_name = %s, phone_number = %s, email = %s,address = %s, \
+                           date_of_birth = %s WHERE user_name = %s", (title, first_name, last_name,phone_number, email, address,date_of_birth,session['username'],))       
           
             return redirect(url_for('member_profile'))
         else:
@@ -49,5 +55,3 @@ def member_edit_profile():
         
     else:
         return redirect(url_for('login'))
-
-      

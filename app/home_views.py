@@ -3,6 +3,7 @@ from flask import Flask, render_template
 from flask import session,request, redirect,url_for
 from app import utils
 import re
+from datetime import datetime
 
 @app.route('/')
 @app.route('/home')
@@ -58,20 +59,24 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    msg = ''
-    session.clear()
+    msg = session.pop('msg', None)
     if request.method == 'POST':
         # Form submitted, process the data
         username  = request.form['user_name']
+        date_of_birth = datetime.strptime(request.form['date_of_birth'], '%Y-%m-%d')
     
         # Validation checks
         if not all(request.form.values()):
             msg = 'Please fill out all the fields!'
         elif not re.match(r'[^@]+@[^@]+\.[^@]+', request.form['email']):
             msg = 'Invalid email address!'
+        elif not re.match(r'^\d{10}$', request.form['phone']):
+            msg = 'Invalid phone number!'
+        elif date_of_birth > utils.current_date_time():
+            msg = 'Date of Birth cannot be in the future!'
         # Additional validation checks...
 
-        if not msg:
+        elif not msg:
             # Data is valid, proceed with registration
             cursor = utils.getCursor()
             cursor.execute('SELECT * FROM member WHERE user_name = %s', (username,))
@@ -79,7 +84,7 @@ def register():
             if account:
                 msg = 'Account already exists!'
             else:
-                print("Setting session value--------------------------")
+                session.clear()
                 session['user_name'] = request.form['user_name']
                 session['title'] = request.form['title']
                 session['firstname'] = request.form['first_name']
@@ -103,17 +108,32 @@ def register():
 
 @app.route('/bank_info', methods=['GET', 'POST'])
 def bank_info():
-    if request.method == 'POST':
-        # Process bank information form
-        
-        session['bank_name'] = request.form['bank_name']
-        session['bank_card'] = request.form['bank_card']
-        session['security_code'] = request.form['security_code']
+    msg = session.pop('msg', None)
     
-        # Redirect to the final step or any other step
-        return redirect(url_for('payment'))
-
-    return render_template('/register/bank_info.html')
+    if request.method == 'POST':
+        
+        # Validation checks
+        if not all(request.form.values()):
+            msg = 'Please fill out all the fields!'
+        elif not re.match(r'^\d{16}$', request.form['bank_card']):
+            msg = 'Invalid bank card!'
+        elif not re.match(r'^\d{3}$', request.form['security_code']):
+            msg = 'Invalid Security Code!'
+        
+        elif not msg:    
+            # Process bank information form        
+            session['bank_name'] = request.form['bank_name']
+            session['bank_card'] = request.form['bank_card']
+            session['security_code'] = request.form['security_code']
+            
+            # Redirect to the final step or any other step
+            return redirect(url_for('payment'))
+    
+        elif request.method == 'POST':
+             # Form is empty... (no POST data)
+             msg = 'Please fill out the form!'
+             
+    return render_template('/register/bank_info.html', msg=msg)
 
 @app.route('/payment', methods=['GET', 'POST'])
 def payment():

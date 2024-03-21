@@ -19,6 +19,16 @@ CREATE TABLE IF NOT EXISTS member (
     expiry_date DATE
 );
 
+-- Create bank table for member
+CREATE TABLE IF NOT EXISTS bank_info (
+    bank_info_id INT PRIMARY KEY AUTO_INCREMENT,
+    bank_name VARCHAR(100),
+    bank_card VARCHAR(100),
+    security_code VARCHAR(50),
+    member_id INT,
+    FOREIGN KEY (member_id) REFERENCES member(member_id) ON DELETE CASCADE
+);
+
 -- Create instructor table
 CREATE TABLE IF NOT EXISTS instructor (
     instructor_id INT PRIMARY KEY AUTO_INCREMENT,

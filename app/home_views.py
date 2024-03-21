@@ -33,7 +33,7 @@ def login():
                 msg = 'Invalid User'
                 return render_template('login.html', msg=msg)
 
-            user_id = cursor.fetchone().user_id
+            user_id = cursor.fetchone()[0]
             account = user[:4] + (user_id,)
             password = account[2]
 

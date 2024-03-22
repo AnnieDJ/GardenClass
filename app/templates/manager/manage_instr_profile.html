@@ -56,25 +56,25 @@
             <tbody>
                 {% for instructor in instructor_profile %}
                 <tr>
-                    <td>{{ instructor['user_name'] }}</td>
-                    <td>{{ instructor['title'] }}</td>
-                    <td>{{ instructor['first_name'] }}</td>
-                    <td>{{ instructor['last_name'] }}</td>
-                    <td>{{ instructor['position'] }}</td>
-                    <td>{{ instructor['phone_number'] }}</td>
-                    <td>{{ instructor['email'] }}</td>
-                    <td>{{ instructor['address'] }}</td>
-                    <td>{{ instructor['instructor_profile'] }}</td>
+                    <td>{{ instructor[1] }}</td>
+                    <td>{{ instructor[2] }}</td>
+                    <td>{{ instructor[3] }}</td>
+                    <td>{{ instructor[4] }}</td>
+                    <td>{{ instructor[5] }}</td>
+                    <td>{{ instructor[6] }}</td>
+                    <td>{{ instructor[7] }}</td>
+                    <td>{{ instructor[8] }}</td>
+                    <td>{{ instructor[9] }}</td>
                     <td> 
-                        {% if instructor['instructor_image_name'] is not none %}
-                        {% if instructor['instructor_image_name'].endswith('.jpg') %}
-                            <img class="card-img-top" src="data:image/jpg;base64,{{ instructor['instructor_image'] }}" alt="{{ instructor['user_name'] }}">
-                        {% elif instructor['instructor_image_name'].endswith('.jpeg') %}
-                            <img class="card-img-top" src="data:image/jpeg;base64,{{ instructor['instructor_image'] }}" alt="{{ instructor['user_name'] }}">
-                        {% elif instructor['instructor_image_name'].endswith('.png') %}
-                            <img class="card-img-top" src="data:image/png;base64,{{ instructor['instructor_image'] }}" alt="{{ instructor['user_name'] }}">
-                        {% elif instructor['instructor_image_name'].endswith('.gif') %}
-                            <img class="card-img-top" src="data:image/gif;base64,{{ instructor['instructor_image'] }}" alt="{{ instructor['user_name'] }}">
+                        {% if instructor[10] is not none %}
+                        {% if instructor[10].endswith('.jpg') %}
+                            <img class="card-img-top" src="data:image/jpg;base64,{{ instructor[11] }}" alt="{{ instructor['user_name'] }}">
+                        {% elif instructor[10].endswith('.jpeg') %}
+                            <img class="card-img-top" src="data:image/jpeg;base64,{{ instructor[11] }}" alt="{{ instructor['user_name'] }}">
+                        {% elif instructor[10].endswith('.png') %}
+                            <img class="card-img-top" src="data:image/png;base64,{{ instructor[11] }}" alt="{{ instructor['user_name'] }}">
+                        {% elif instructor[10].endswith('.gif') %}
+                            <img class="card-img-top" src="data:image/gif;base64,{{ instructor[11] }}" alt="{{ instructor['user_name'] }}">
                         {% endif %}
                     {% else %}
                         <!-- Handle the case where instructor_profile is None -->
@@ -83,10 +83,10 @@
                     
                     </td>
                     <td>
-                        <a href="{{ url_for('edit_instructor_profile', instructor_id=instructor['instructor_id']) }}" class="btn btn-primary">Edit</a>
+                        <a href="{{ url_for('edit_instructor_profile', instructor_id=instructor[0]) }}" class="btn btn-primary">Edit</a>
                     <td>
                        
-                        <button class="btn btn-danger" onclick="confirmDelete('{{ url_for('delete_instructor_profile', instructor_id=instructor['instructor_id']) }}')">Delete</button>
+                        <button class="btn btn-danger" onclick="confirmDelete('{{ url_for('delete_instructor_profile', instructor_id=instructor[0]) }}')">Delete</button>
                     </td>
                 </tr>
                 {% endfor %}

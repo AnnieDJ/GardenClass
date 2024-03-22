@@ -1,79 +1,87 @@
 {% extends 'base.html' %} {% block content %}
 
 <style>
-    /* Sidebar styles */
-    .sidebar {
-      background-color: #4a724a; /* Green color for the sidebar */
-      color: white;
-      width: 130px;
-      position: fixed;
-      top: 55px; /* Align with the top of the page */
-      bottom: 0;
-      overflow-y: auto;
-      padding-top: 20px;
-    }
+  /* General styles for body */
+  body {
+    font-family: "Times New Roman", sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+  }
 
-    .sidebar a,
-    .dropdown-btn {
-      padding: 10px 15px;
-      text-decoration: none;
-      font-size: 15px; /* Set font size to 15px */
-      color: #fdfffd; /* Text color is white */
-      display: block;
-    }
+  .nav-bar {
+    background-color: #2c662d;
+    color: white;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-    .sidebar a:hover,
-    .dropdown-btn:hover {
-      background-color: #69a869; /* Dark grey color for hover state */
-    }
+  /* Sidebar styles */
+  .sidebar {
+    background-color: #4a724a;
+    color: white;
+    width: 130px;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    overflow-y: auto;
+    padding-top: 20px;
+  }
 
-    .dropdown-container {
-      display: none;
-      /* Slightly lighter grey color for dropdown items */
-    }
+  .sidebar a {
+    color: white;
+    padding: 10px 15px;
+    text-decoration: none;
+    display: block;
+  }
 
-    .dropdown-container a {
-      padding-left: 35px;
-    }
+  .sidebar a:hover {
+    background-color: #3e7c3f;
+  }
 
-    .main-content {
-      margin-left: 250px; /* Same width as the sidebar */
-      padding: 20px;
-    }
-    body {
-      font-family: "Arial", sans-serif;
-      background-color: #d5e4d3;
-      margin: 0;
-      padding: 0;
-    }
+  /* Dropdown styles */
+  .dropdown-container {
+    display: none;
+    background-color: #3e7c3f;
+  }
 
-    .dashboard {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      padding: 20px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
+  .dropdown-btn {
+    cursor: pointer;
+  }
 
-    .card {
-      background-color: #ffffff;
-      border: 2px solid #c8d0b8;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      height:720px; /* Adjust the height as needed to make them equal */
-    }
+  .dropdown-btn.active {
+    background-color: #3e7c3f;
+  }
 
-    .card-footer {
-      display: flex;
-      justify-content: space-between; /* 水平分布对齐，使得子元素位于两端 */
-      align-items: center; /* 垂直居中对齐 */
-      padding: 10px 0;
-    }
+  /* Main content area */
+  .main-content {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    margin-left: 200px;
+    padding: 20px;
+  }
+
+  .card {
+    flex: 1;
+    margin: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-header {
+    background-color: #2c662d;
+    color: white;
+    padding: 10px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+
+  .card-content {
+    padding: 10px;
+  }
 
     .card h2 {
       background-color: #e7f4e4; /* A light green background to match the theme */
@@ -111,15 +119,34 @@
       margin-left: auto; /* Blue background for add buttons */
     }
 
-    .news-card {
-      order: 2; /* Places the News card in the middle without specifying the column */
-    }
+  .card-footer {
+    padding: 10px;
+    background-color: #eff0f1;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+  }
 
-    .news-link {
-      color: #4a724a;
-      text-decoration: none;
-    }
+  /* Buttons */
+  .btn {
+    padding: 10px 20px;
+    margin-right: 10px;
+    background-color: #2c662d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+  }
 
+  .btn:hover {
+    background-color: #3e7c3f;
+  }
+
+  .btn.add-lesson {
+    background-color: #4a8c4a;
+  }
     .news-link:hover {
       text-decoration: underline;
     }
@@ -159,21 +186,34 @@
       background-color: #3ad33a; /* Green background for edit buttons */
     }
 
-    .cancel-lesson {
-      background-color: #da5551; /* Red background for cancel buttons */
-    }
+  .btn.edit-lesson {
+    order: -1;
+    background-color: #3e8a51;
+  }
 
-    /* ...other styles... */
+  .btn.cancel-lesson {
+    background-color: #c42633;
+    margin-left: auto;
+  }
 
-    .register-button {
-      background-color: #287fe2; /* Deep green background for the register button */
-      color: white;
-      padding: 10px 15px;
-      border-radius: 4px;
-      border: none;
-      cursor: pointer;
-      margin-right: 26px; /* Make the button take the full container width */
-    }
+  /* Utilities */
+  .text-center {
+    text-align: center;
+  }
+
+  .lesson-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px; 
+  }
+
+  .btn.edit-lesson {
+    margin-right: auto; 
+  }
+
+  .btn.cancel-lesson {
+    margin-left: auto; 
 
     .lesson-actions, .news-actions {
       display: flex;
@@ -189,19 +229,38 @@
       margin-left: auto; 
   }
 
+  /* Responsive */
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 100%;
+      position: relative;
+    }
 
+    .sidebar {
+      width: 100%;
+      height: auto;
+      position: relative;
+    }
 
+    .main-content {
+      margin-left: 110px;
+    
+      flex-wrap: wrap;
+    }
 
+    .card {
+      width: 100%;
+    }
 
-    /* ...other styles... */
+    .card-footer {
+      flex-direction: column;
+    }
 
-    @media (max-width: 768px) {
-      .dashboard {
-        grid-template-columns: 1fr; /* Stacks the cards on smaller screens */
-      }
-      .news-card {
-        order: 0; /* Resets the position for the News card on smaller screens */
-      }
+    .btn.add-lesson,
+    .btn-left {
+      margin-bottom: 10px;
+    }
+  }
 </style>
 <div class="sidebar">
   <a href="#" class="dropdown-btn">Profile Management</a>
@@ -232,7 +291,83 @@
 </div>
 
 <div class="main-content">
-  <!-- Main content here, where you'll put the content for each section when you navigate to it -->
+  <!-- One-on-one Lesson Card -->
+  <div class="card">
+    <h2 class="card-header">One-on-one Lesson</h2>
+    <div class="card-content">
+      {% for lessons in lessons %}
+      <div class="lesson-item">
+        <strong>Instructor ID:</strong> {{ lessons['instructor_id'] }}<br />
+        <strong>Member ID:</strong> {{ lessons['member_id'] }}<br />
+        <strong>Date:</strong> {{ lessons['date'] }}<br />
+        <strong>Start Time:</strong> {{ lessons['start_time'] }}<br />
+        <strong>End Time:</strong> {{ lessons['end_time'] }}<br />
+        <strong>Location ID:</strong> {{ lessons['location_id'] }}<br />
+        <strong>Price:</strong> {{ lessons['price'] }}<br />
+        <strong>Status:</strong> {{ lessons['status'] }}
+        <div class="lesson-actions">
+          <button class="btn edit-lesson">Edit</button>
+          <button class="btn cancel-lesson">Cancel</button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="card-footer">
+      <button id="addLessonButton" class="btn add-lesson">Add Lesson</button>
+      <a href="#" class="news-link">Read more</a>
+    </div>
+  </div>
+
+  <!-- News Card -->
+  <div class="card">
+    <h2 class="card-header">News</h2>
+    <div class="card-content">
+      {% for news in news %}
+      <div class="news-item">
+        <p><strong>News ID:</strong> {{ news['news_id'] }}</p>
+        <p><strong>News Title:</strong> {{ news['title'] }}</p>
+        <p><strong>Content:</strong> {{news['content'] }}</p>
+        <p><strong>Data Published:</strong> {{ news['dtat_published'] }}</p>
+        <p><strong>Author ID:</strong> {{ news['author_id'] }}</p>
+        <div class="lesson-actions">
+          <button class="btn edit-lesson">Edit</button>
+          <button class="btn cancel-lesson">Cancel</button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="card-footer">
+      <button class="btn add-lesson btn-left">Add News</button>
+      <a href="#" class="news-link news-link-right">Read more</a>
+    </div>
+  </div>
+
+  <!-- Workshop Schedules Card -->
+  <div class="card">
+    <h2 class="card-header">Workshops</h2>
+    <div class="card-content">
+      {% for workshops in workshops %}
+      <div class="workshop-item">
+        <p><strong>workshop ID:</strong> {{ workshops['workshop_id'] }}</p>
+        <p><strong>Instructor:</strong> {{ workshops['instructor_id'] }}</p>
+        <p><strong>Date:</strong> {{ workshops['date'] }}</p>
+        <p><strong>Start time:</strong> {{ workshops['start_time'] }}</p>
+        <p><strong>End time:</strong> {{ workshops['end_time'] }}</p>
+        <p><strong>Location ID:</strong> {{ workshops['location_id'] }}</p>
+        <p><strong>Capacity:</strong> {{ workshops['capacity'] }}</p>
+        <p><strong>Price:</strong> {{ workshops['price'] }}</p>
+        <div class="lesson-actions">
+          <button class="btn edit-lesson">Edit</button>
+          <button class="btn cancel-lesson">Cancel</button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="card-footer">
+      <button class="btn add-lesson btn-left">Add Schedules</button>
+      <a href="#" class="news-link news-link-right">Read more</a>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -252,112 +387,4 @@
     }
   });
 </script>
-<div class="dashboard">
-  <!-- One-on-one Lesson Schedule Card -->
-  <!-- One-on-one Lesson Schedule Card -->
-  <div class="card">
-    <h2 class="card-title">One-on-one Lesson Schedule</h2>
-    <div class="timetable">
-      <div class="timetable-item">
-        <strong>Date:</strong> April 10, 2024 - <strong>Time:</strong> 2:00 PM -
-        3:00 PM <strong>Member:</strong> John Smith-
-        <strong>Instructor:</strong>John Doe
-        <div class="lesson-actions">
-          <button class="btn edit-lesson">Edit</button>
-          <button class="btn cancel-lesson">Cancel</button>
-        </div>
-      </div>
-      <div class="timetable-item">
-        <strong>Date:</strong> April 11, 2024 - <strong>Time:</strong> 10:00 AM
-        - 11:00 AM <strong>Member:</strong> Emma Jones-
-        <strong>Instructor:</strong>John Doe
-        <div class="lesson-actions">
-          <button class="btn edit-lesson">Edit</button>
-          <button class="btn cancel-lesson">Cancel</button>
-        </div>
-      </div>
-      <div class="timetable-item">
-        <strong>Date:</strong> April 12, 2024 - <strong>Time:</strong> 1:00 PM -
-        2:00 PM <strong>Member:</strong> Tom Jerry-
-        <strong>Instructor:</strong>John Doe
-        <div class="lesson-actions">
-          <button class="btn edit-lesson">Edit</button>
-          <button class="btn cancel-lesson">Cancel</button>
-        </div>
-      </div>
-    </div>
-    <div class="card-footer">
-      <button class="btn add-lesson btn-left">Add Lesson</button>
-      <a href="#" class="news-link news-link-right">Read more</a>
-    </div>
-  </div>
-
-  <!-- News Card -->
-  <div class="card news-card">
-    <h2 class="card-title">News</h2>
-    <div class="news-content">
-      <div class="news-item">
-        <h3 class="news-title">
-          <strong>Spring Workshop Series Announced</strong>
-        </h3>
-        <br />
-        <p class="news-date">Posted on March 28, 2024</p>
-        <p class="news-summary">
-          Join us for a series of workshops focused on spring planting
-          techniques...
-        </p>
-      </div>
-      <div class="news-actions">
-        <button class="btn edit-lesson">Edit</button>
-        <button class="btn cancel-lesson">Cancel</button>
-      </div>
-      <br />
-      <div class="news-item">
-        <h3 class="news-title"><strong>New Community Garden Plot</strong></h3>
-        <br />
-        <p class="news-date">Posted on March 15, 2024</p>
-        <p class="news-summary">
-          We are excited to announce the opening of a new community garden
-          plot...
-        </p>
-      </div>
-      <div class="news-actions">
-        <button class="btn edit-lesson">Edit</button>
-        <button class="btn cancel-lesson">Cancel</button>
-      </div>
-    </div>
-    <div class="card-footer">
-      <button class="btn add-news btn-left">Add News</button>
-      <a href="#" class="news-link news-link-right">Read more</a>
-    </div>
-  </div>
-
-  <!-- Workshop Schedules Card -->
-  <div class="card">
-    <h2 class="card-title">Workshop Schedules</h2>
-    <ul class="workshop-list">
-      <li class="workshop-item">
-        <h3 class="workshop-title">
-          <strong>Intro to Botanical Art</strong>
-        </h3>
-        <br />
-        <p class="workshop-info"><strong>Date:</strong> April 15, 2024</p>
-        <p class="workshop-info"><strong>Time:</strong> 10:00 AM - 12:00 PM</p>
-        <p class="workshop-info"><strong>Location:</strong> Community Hall</p>
-        <p class="workshop-info"><strong>Instructor:</strong> Alice Brown</p>
-        <p class="workshop-info"><strong>Spots Available:</strong> 8</p>
-        <br />
-        <div class="lesson-actions">
-          <button class="btn edit-lesson">Edit</button>
-          <button class="btn cancel-lesson">Cancel</button>
-        </div>
-        <button class="btn register-button">Register</button>
-      </li>
-    </ul>
-    <div class="card-footer">
-      <button class="btn add-lesson btn-left">Add Schedules</button>
-      <a href="#" class="news-link news-link-right">Read more</a>
-    </div>
-  </div>
-  {% endblock %}
-</div>
+{% endblock %}

@@ -1,7 +1,231 @@
 {% extends 'base.html' %} {% block content %}
 
-<style></style>
+<style>
+  body {
+    font-family: "Times New Roman", sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+  }
 
-<div></div>
+  .nav-bar {
+    background-color: #2c662d;
+    color: white;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Main content area */
+  .main-content {
+    display: flex;
+    justify-content: space-between;
+    margin-left: 200px;
+    padding: 20px;
+  }
+
+  .card {
+    width: 32%;
+    margin: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .card-header {
+    background-color: #2c662d;
+    color: white;
+    padding: 10px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+
+  .card-content {
+    padding: 10px;
+    min-height: 0;
+    flex-grow: 1;
+  }
+
+  .card-footer {
+    padding: 10px;
+    background-color: #eff0f1;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* Buttons */
+  .btn {
+    padding: 10px 20px;
+    margin-right: 10px;
+    background-color: #2c662d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  .btn:hover {
+    background-color: #3e7c3f;
+  }
+
+  .btn.add-lesson {
+    background-color: #4a8c4a;
+  }
+
+  .btn.edit-lesson {
+    order: -1;
+    background-color: #3e8a51;
+  }
+
+  .btn.cancel-lesson {
+    background-color: #c42633;
+    margin-left: auto;
+  }
+
+  /* Utilities */
+  .text-center {
+    text-align: center;
+  }
+
+  .lesson-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  .btn.edit-lesson {
+    margin-right: auto;
+  }
+
+  .btn.cancel-lesson {
+    margin-left: auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .main-content {
+      margin-left: 110px;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      width: 100%;
+      height: auto;
+    }
+
+    .card-footer {
+      flex-direction: column;
+    }
+
+    .btn.add-lesson,
+    .btn-left {
+      margin-bottom: 10px;
+    }
+  }
+</style>
+
+<div>
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Course Listings</title>
+      <!-- Add your CSS links here -->
+      <script>
+        function filterCourses() {
+          // Get filter values
+          var statusFilter = document.getElementById("statusFilter").value;
+          var dateFilter = document.getElementById("dateFilter").value;
+          var memberIDFilter = document.getElementById("memberIDFilter").value;
+
+          // Get all table rows
+          var rows = document.querySelectorAll("#coursesTable tbody tr");
+
+          // Convert NodeList to an array to use array methods
+          rows = Array.from(rows);
+
+          rows.forEach(function (row) {
+            var status = row.querySelector(".status").textContent;
+            var date = row.querySelector(".date").textContent;
+            var memberID = row.querySelector(".member_id").textContent;
+
+            // Check if row meets all filter criteria
+            var statusMatch = statusFilter === "" || status === statusFilter;
+            var dateMatch = dateFilter === "" || date === dateFilter;
+            var memberIDMatch =
+              memberIDFilter === "" || memberID === memberIDFilter;
+
+            if (statusMatch && dateMatch && memberIDMatch) {
+              row.style.display = ""; // show
+            } else {
+              row.style.display = "none"; // hide
+            }
+          });
+        }
+      </script>
+    </head>
+    <body>
+      <body>
+        <div class="back-arrow">
+          <!-- Updated the href to point to the 'instructor_dashboard' route -->
+          <a href="{{ url_for('instructor_dashboard') }}" title="Go back to Dashboard">&#x2190; Back</a>
+        </div>
+        <h2>Course Listings</h2>
+
+      <!-- Filter Section -->
+      <form action="{{ url_for('instructor_lessons') }}" method="get">
+        <label for="statusFilter">Filter by status:</label>
+        <select id="statusFilter" name="status">
+          <option value="">All Statuses</option>
+          <option value="Scheduled">Scheduled</option>
+          <option value="Cancelled">Cancelled</option>
+          <option value="Completed">Completed</option>
+        </select>
+      
+        <label for="dateFilter">Filter by date:</label>
+        <input type="date" id="dateFilter" name="date">
+      
+        <label for="memberIDFilter">Filter by Member ID:</label>
+        <input type="number" id="memberIDFilter" name="member_id" min="1">
+      
+        <input type="submit" value="Filter">
+      </form>
+
+      <!-- Table to display the courses -->
+      <div class="main-content">
+        <div class="card">
+          <h2 class="card-header">One-on-one Lesson</h2>
+          <div class="card-content">
+            {% for lessons in lessons %}
+            <div class="lesson-item">
+            <strong>Member ID:</strong> {{ lessons['member_id'] }}<br />
+            <strong>Date:</strong> {{ lessons['date'] }}<br />
+            <strong>Start Time:</strong> {{ lessons['start_time'] }}<br />
+            <strong>End Time:</strong> {{ lessons['end_time'] }}<br />
+            <strong>Location ID:</strong> {{ lessons['location_id'] }}<br />
+            <strong>Price:</strong> {{ lessons['price'] }}<br />
+            <strong>Status:</strong> {{ lessons['status'] }}
+            <div class="lesson-actions">
+              <button class="btn edit-lesson">Edit</button>
+              <button class="btn cancel-lesson">Cancel</button>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="card-footer">
+          <button id="addLessonButton" class="btn add-lesson">Add Lesson</button>
+
+      <!-- Add your scripts if any -->
+    </body>
+  </html>
+</div>
 
 {% endblock %}

@@ -45,9 +45,13 @@ def instructor_dashboard():
 def instructor_lessons():
     if 'loggedin' in session and session['loggedin']:
         cursor = utils.getCursor()
-        
+
         user_name = session['username']
-        
+        # Retrieve filter values from query parameters
+        status = request.args.get('status', default=None, type=str)
+        date = request.args.get('date', default=None, type=str)
+        member_id = request.args.get('member_id', default=None, type=int)
+
         cursor.execute("SELECT related_instructor_id FROM User WHERE user_name = %s", (user_name,))
         result = cursor.fetchone()
         if result is None:
@@ -56,14 +60,33 @@ def instructor_lessons():
 
         related_instructor_id = result['related_instructor_id']
 
-       
-        cursor.execute("SELECT * FROM lessons WHERE instructor_id = %s", (related_instructor_id,))
+        # Start building the query with no filters
+        query = "SELECT * FROM lessons WHERE instructor_id = %s"
+        query_params = [related_instructor_id]
+
+        # Append filters to the query if they are provided
+        if status:
+            query += " AND status = %s"
+            query_params.append(status)
+        if date:
+            query += " AND date = %s"
+            query_params.append(date)
+        if member_id is not None:  # checking if it's not None because 0 is a valid ID but falsy
+            query += " AND member_id = %s"
+            query_params.append(member_id)
+
+        # Add ordering by date and start time
+        query += " ORDER BY date, start_time"
+
+        # Execute the built query
+        cursor.execute(query, query_params)
         lessons_data = cursor.fetchall()
-      
+
         cursor.close()
-        return render_template("/instructor/instr_lessons.html", lessons=lessons_data)
+        return render_template("/instructor/instr_lessons.html", lessons=lessons_data, role=session['role'])
     else:
         return redirect(url_for('login'))
+
 
 
       
@@ -120,3 +143,16 @@ def update_profile():
             msg = 'User not logged in'
         flash(msg, 'success' if 'loggedin' in session else 'error')
     return redirect(url_for('profile'))
+
+
+
+@app.route('/instructor/workshops')
+def instructor_workshops():
+    if 'loggedin' in session and session['loggedin']:
+        cursor = utils.getCursor()
+        
+        # ... Code to retrieve workshops data ...
+        
+        return render_template('instructor/instr_workshops.html', workshops=workshops_data)
+    else:
+        return redirect(url_for('login'))

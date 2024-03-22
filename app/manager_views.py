@@ -295,3 +295,41 @@ def member_search():
             return render_template("manager/manage_member_profile.html", member_profile=matched_profiles, role=session['role'])
     else:
          return redirect(url_for('login'))
+
+   
+   
+@app.route('/another/route/using/manager_dashboard')
+def manager_dashboard_different():
+    if 'loggedin' in session and session['loggedin']:
+        cursor = utils.getCursor()
+        cursor.execute("SELECT * FROM lessons ORDER BY date, start_time LIMIT 2")
+        lesson_data = cursor.fetchall()
+        cursor.execute("SELECT * FROM workshops ORDER BY date, start_time LIMIT 2")
+        workshop_data = cursor.fetchall()
+        cursor.execute("SELECT * FROM news ORDER BY date_published LIMIT 1")
+        news_data = cursor.fetchall()
+        
+        cursor.close()
+        # Make sure the username and role are set in the session as well
+        return render_template("manager/mgr_dashboard.html", lessons=lesson_data,workshops=workshop_data, news=news_data, username=session['username'], role=session['role'])
+    
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/another/route/using/instructor_dashboard')
+def instructor_dashboard_different():
+    if 'loggedin' in session and session['loggedin']:
+        cursor = utils.getCursor()
+        cursor.execute("SELECT * FROM lessons ORDER BY date, start_time, instructor_id=1")
+        lesson_data = cursor.fetchall()
+        cursor.execute("SELECT * FROM workshops ORDER BY date, start_time LIMIT 2")
+        workshop_data = cursor.fetchall()
+        cursor.execute("SELECT * FROM news ORDER BY date_published LIMIT 1")
+        news_data = cursor.fetchall()
+        
+        cursor.close()
+        # Make sure the username and role are set in the session as well
+        return render_template("instructor/instr_dashboard.html", lessons=lesson_data,workshops=workshop_data, news=news_data, username=session['username'], role=session['role'])
+        
+    else:
+        return redirect(url_for('login'))

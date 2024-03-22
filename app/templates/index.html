@@ -34,11 +34,11 @@
                         <li class="nav__item">
                             <a href="#products" class="nav__link">Meet Our Instructors</a>
                         </li>
-                        <li class="nav__item">
-                            <a href="#faqs" class="nav__link">FAQs</a>
-                        </li>
                         <li>
                             <a href="{{ url_for('login') }}" class="nav__link">Login</a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('register') }}" class="nav__link">Sign Up</a>
                         </li>
                     </ul>
 
@@ -134,7 +134,7 @@
                             </p>
                         </div>
 
-                        <a href="#" class="button--link button--flex">
+                        <a href="{{url_for('register')}}" class="button--link button--flex" id="registerBtn">
                             Sign Up Now <i class="ri-arrow-right-down-line button__icon"></i>
                         </a>
                     </div>
@@ -517,5 +517,6 @@
         
         <!--=============== MAIN JS ===============-->
         <script src="static/js/main.js"></script>
+        
     </body>
 </html>

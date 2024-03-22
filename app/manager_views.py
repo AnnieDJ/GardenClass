@@ -5,16 +5,86 @@ from app import utils
 from werkzeug.utils import secure_filename
 import base64
 
+## Manager Dashboard ##
 @app.route('/manager/dashboard')
 def manager_dashboard():
     if 'loggedin' in session and session['loggedin']:
         return render_template("/manager/mgr_dashboard.html", username=session['username'], role=session['role'])
 
+
+
+## Manger view own profile ##
 @app.route('/manager/profile')
 def manager_profile():
-    return "Manager Profile"
+    if 'loggedin' in session and session['loggedin']:
+        encoded_manager_profile = []
+
+        cursor = utils.getCursor()
+        cursor.execute("SELECT * FROM manager WHERE user_name = %s", (session['username'],))
+        manager_profile = cursor.fetchone()
+
+        if manager_profile:
+            if manager_profile[8] is not None and manager_profile[8] != '':
+                image_encode = base64.b64encode(manager_profile[9]).decode('utf-8')
+                encoded_manager_profile.append((manager_profile[0], manager_profile[1], manager_profile[2], manager_profile[3], manager_profile[4], manager_profile[5], manager_profile[6], manager_profile[7], manager_profile[8], image_encode, manager_profile[10]))
+            else:
+                encoded_manager_profile.append((manager_profile[0], manager_profile[1], manager_profile[2], manager_profile[3], manager_profile[4], manager_profile[5], manager_profile[6], manager_profile[7], manager_profile[8], None, manager_profile[10]))
+
+            return render_template('/manager/mgr_profile.html', manager_profile=encoded_manager_profile, role=session['role'])
+        else:
+            flash('Manager profile not found', 'error')
+            return redirect(url_for('login'))
+    else:
+        return redirect(url_for('login'))
 
 
+
+
+## Manager edit own profile ##
+@app.route('/manager/editmanagerprofile', methods=['GET', 'POST'])
+def editmanagerprofile():
+    if 'loggedin' in session and session['loggedin']:
+        cursor = utils.getCursor()
+        
+        if request.method == 'POST':
+            title = request.form.get('title')
+            first_name = request.form.get('first_name')
+            last_name = request.form.get('last_name')
+            position = request.form.get('position')
+            phone_number = request.form.get('phone_number')
+            email = request.form.get('email')
+            gardering_experience = request.form.get('gardening_experience')
+            manager_image = request.files['manager_image']
+            
+            if manager_image:
+                
+                if utils.allowed_file(manager_image.filename):
+                    filename = secure_filename(manager_image.filename)
+                    image_data = manager_image.read()
+                    
+                    cursor.execute("UPDATE manager SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s, gardering_experience = %s, manager_image_name = %s, profile_image = %s  \
+                        WHERE user_name = %s", (title, first_name, last_name, position, phone_number, email, gardering_experience, filename,image_data, session['username'],))
+                    
+                else:
+                    flash('Invalid file type, please upload a valid image file')
+                    
+                return redirect(url_for('manager_profile'))
+                    
+            else:
+                cursor.execute("UPDATE manager SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s, gardering_experience = %s \
+                   WHERE user_name = %s", (title, first_name, last_name, position, phone_number, email, gardering_experience, session['username'],))
+
+                return redirect(url_for('manager_profile'))
+        else:
+            cursor.execute("SELECT * FROM manager WHERE user_name = %s", (session['username'],))
+            manager_profile = cursor.fetchone()
+        
+            return render_template('/manager/edit_mgr_profile.html', manager_profile = manager_profile, role=session['role'])
+        
+    else:
+        return redirect(url_for('login'))
+
+## Manaer view instructors list ##
 @app.route('/manager/instructor_profile_list')
 def instructor_profile_list():
     
@@ -36,6 +106,9 @@ def instructor_profile_list():
     else:
         return redirect(url_for('login'))
 
+
+
+## Manager edit/update instructor profile ##
 @app.route('/manager/edit_instructor_profile/<int:instructor_id>', methods=['GET', 'POST'])
 def edit_instructor_profile(instructor_id):
     
@@ -57,23 +130,31 @@ def edit_instructor_profile(instructor_id):
             if password is not None and password != '':
                hashed_password = utils.hashing.hash_value(password , salt='schwifty')
                
-               if instructor_image and utils.allowed_file(instructor_image.filename):
+               if instructor_image: 
                    
-                   filename = secure_filename(instructor_image.filename)
-                   image_data = instructor_image.read()
-                   cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s,  address = %s, instructor_profile = %s, instructor_image_name = %s, instructor_image = %s WHERE instructor_id = %s",(title,first_name,last_name,position,phone_number,email,address,instructor_profile,filename,image_data,instructor_id,))
-                   cursor.execute("UPDATE user SET password = %s WHERE related_instructor_id = %s",(hashed_password,instructor_id,))
+                  if utils.allowed_file(instructor_image.filename):
+                     filename = secure_filename(instructor_image.filename)
+                     image_data = instructor_image.read()
+                     cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s,  address = %s, instructor_profile = %s, instructor_image_name = %s, instructor_image = %s WHERE instructor_id = %s",(title,first_name,last_name,position,phone_number,email,address,instructor_profile,filename,image_data,instructor_id,))
+                     cursor.execute("UPDATE user SET password = %s WHERE related_instructor_id = %s",(hashed_password,instructor_id,))
+                  else:
+                      flash("This is not a valid Image!")
+                      return redirect(url_for('instructor_profile_list'))
                    
                else:
                    cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s,  address = %s, instructor_profile = %s WHERE instructor_id = %s",(title,first_name,last_name,position,phone_number,email,address,instructor_profile,instructor_id,))
                    cursor.execute("UPDATE user SET password = %s WHERE related_instructor_id = %s",(hashed_password,instructor_id,))
             else:
-                if instructor_image and utils.allowed_file(instructor_image.filename):
+                if instructor_image:
                    
-                   filename = secure_filename(instructor_image.filename)
-                   image_data = instructor_image.read()
-                   cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s,  address = %s, instructor_profile = %s, instructor_image_name = %s, instructor_image = %s WHERE instructor_id = %s",(title,first_name,last_name,position,phone_number,email,address,instructor_profile,filename,image_data,instructor_id,))
+                   if utils.allowed_file(instructor_image.filename):
                    
+                      filename = secure_filename(instructor_image.filename)
+                      image_data = instructor_image.read()
+                      cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s,  address = %s, instructor_profile = %s, instructor_image_name = %s, instructor_image = %s WHERE instructor_id = %s",(title,first_name,last_name,position,phone_number,email,address,instructor_profile,filename,image_data,instructor_id,))
+                   else:
+                       flash("This is not a valid Image!")
+                       return redirect(url_for('instructor_profile_list',))
                 else:
                    cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s,  address = %s, instructor_profile = %s WHERE instructor_id = %s",(title,first_name,last_name,position,phone_number,email,address,instructor_profile,instructor_id,))
              
@@ -88,6 +169,9 @@ def edit_instructor_profile(instructor_id):
     else:
         return redirect(url_for('login'))
     
+    
+  
+## Manager delete instructor profile ##    
 @app.route('/manager/delete_instructor_profile/<int:instructor_id>')
 def delete_instructor_profile(instructor_id):
     
@@ -101,6 +185,8 @@ def delete_instructor_profile(instructor_id):
     else:
         return redirect(url_for('login'))
 
+
+## Manager view members list ##
 @app.route('/manager/member_profile_list')
 def member_profile_list():
     
@@ -114,7 +200,9 @@ def member_profile_list():
         return render_template("manager/manage_member_profile.html", member_profile=member_profile, role = session['role'])
     else:
         return redirect(url_for('login'))
-    
+ 
+ 
+## Manager edit/update member profile ##   
 @app.route('/manager/edit_member_profile/<int:member_id>', methods=['GET', 'POST'])
 def edit_member_profile(member_id):
     
@@ -154,6 +242,9 @@ def edit_member_profile(member_id):
     else:
         return redirect(url_for('login'))
     
+    
+    
+## Manager delete member profile ##    
 @app.route('/manager/delete_member_profile/<int:member_id>')
 def delete_member_profile(member_id):
     

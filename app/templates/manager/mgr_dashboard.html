@@ -83,6 +83,42 @@
     padding: 10px;
   }
 
+    .card h2 {
+      background-color: #e7f4e4; /* A light green background to match the theme */
+      color: #333; /* Darker text for contrast */
+      padding: 20px; /* Padding to match the card's padding */
+      margin: -20px -20px 20px -20px; /* Negative margin to align with the card's edge */
+      text-align: center;
+      border-radius: 10px 10px 0 0; /* Radius to match the card's top corners */
+      font-size: 18px; /* Adjust font-size for better readability */
+      font-weight: bold; /* Make the title bold */
+    }
+    .card h3 {
+      font-size: 35px;
+      justify-content: center;
+    }
+    .timetable {
+      display: flex;
+      flex-direction: column;
+      gap: 3px; 
+    }
+
+    .timetable-item {
+      border: 1px solid #c8d0b8;
+      padding: 10px;
+      border-radius: 5px; 
+      background-color: #f9f9f9; 
+    }
+
+    .lesson-actions {
+      gap: 10px;
+      margin-top: 10px  
+    }
+    .add-lesson {
+      background-color: #4a724a;
+      margin-left: auto; /* Blue background for add buttons */
+    }
+
   .card-footer {
     padding: 10px;
     background-color: #eff0f1;
@@ -111,6 +147,44 @@
   .btn.add-lesson {
     background-color: #4a8c4a;
   }
+    .news-link:hover {
+      text-decoration: underline;
+    }
+    .news-actions {
+      display: flex;
+      justify-content: flex-end; 
+      gap: 10px; 
+      padding-top: 10px;
+    }
+    .add-news {
+      background-color: #4a724a;
+      color: white;
+      padding: 8px 12px;
+      font-size: 16px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+    }
+    .btn {
+      padding: 8px 12px;
+      font-size: 16px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      margin-right: 5px;
+      margin-top: 10px;
+      color: white;
+    }
+    .btn-left {
+      margin-right: auto;
+    }
+
+    .news-link-right {
+      margin-left: auto; 
+    }
+    .edit-lesson {
+      background-color: #3ad33a; /* Green background for edit buttons */
+    }
 
   .btn.edit-lesson {
     order: -1;
@@ -131,15 +205,28 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 10px; /* 添加一些间距,使按钮不紧挨着其他内容 */
+    margin-top: 10px; 
   }
 
   .btn.edit-lesson {
-    margin-right: auto; /* 将Edit按钮推向左边 */
+    margin-right: auto; 
   }
 
   .btn.cancel-lesson {
-    margin-left: auto; /* 将Cancel按钮推向右边 */
+    margin-left: auto; 
+
+    .lesson-actions, .news-actions {
+      display: flex;
+      width: 100%; 
+      justify-content: space-between; 
+  }
+
+  .edit-lesson {
+      order: -1; 
+  }
+
+  .cancel-lesson {
+      margin-left: auto; 
   }
 
   /* Responsive */
@@ -147,7 +234,6 @@
     .sidebar {
       width: 100%;
       position: relative;
-      /* 侧边栏变为相对定位 */
     }
 
     .sidebar {
@@ -158,7 +244,7 @@
 
     .main-content {
       margin-left: 110px;
-      /* 调整主内容的左边距以匹配侧边栏 */
+    
       flex-wrap: wrap;
     }
 

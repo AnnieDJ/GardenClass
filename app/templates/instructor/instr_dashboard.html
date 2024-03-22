@@ -20,20 +20,20 @@
 
   /* Main content area */
   .main-content {
-    display: flex; /* 使用 Flex 布局 */
-    justify-content: space-between; /* 平均分配子元素 */
+    display: flex; 
+    justify-content: space-between; 
     margin-left: 200px;
     padding: 20px;
   }
 
   .card {
-    width: 32%; /* 每个卡片占据 32% 的宽度 */
+    width: 32%; 
     margin: 10px;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    display: flex; /* 添加这一行,使卡片内容垂直居中 */
-    flex-direction: column; /* 添加这一行,使卡片内容垂直居中 */
-    height: 100%; /* 添加这一行,使卡片占据整个可用空间 */
+    display: flex; 
+    flex-direction: column; 
+    height: 100%; 
   }
 
   .card-header {
@@ -46,8 +46,8 @@
 
   .card-content {
     padding: 10px;
-    min-height: 0; /* 设置最小高度为 0,允许根据内容自动增长 */
-    flex-grow: 1; /* 添加这一行,使卡片内容区域占据剩余空间 */
+    min-height: 0; 
+    flex-grow: 1; 
   }
 
   .card-footer {
@@ -98,28 +98,29 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 10px; /* 添加一些间距,使按钮不紧挨着其他内容 */
+    margin-top: 10px; 
   }
 
   .btn.edit-lesson {
-    margin-right: auto; /* 将Edit按钮推向左边 */
+    margin-right: auto; 
   }
 
   .btn.cancel-lesson {
-    margin-left: auto; /* 将Cancel按钮推向右边 */
+    margin-left: auto; 
   }
 
   /* Responsive */
   @media (max-width: 768px) {
     .main-content {
       margin-left: 110px;
-      flex-wrap: wrap; /* 在小屏幕上允许换行 */
+      flex-wrap: wrap; 
     }
 
     .card {
-      width: 100%; /* 在小屏幕上,每个卡片占据 100% 宽度 */
+      width: 100%; 
       height: auto;
     }
+
 
     .card-footer {
       flex-direction: column;
@@ -203,3 +204,6 @@
   </div>
 </div>
 {% endblock %}
+</body>
+
+

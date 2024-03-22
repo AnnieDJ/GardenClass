@@ -1,50 +1,34 @@
 {% extends 'base.html' %} {% block content %}
 
-<div class="container rounded bg-white mt-5 mb-5">
-    <div class="row">
-        
-        <div class="col-md-5 border-right">
-            <div class="p-3 py-5">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h4 class="text-right">Member's Profile</h4>
-                </div>
+<div class="container">
 
-                <div class="row mt-1">
-                    <div class="col-md-6">
-                        <label class="labels">Title</label>
-                        <select class="form-control" name="title">
-                            <option value="">Select a title</option>
-                            <option value="Mr.">Mr.</option>
-                            <option value="Ms.">Ms.</option>
-                            <option value="Mrs.">Mrs.</option>
-                            <option value="Dr.">Dr.</option>
-                            <option value="Prof.">Prof.</option>
-                        </select>
-                    </div>
-                
-                <div class="row mt-2">
-                    <div class="col-md-6"><label class="labels">First Name</label><input type="text" class="form-control" placeholder="first name" value="{{member_profile[]}}"></div>
-                    <div class="col-md-6"><label class="labels">Last Name</label><input type="text" class="form-control" placeholder="last name" value=""></div>
-                </div>
-                <div class="row mt-3">
-                    <div class="col-md-12"><label class="labels">Phone</label><input type="text" class="form-control" placeholder="phone number" value=""></div>
-                    <div class="col-md-12"><label class="labels">Email</label><input type="text" class="form-control" placeholder="email" value=""></div>
-                    <div class="col-md-12"><label class="labels">Address</label><input type="text" class="form-control" placeholder="address" value=""></div>
-                </div>
-                <div class="row mt-3">
-                    <div class="col-md-6"><label class="labels">Date of Birth</label><input type="date" class="form-control" placeholder="date_of_birth" value=""></div>
-                   
-                </div>
-                <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="button">Save Profile</button></div>
-            </div>
-        </div>
-       
-        </div>
-    </div>
-</div>
-</div>
-</div>
+  <h1 class="mt-5">
+    Member Profile: {{ member_profile[3] }} {{ member_profile[4] }}
+  </h1>
 
+
+  <div class="profile-detail">
+    <p><strong>Member's ID:</strong> {{ member_profile[0] }}</p>
+    <p><strong>Username:</strong> {{ member_profile[1] }}</p>
+    <p><strong>Title:</strong> {{ member_profile[2] }}</p>
+    <p><strong>First Name:</strong> {{ member_profile[3] }}</p>
+    <p><strong>Last Name:</strong> {{ member_profile[4] }}</p>
+    <p><strong>Phone Number:</strong> {{ member_profile[6] }}</p>
+    <p><strong>Email:</strong> {{ member_profile[7] }}</p>
+    <p><strong>Address:</strong> {{ member_profile[8] }}</p>
+    <p><strong>Date of Birth:</strong> {{ member_profile[9] }}</p>
+    <p><strong>Subscription Date:</strong> {{ member_profile[10] }}</p>
+    <p><strong>Subscription Type:</strong> {{ member_profile[11] }}</p>
+    <p><strong>Subscription Expiry Date:</strong> {{ member_profile[12] }}</p>
+  </div>
+
+  <a href="{{ url_for('member_edit_profile') }}" class="btn btn-primary"
+    >Update Profile</a
+  >
+
+  <a href="{{ url_for('member_dashboard') }}" class="btn btn-secondary"
+    >Back to List</a
+  >
+</div>
 
 {% endblock %}
-

@@ -58,18 +58,88 @@
 <div class="dashboard">
     <div class="profile card">
         <h2>Personal Profile</h2>
-        <img src="https://i.pinimg.com/564x/92/5c/52/925c52543aa8096c66214311fa598fbc.jpg" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%; display: block; margin: 0 auto 20px auto;">
-        <p><strong>First Name:</strong> Jane</p >
-        <p><strong>Family Name:</strong> Doe</p >
-        <p><strong>Position:</strong> Head Instructor</p>
-        <p><strong>Phone Number:</strong> 0472457325</p >
-        <p><strong>Email:</strong> jane.doe@example.com</p>
-        <p><strong>Address:</strong> 123 Main St, City, Country</p >
-        <p><strong>Instructor Profile:</strong> Experienced horticulturist with expertise in plant biology.</p>
+        <!--img src="https://i.pinimg.com/564x/92/5c/52/925c52543aa8096c66214311fa598fbc.jpg" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%; display: block; margin: 0 auto 20px auto;"-->
+                        {% if account[0][10] is not none %}
+                        {% if account[0][10].endswith('.jpg') %}
+                            <img class="card-img-top" src="data:image/jpg;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
+                        {% elif account[0][10].endswith('.jpeg') %}
+                            <img class="card-img-top" src="data:image/jpeg;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
+                        {% elif account[0][10].endswith('.png') %}
+                            <img class="card-img-top" src="data:image/png;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
+                        {% elif account[0][10].endswith('.gif') %}
+                            <img class="card-img-top" src="data:image/gif;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
+                        {% endif %}
+                        {% else %}
+                        <img src="https://i.pinimg.com/564x/92/5c/52/925c52543aa8096c66214311fa598fbc.jpg" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%; display: block; margin: 0 auto 20px auto;">
+                        {% endif %}
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-success">
+                    {{ messages[0] }}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <form id="profileForm" action="{{ url_for('update_profile') }}" method="POST">
+            <table class="table">
+                <tr>
+                    <th><b>First Name:</b></th>
+                    <td>
+                        <span id="firstnameDisplay" class="display-mode">{{ account[0][3] }}</span>
+                        <input type="text" id="firstnameInput" name="firstname" value="{{ account[0][3] }}" class="edit-mode" style="display:none;">
+                    </td>
+                </tr>
+                <tr>
+                    <th><b>Family Name:</b></th>
+                    <td>
+                        <span id="familynameDisplay" class="display-mode">{{ account[0][4] }}</span>
+                        <input type="text" id="familynameInput" name="familyname" value="{{ account[0][4] }}" class="edit-mode" style="display:none;">
+                    </td>
+                </tr>
+                <tr>
+                    <th><b>Position:</b></th>
+                    <td>
+                        <span id="positionDisplay" class="display-mode">{{ account[0][5] }}</span>
+                        <input type="text" id="positionInput" name="position" value="{{ account[0][5] }}" class="edit-mode" style="display:none;">
+                    </td>
+                </tr>
+                <tr>
+                    <th><b>Phone:</b></th>
+                    <td>
+                        <span id="phoneDisplay" class="display-mode">{{ account[0][6] }}</span>
+                        <input type="text" id="phoneInput" name="phone" value="{{ account[0][6] }}" class="edit-mode" style="display:none;">
+                    </td>
+                </tr>
+                <tr>
+                    <th><b>Email:</b></th>
+                    <td>
+                        <span id="emailDisplay" class="display-mode">{{ account[0][7] }}</span>
+                        <input type="text" id="emailInput" name="email" value="{{ account[0][7] }}" class="edit-mode" style="display:none;">
+                    </td>
+                </tr>
+                <tr>
+                    <th><b>Address:</b></th>
+                    <td>
+                        <span id="addressDisplay" class="display-mode">{{ account[0][8] }}</span>
+                        <input type="text" id="addressInput" name="address" value="{{ account[0][8] }}" class="edit-mode" style="display:none;">
+                    </td>
+                </tr>
+                <tr>
+                    <th><b>Instructor Profile:</b></th>
+                    <td>
+                        <span id="profileDisplay" class="display-mode">{{ account[0][9] }}</span>
+                        <input type="text" id="profileInput" name="profile" value="{{ account[0][9] }}" class="edit-mode" style="display:none;">
+                    </td>
+                </tr>
+            </table>
+            <div class="mt-3">
+                <button type="button" onclick="toggleEditMode()" id="editButton" class="btn" style="width: 100px; background-color: #4A724A; color: white;">Edit</button>
+                <button type="submit" onclick="saveChanges()" id="saveButton" class="btn" style="display:none; width: 100px; background-color: #4A724A; color: white;">Save</button>
+            </div>
+        </form><br>
         <hr>
-        <div class="update-profile-button">
+        <!-- <div class="update-profile-button">
             <a href="#" style="background-color: #4A724A; color: white;" class="btn">Update Profile</a>
-        </div>
+        </div> -->
     </div>
 </div>
 

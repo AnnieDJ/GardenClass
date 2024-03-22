@@ -4,6 +4,7 @@ from flask import session
 from flask import flash,get_flashed_messages
 from datetime import datetime
 from app import utils
+import base64
 
 
 @app.route('/instructor/dashboard')
@@ -13,33 +14,27 @@ def instructor_dashboard():
 
 @app.route('/instructor/profile')
 def instructor_profile():
-    if 'loggedin' in session:
+    if 'loggedin' in session and session['loggedin']:
         messages = get_flashed_messages()
+        encoded_instructor_profile = []
 
-        role = session.get('role', 'unknown')
-
-        if role == 'Instructor':
-            cursor = utils.getCursor()
-            instructorquery = "SELECT * FROM instructor WHERE user_id = %s;"
-            cursor.execute(agronomistquery ,(session['id'],))
-            agronomist = cursor.fetchone()
-            return render_template('instr_profile.html', messages=messages, agronomist=agronomist)
-        elif role == 'Manager':
-            cursor = utils.getCursor()
-            agronomistquery = "SELECT * FROM agronomists WHERE id = %s;"
-            cursor.execute(agronomistquery ,(session['id'],))
-            agronomist = cursor.fetchone()
-            return render_template('agronomistprofile.html', messages=messages, agronomist=agronomist)
-        elif role == 'Manager':
-            cursor = utils.getCursor()
-            cursor.execute('SELECT * FROM staff_admin WHERE id = %s', (session['id'],))
-            account = cursor.fetchone()
-            return render_template('profile.html', account=account, messages=messages)
+        cursor = utils.getCursor()
+        instructorquery = "SELECT * FROM instructor WHERE instructor_id = %s;"
+        cursor.execute(instructorquery ,(session['id'],))
+        instructor = cursor.fetchone()
+        
+        if instructor[10] is not None and instructor[10] != '':
+            image_encode = base64.b64encode(instructor[11]).decode('utf-8')
+            encoded_instructor_profile.append((instructor[0], instructor[1],instructor[2] ,instructor[3], instructor[4], instructor[5],instructor[6],instructor[7],instructor[8],instructor[9],instructor[10],image_encode))
         else:
-           msg = 'Invalid User'
-           return render_template('login.html', msg=msg)
-
-    return redirect(url_for('login'))
+            encoded_instructor_profile.append((instructor[0], instructor[1],instructor[2],instructor[3], instructor[4], instructor[5],instructor[6],instructor[7],instructor[8],instructor[9],instructor[10],None))
+            
+        
+        
+        return render_template('/instructor/instr_profile.html', messages=messages, account=encoded_instructor_profile)
+       
+    else:
+       return redirect(url_for('login'))
 
 
 @app.route('/update_profile', methods=['POST'])
@@ -55,7 +50,7 @@ def update_profile():
             role = session.get('role', 'unknown')  
             cursor = utils.getCursor()
 
-            if role == 'agronomist':
+            if role == 'Instructor':
                 cursor.execute('UPDATE agronomists SET first_name = %s, family_name = %s, email = %s, phone = %s , address = %s WHERE id = %s',
                                (new_firstname, new_familyname, new_email, new_phone, new_address, session['id']))
             else:

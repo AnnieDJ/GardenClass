@@ -49,23 +49,23 @@
             <tbody>
                 {% for member in member_profile %}
                 <tr>
-                    <td>{{ member[1] }}</td>
-                    <td>{{ member[2] }}</td>
-                    <td>{{ member[3] }}</td>
-                    <td>{{ member[4] }}</td>
-                    <td>{{ member[5] }}</td>
-                    <td>{{ member[6] }}</td>
-                    <td>{{ member[7] }}</td>
-                    <td>{{ member[8] }}</td>
-                    <td>{{ member[9] }}</td>
-                    <td>{{ member[10] }} </td>
-                    <td>{{ member[11] }} </td>
-                    <td>{{ member[12] }} </td>
+                    <td>{{ member['user_name'] }}</td>
+                    <td>{{ member['title'] }}</td>
+                    <td>{{ member['first_name'] }}</td>
+                    <td>{{ member['last_name'] }}</td>
+                    <td>{{ member['position'] }}</td>
+                    <td>{{ member['phone_number'] }}</td>
+                    <td>{{ member['email'] }}</td>
+                    <td>{{ member['address'] }}</td>
+                    <td>{{ member['date_of_birth'] }}</td>
+                    <td>{{ member['subscription_date'] }} </td>
+                    <td>{{ member['type'] }} </td>
+                    <td>{{ member['expiry_date'] }} </td>
                     <td>
-                        <a href="{{ url_for('edit_member_profile', member_id=member[0]) }}" class="btn btn-primary">Edit</a>
+                        <a href="{{ url_for('edit_member_profile', member_id=member['member_id']) }}" class="btn btn-primary">Edit</a>
                     <td>
                        
-                        <button class="btn btn-danger" onclick="confirmDelete('{{ url_for('delete_member_profile', member_id=member[0]) }}')">Delete</button>
+                        <button class="btn btn-danger" onclick="confirmDelete('{{ url_for('delete_member_profile', member_id=member['member_id']) }}')">Delete</button>
                     </td>
                 </tr>
                 {% endfor %}

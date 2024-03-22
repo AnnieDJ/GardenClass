@@ -80,11 +80,11 @@ def instructor_profile():
         cursor.execute(instructorquery ,(session['id'],))
         instructor = cursor.fetchone()
         
-        if instructor[10] is not None and instructor[10] != '':
-            image_encode = base64.b64encode(instructor[11]).decode('utf-8')
-            encoded_instructor_profile.append((instructor[0], instructor[1],instructor[2] ,instructor[3], instructor[4], instructor[5],instructor[6],instructor[7],instructor[8],instructor[9],instructor[10],image_encode))
+        if instructor['instructor_image_name'] is not None and instructor['instructor_image_name'] != '':
+            image_encode = base64.b64encode(instructor['instructor_image']).decode('utf-8')
+            encoded_instructor_profile.append((instructor['instructor_id'], instructor['user_name'],instructor['title'] ,instructor['first_name'], instructor['last_name'], instructor['position'],instructor['phone_number'],instructor['email'],instructor['address'],instructor['instructor_profile'],instructor['instructor_image_name'],image_encode))
         else:
-            encoded_instructor_profile.append((instructor[0], instructor[1],instructor[2],instructor[3], instructor[4], instructor[5],instructor[6],instructor[7],instructor[8],instructor[9],instructor[10],None))
+            encoded_instructor_profile.append((instructor['instructor_id'], instructor['user_name'],instructor['title'],instructor['first_name'], instructor['last_name'], instructor['position'],instructor['phone_number'],instructor['email'],instructor['address'],instructor['instructor_profile'],instructor['instructor_image_name'],None))
             
         
         

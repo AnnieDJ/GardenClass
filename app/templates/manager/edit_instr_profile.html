@@ -2,46 +2,46 @@
 
 {% block content %}
 <div class="container">
-    <h1 class="mt-5">Edit Detail: {{ instructor[1] }}</h1>
+    <h1 class="mt-5">Edit Detail: {{ instructor['user_name'] }}</h1>
     <form method="post" enctype="multipart/form-data">
         <div class="form-group">
             <label for="title">Status:</label>
             <select class="form-control" id="title" name="title" required>
-                <option value="Mr" {% if instructor[2] == 'Mr' %} selected {% endif %}>Mr</option>
-                <option value="Mrs" {% if instructor[2] == 'Mrs' %} selected {% endif %}>Mrs</option>
-                <option value="Miss" {% if instructor[2] == 'Miss' %} selected {% endif %}>Miss</option>
-                <option value="Dr." {% if instructor[2] == 'Dr.' %} selected {% endif %}>Dr.</option>
-                <option value="Prof." {% if instructor[2] == 'Prof.' %} selected {% endif %}>Prof.</option>
+                <option value="Mr" {% if instructor['title'] == 'Mr' %} selected {% endif %}>Mr</option>
+                <option value="Mrs" {% if instructor['title'] == 'Mrs' %} selected {% endif %}>Mrs</option>
+                <option value="Miss" {% if instructor['title'] == 'Miss' %} selected {% endif %}>Miss</option>
+                <option value="Dr." {% if instructor['title'] == 'Dr.' %} selected {% endif %}>Dr.</option>
+                <option value="Prof." {% if instructor['title'] == 'Prof.' %} selected {% endif %}>Prof.</option>
             </select>
         </div>
         <div class="form-group">
             <label for="first_name">First Name:</label>
-            <input type="text" class="form-control" id="first_name" name="first_name" value="{{ instructor[3] }}" required>
+            <input type="text" class="form-control" id="first_name" name="first_name" value="{{ instructor['first_name'] }}" required>
         </div>
         <div class="form-group">
             <label for="last_name">Last Name:</label>
-            <input type="text" class="form-control" id="last_name" name="last_name" value="{{ instructor[4] }}" required>
+            <input type="text" class="form-control" id="last_name" name="last_name" value="{{ instructor['last_name'] }}" required>
         </div>
         <div class="form-group">
             <label for="position">Position:</label>
-            <input type="text" class="form-control" id="position" name="position" value="{{ instructor[5] }}" required>
+            <input type="text" class="form-control" id="position" name="position" value="{{ instructor['position'] }}" required>
         </div>
         <div class="form-group">
             <label for="phone_number">Phone Number:</label>
-            <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ instructor[6] }}" required>
+            <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ instructor['phone_number'] }}" required>
         </div>
         <div class="form-group">
             <label for="email">Email:</label>
-            <input type="email" class="form-control" id="email" name="email" value="{{ instructor[7] }}" required>
+            <input type="email" class="form-control" id="email" name="email" value="{{ instructor['email'] }}" required>
             <small id="emailMessage"></small> 
         </div>
         <div class="form-group">
             <label for="address">Address:</label>
-            <input type="text" class="form-control" id="address" name="address" value="{{ instructor[8] }}" required>
+            <input type="text" class="form-control" id="address" name="address" value="{{ instructor['address'] }}" required>
         </div>
         <div class="form-group">
             <label for="instructor_profile" class="form-label">Instructor Profile:</label>
-            <textarea id="instructor_profile" name="instructor_profile" class="form-control" required>{{ instructor[9] }}</textarea>
+            <textarea id="instructor_profile" name="instructor_profile" class="form-control" required>{{ instructor['instructor_profile'] }}</textarea>
         </div>
         <div class="form-group">
             <label for="password">Password:</label>

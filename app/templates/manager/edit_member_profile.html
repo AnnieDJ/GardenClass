@@ -2,58 +2,58 @@
 
 {% block content %}
 <div class="container">
-    <h1 class="mt-5">Edit Detail: {{ member[1] }}</h1>
+    <h1 class="mt-5">Edit Detail: {{ member['user_name'] }}</h1>
     <form method="post" >
         <div class="form-group">
             <label for="title">Status:</label>
             <select class="form-control" id="title" name="title" required>
-                <option value="Mr" {% if member[2] == 'Mr' %} selected {% endif %}>Mr</option>
-                <option value="Mrs" {% if member[2] == 'Mrs' %} selected {% endif %}>Mrs</option>
-                <option value="Miss" {% if member[2] == 'Miss' %} selected {% endif %}>Miss</option>
-                <option value="Dr." {% if member[2] == 'Dr.' %} selected {% endif %}>Dr.</option>
-                <option value="Prof." {% if member[2] == 'Prof.' %} selected {% endif %}>Prof.</option>
+                <option value="Mr" {% if member['title'] == 'Mr' %} selected {% endif %}>Mr</option>
+                <option value="Mrs" {% if member['title'] == 'Mrs' %} selected {% endif %}>Mrs</option>
+                <option value="Miss" {% if member['title'] == 'Miss' %} selected {% endif %}>Miss</option>
+                <option value="Dr." {% if member['title'] == 'Dr.' %} selected {% endif %}>Dr.</option>
+                <option value="Prof." {% if member['title'] == 'Prof.' %} selected {% endif %}>Prof.</option>
             </select>
         </div>
         <div class="form-group">
             <label for="first_name">First Name:</label>
-            <input type="text" class="form-control" id="first_name" name="first_name" value="{{ member[3] }}" required>
+            <input type="text" class="form-control" id="first_name" name="first_name" value="{{ member['first_name'] }}" required>
         </div>
         <div class="form-group">
             <label for="last_name">Last Name:</label>
-            <input type="text" class="form-control" id="last_name" name="last_name" value="{{ member[4] }}" required>
+            <input type="text" class="form-control" id="last_name" name="last_name" value="{{ member['last_name'] }}" required>
         </div>
         <div class="form-group">
             <label for="position">Position:</label>
-            <input type="text" class="form-control" id="position" name="position" value="{{ member[5] }}" required>
+            <input type="text" class="form-control" id="position" name="position" value="{{ member['position'] }}" required>
         </div>
         <div class="form-group">
             <label for="phone_number">Phone Number:</label>
-            <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ member[6] }}" required>
+            <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ member['phone_number'] }}" required>
         </div>
         <div class="form-group">
             <label for="email">Email:</label>
-            <input type="email" class="form-control" id="email" name="email" value="{{ member[7] }}" required>
+            <input type="email" class="form-control" id="email" name="email" value="{{ member['email'] }}" required>
             <small id="emailMessage"></small> 
         </div>
         <div class="form-group">
             <label for="address">Adderss:</label>
-            <input type="text" class="form-control" id="address" name="address" value="{{ member[8] }}" required>
+            <input type="text" class="form-control" id="address" name="address" value="{{ member['address'] }}" required>
         </div>
         <div class="form-group">
             <label for="date_of_birth">Date of birth:</label>
-            <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" value="{{ member[9] }}" required>
+            <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" value="{{ member['date_of_birth'] }}" required>
         </div>
         <div class="form-group">
             <label for="subscription_date">Subscription Date:</label>
-            <input type="date" class="form-control" id="subscription_date" name="subscription_date" value="{{ member[10] }}" required>
+            <input type="date" class="form-control" id="subscription_date" name="subscription_date" value="{{ member['subscription_date'] }}" required>
         </div>
         <div class="form-group">
             <label for="type">Type:</label>
-            <input type="text" class="form-control" id="type" name="type" value="{{ member[11] }}" required>
+            <input type="text" class="form-control" id="type" name="type" value="{{ member['type'] }}" required>
         </div>
         <div class="form-group">
             <label for="expiry_date">Expiry Date:</label>
-            <input type="date" class="form-control" id="expiry_date" name="expiry_date" value="{{ member[12] }}" required>
+            <input type="date" class="form-control" id="expiry_date" name="expiry_date" value="{{ member['expiry_date'] }}" required>
         </div>
         <div class="form-group">
             <label for="password">Password:</label>

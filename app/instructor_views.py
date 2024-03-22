@@ -31,7 +31,7 @@ def instructor_profile():
             
         
         
-        return render_template('/instructor/instr_profile.html', messages=messages, account=encoded_instructor_profile)
+        return render_template('/instructor/instr_profile.html', messages=messages, account=encoded_instructor_profile, role=session['role'])
        
     else:
        return redirect(url_for('login'))

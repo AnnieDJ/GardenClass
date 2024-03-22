@@ -3,23 +3,23 @@
 <div class="container">
 
   <h1 class="mt-5">
-    Member Profile: {{ member_profile[3] }} {{ member_profile[4] }}
+    Member Profile: {{ member_profile['first_name'] }} {{ member_profile['last_name'] }}
   </h1>
 
 
   <div class="profile-detail">
-    <p><strong>Member's ID:</strong> {{ member_profile[0] }}</p>
-    <p><strong>Username:</strong> {{ member_profile[1] }}</p>
-    <p><strong>Title:</strong> {{ member_profile[2] }}</p>
-    <p><strong>First Name:</strong> {{ member_profile[3] }}</p>
-    <p><strong>Last Name:</strong> {{ member_profile[4] }}</p>
-    <p><strong>Phone Number:</strong> {{ member_profile[6] }}</p>
-    <p><strong>Email:</strong> {{ member_profile[7] }}</p>
-    <p><strong>Address:</strong> {{ member_profile[8] }}</p>
-    <p><strong>Date of Birth:</strong> {{ member_profile[9] }}</p>
-    <p><strong>Subscription Date:</strong> {{ member_profile[10] }}</p>
-    <p><strong>Subscription Type:</strong> {{ member_profile[11] }}</p>
-    <p><strong>Subscription Expiry Date:</strong> {{ member_profile[12] }}</p>
+    <p><strong>Member's ID:</strong> {{ member_profile['member_id'] }}</p>
+    <p><strong>Username:</strong> {{ member_profile['user_name'] }}</p>
+    <p><strong>Title:</strong> {{ member_profile['title'] }}</p>
+    <p><strong>First Name:</strong> {{ member_profile['first_name'] }}</p>
+    <p><strong>Last Name:</strong> {{ member_profile['last_name'] }}</p>
+    <p><strong>Phone Number:</strong> {{ member_profile['phone_number'] }}</p>
+    <p><strong>Email:</strong> {{ member_profile['email'] }}</p>
+    <p><strong>Address:</strong> {{ member_profile['address'] }}</p>
+    <p><strong>Date of Birth:</strong> {{ member_profile['date_of_birth'] }}</p>
+    <p><strong>Subscription Date:</strong> {{ member_profile['subscription_date'] }}</p>
+    <p><strong>Subscription Type:</strong> {{ member_profile['type'] }}</p>
+    <p><strong>Subscription Expiry Date:</strong> {{ member_profile['expiry_date'] }}</p>
   </div>
 
   <a href="{{ url_for('member_edit_profile') }}" class="btn btn-primary"

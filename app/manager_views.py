@@ -24,11 +24,11 @@ def manager_profile():
         manager_profile = cursor.fetchone()
 
         if manager_profile:
-            if manager_profile[8] is not None and manager_profile[8] != '':
-                image_encode = base64.b64encode(manager_profile[9]).decode('utf-8')
-                encoded_manager_profile.append((manager_profile[0], manager_profile[1], manager_profile[2], manager_profile[3], manager_profile[4], manager_profile[5], manager_profile[6], manager_profile[7], manager_profile[8], image_encode, manager_profile[10]))
+            if manager_profile['manager_image_name'] is not None and manager_profile['manager_image_name'] != '':
+                image_encode = base64.b64encode(manager_profile['profile_image']).decode('utf-8')
+                encoded_manager_profile.append((manager_profile['manager_id'], manager_profile['user_name'], manager_profile['title'], manager_profile['first_name'], manager_profile['last_name'], manager_profile['position'], manager_profile['phone_number'], manager_profile['email'], manager_profile['manager_image_name'], image_encode, manager_profile['gardering_experience']))
             else:
-                encoded_manager_profile.append((manager_profile[0], manager_profile[1], manager_profile[2], manager_profile[3], manager_profile[4], manager_profile[5], manager_profile[6], manager_profile[7], manager_profile[8], None, manager_profile[10]))
+                encoded_manager_profile.append((manager_profile['manager_id'], manager_profile['user_name'], manager_profile['title'], manager_profile['first_name'], manager_profile['last_name'], manager_profile['position'], manager_profile['phone_number'], manager_profile['email'], manager_profile['manager_image_name'], None, manager_profile['gardering_experience']))
 
             return render_template('/manager/mgr_profile.html', manager_profile=encoded_manager_profile, role=session['role'])
         else:
@@ -96,11 +96,11 @@ def instructor_profile_list():
         instructor_profile = cursor.fetchall()
         
         for instructor in instructor_profile:
-            if instructor[10] is not None and instructor[10] != '':
-               image_encode = base64.b64encode(instructor[11]).decode('utf-8')
-               encoded_instructor_profile.append((instructor[0], instructor[1],instructor[2] ,instructor[3], instructor[4], instructor[5],instructor[6],instructor[7],instructor[8],instructor[9],instructor[10],image_encode))
+            if instructor['instructor_image_name'] is not None and instructor['instructor_image_name'] != '':
+               image_encode = base64.b64encode(instructor['instructor_image']).decode('utf-8')
+               encoded_instructor_profile.append((instructor['instructor_id'], instructor['user_name'],instructor['title'] ,instructor['first_name'], instructor['last_name'], instructor['position'],instructor['phone_number'],instructor['email'],instructor['address'],instructor['instructor_profile'],instructor['instructor_image_name'],image_encode))
             else:
-                encoded_instructor_profile.append((instructor[0], instructor[1],instructor[2],instructor[3], instructor[4], instructor[5],instructor[6],instructor[7],instructor[8],instructor[9],instructor[10],None))
+                encoded_instructor_profile.append((instructor['instructor_id'], instructor['user_name'],instructor['title'],instructor['first_name'], instructor['last_name'], instructor['position'],instructor['phone_number'],instructor['email'],instructor['address'],instructor['instructor_profile'],instructor['instructor_image_name'],None))
             
         return render_template("manager/manage_instr_profile.html", instructor_profile=encoded_instructor_profile, role = session['role'])
     else:
@@ -288,55 +288,55 @@ def instr_search():
             return redirect(url_for('instructor_profile_list'))
         
         for user in users:
-            if query.lower() in user[0].lower():
-               cursor.execute("SELECT * FROM instructor WHERE user_name LIKE CONCAT('%', %s, '%');",(user[0],))
+            if query.lower() in user['user_name'].lower():
+               cursor.execute("SELECT * FROM instructor WHERE user_name LIKE CONCAT('%', %s, '%');",(user['user_name'],))
                instructor_profile_list = cursor.fetchall()
              
                for instructor in instructor_profile_list:
-                   if instructor[10] is not None and instructor[10] != '':
-                      image_encode = base64.b64encode(instructor[11]).decode('utf-8')
-                      results.append((instructor[0], instructor[1],instructor[2] ,instructor[3], instructor[4], instructor[5],instructor[6],instructor[7],instructor[8],instructor[9],instructor[10],image_encode))
+                   if instructor['instructor_image_name'] is not None and instructor['instructor_image_name'] != '':
+                      image_encode = base64.b64encode(instructor['instructor_image']).decode('utf-8')
+                      results.append((instructor['instructor_id'], instructor['user_name'],instructor['title'] ,instructor['first_name'], instructor['last_name'], instructor['position'],instructor['phone_number'],instructor['email'],instructor['address'],instructor['instructor_profile'],instructor['instructor_image_name'],image_encode))
                    else:
-                      results.append((instructor[0], instructor[1],instructor[2],instructor[3], instructor[4], instructor[5],instructor[6],instructor[7],instructor[8],instructor[9],instructor[10],None))
+                      results.append((instructor['instructor_id'], instructor['user_name'],instructor['title'],instructor['first_name'], instructor['last_name'], instructor['position'],instructor['phone_number'],instructor['email'],instructor['address'],instructor['instructor_profile'],instructor['instructor_image_name'],None))
             
                return render_template("manager/manage_instr_profile.html", instructor_profile=results, role = session['role'])
            
-            elif query.lower() in user[1].lower():
-               cursor.execute("SELECT * FROM instructor WHERE email LIKE CONCAT('%', %s, '%');",(user[1],))
+            elif query.lower() in user['email'].lower():
+               cursor.execute("SELECT * FROM instructor WHERE email LIKE CONCAT('%', %s, '%');",(user['email'],))
                instructor_profile_list = cursor.fetchall()
               
                for instructor in instructor_profile_list:
-                   if instructor[10] is not None and instructor[10] != '':
-                      image_encode = base64.b64encode(instructor[11]).decode('utf-8')
-                      results.append((instructor[0], instructor[1],instructor[2] ,instructor[3], instructor[4], instructor[5],instructor[6],instructor[7],instructor[8],instructor[9],instructor[10],image_encode))
+                   if instructor['instructor_image_name'] is not None and instructor['instructor_image_name'] != '':
+                      image_encode = base64.b64encode(instructor['instructor_image']).decode('utf-8')
+                      results.append((instructor['instructor_id'], instructor['user_name'],instructor['title'] ,instructor['first_name'], instructor['last_name'], instructor['position'],instructor['phone_number'],instructor['email'],instructor['address'],instructor['instructor_profile'],instructor['instructor_image_name'],image_encode))
                    else:
-                      results.append((instructor[0], instructor[1],instructor[2],instructor[3], instructor[4], instructor[5],instructor[6],instructor[7],instructor[8],instructor[9],instructor[10],None))
+                      results.append((instructor['instructor_id'], instructor['user_name'],instructor['title'],instructor['first_name'], instructor['last_name'], instructor['position'],instructor['phone_number'],instructor['email'],instructor['address'],instructor['instructor_profile'],instructor['instructor_image_name'],None))
             
                return render_template("manager/manage_instr_profile.html", instructor_profile=results, role = session['role'])
            
-            elif query.lower() in user[2].lower():
-                cursor.execute("SELECT * FROM instructor WHERE address LIKE CONCAT('%', %s, '%');",(user[2],))
+            elif query.lower() in user['address'].lower():
+                cursor.execute("SELECT * FROM instructor WHERE address LIKE CONCAT('%', %s, '%');",(user['address'],))
                 instructor_profile_list = cursor.fetchall()
                 
                 for instructor in instructor_profile_list:
-                   if instructor[10] is not None and instructor[10] != '':
-                      image_encode = base64.b64encode(instructor[11]).decode('utf-8')
-                      results.append((instructor[0], instructor[1],instructor[2] ,instructor[3], instructor[4], instructor[5],instructor[6],instructor[7],instructor[8],instructor[9],instructor[10],image_encode))
+                   if instructor['instructor_image_name'] is not None and instructor['instructor_image_name'] != '':
+                      image_encode = base64.b64encode(instructor['instructor_image']).decode('utf-8')
+                      results.append((instructor['instructor_id'], instructor['user_name'],instructor['title'] ,instructor['first_name'], instructor['last_name'], instructor['position'],instructor['phone_number'],instructor['email'],instructor['address'],instructor['instructor_profile'],instructor['instructor_image_name'],image_encode))
                    else:
-                      results.append((instructor[0], instructor[1],instructor[2],instructor[3], instructor[4], instructor[5],instructor[6],instructor[7],instructor[8],instructor[9],instructor[10],None))
+                      results.append((instructor['instructor_id'], instructor['user_name'],instructor['title'],instructor['first_name'], instructor['last_name'], instructor['position'],instructor['phone_number'],instructor['email'],instructor['address'],instructor['instructor_profile'],instructor['instructor_image_name'],None))
             
                 return render_template("manager/manage_instr_profile.html", instructor_profile=results, role = session['role'])
             
-            elif query.lower() in user[3].lower():
-                cursor.execute("SELECT * FROM instructor WHERE position LIKE CONCAT('%', %s, '%');",(user[3],))
+            elif query.lower() in user['position'].lower():
+                cursor.execute("SELECT * FROM instructor WHERE position LIKE CONCAT('%', %s, '%');",(user['position'],))
                 instructor_profile_list = cursor.fetchall()
                 
                 for instructor in instructor_profile_list:
-                   if instructor[10] is not None and instructor[10] != '':
-                      image_encode = base64.b64encode(instructor[11]).decode('utf-8')
-                      results.append((instructor[0], instructor[1],instructor[2] ,instructor[3], instructor[4], instructor[5],instructor[6],instructor[7],instructor[8],instructor[9],instructor[10],image_encode))
+                   if instructor['instructor_image_name'] is not None and instructor['instructor_image_name'] != '':
+                      image_encode = base64.b64encode(instructor['instructor_image']).decode('utf-8')
+                      results.append((instructor['instructor_id'], instructor['user_name'],instructor['title'] ,instructor['first_name'], instructor['last_name'], instructor['position'],instructor['phone_number'],instructor['email'],instructor['address'],instructor['instructor_profile'],instructor['instructor_image_name'],image_encode))
                    else:
-                      results.append((instructor[0], instructor[1],instructor[2],instructor[3], instructor[4], instructor[5],instructor[6],instructor[7],instructor[8],instructor[9],instructor[10],None))
+                      results.append((instructor['instructor_id'], instructor['user_name'],instructor['title'],instructor['first_name'], instructor['last_name'], instructor['position'],instructor['phone_number'],instructor['email'],instructor['address'],instructor['instructor_profile'],instructor['instructor_image_name'],None))
             
                 return render_template("manager/manage_instr_profile.html", instructor_profile=results, role = session['role'])
             
@@ -359,23 +359,23 @@ def member_search():
         
         matched_profiles = []
         for user in users:
-            if query.lower() in user[0].lower():
-               cursor.execute("SELECT * FROM member WHERE user_name LIKE CONCAT('%', %s, '%');",(user[0],))
+            if query.lower() in user['user_name'].lower():
+               cursor.execute("SELECT * FROM member WHERE user_name LIKE CONCAT('%', %s, '%');",(user['user_name'],))
                member_profile_list = cursor.fetchall()
                matched_profiles.extend(member_profile_list)
             
-            elif query.lower() in user[1].lower():
-               cursor.execute("SELECT * FROM member WHERE email LIKE CONCAT('%', %s, '%');",(user[1],))
+            elif query.lower() in user['email'].lower():
+               cursor.execute("SELECT * FROM member WHERE email LIKE CONCAT('%', %s, '%');",(user['email'],))
                member_profile_list = cursor.fetchall()
                matched_profiles.extend(member_profile_list)
             
-            elif query.lower() in user[2].lower():
-                cursor.execute("SELECT * FROM member WHERE address LIKE CONCAT('%', %s, '%');",(user[2],))
+            elif query.lower() in user['address'].lower():
+                cursor.execute("SELECT * FROM member WHERE address LIKE CONCAT('%', %s, '%');",(user['address'],))
                 member_profile_list = cursor.fetchall()
                 matched_profiles.extend(member_profile_list)
             
-            elif query.lower() in user[3].lower():
-                cursor.execute("SELECT * FROM member WHERE position LIKE CONCAT('%', %s, '%');",(user[3],))
+            elif query.lower() in user['position'].lower():
+                cursor.execute("SELECT * FROM member WHERE position LIKE CONCAT('%', %s, '%');",(user['position'],))
                 member_profile_list = cursor.fetchall()
                 matched_profiles.extend(member_profile_list)
         

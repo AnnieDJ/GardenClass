@@ -55,3 +55,21 @@ def member_edit_profile():
         
     else:
         return redirect(url_for('login'))
+
+
+
+## Member view Instructors list ##
+@app.route('/member/member_view_instr')
+def member_view_instr():
+    if 'loggedin' in session and session['loggedin']:
+        
+        cursor = utils.getCursor()
+        cursor.execute("SELECT instructor_id, title, first_name, last_name, position, phone_number, email, instructor_profile, \
+                instructor_image_name FROM instructor")
+        member_view_instr = cursor.fetchall()
+        print(member_view_instr)    
+        
+        return render_template('/member/member_view_instr.html', member_view_instr=member_view_instr, role=session.get('role', 'member'))
+    else:
+        return redirect(url_for('member_dashboard'))
+    

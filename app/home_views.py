@@ -188,17 +188,3 @@ def logout():
    # Redirect to login page
    return redirect(url_for('home'))
 
-
-
-## List of Instructors ##
-@app.route('/instructor')
-def instructor():
-    cursor = utils.getCursor()  # Make sure you have a function to get your DB cursor
-    cursor.execute("SELECT instructor_id, title, first_name, last_name, position, phone_number, email, instructor_profile, \
-                instructor_image_name FROM instructor")  # Adjust the query as needed
-    instructors_data = cursor.fetchall()
-    print (instructors_data)
-    
-    return render_template('index.html', instructor=instructors_data)
-    
-     

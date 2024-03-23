@@ -1,109 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='loginstyle.css') }}"
-    />
+    <title>Rākau Gardening Society Login</title>
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <style>
-      .login-container {
-        max-width: 400px;
-        margin: 0 auto;
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        background-color: #f9f9f9;
-        text-align: center;
+      .logo-img {
+        max-width: 175px; 
+        height: auto; 
+      }
+      .green-btn {
+          background-color: #3c763d;
+          color: white; 
       }
 
-      .login-container {
-        max-width: 400px;
-        margin: 0 auto;
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        background-color: #f9f9f9;
-        text-align: center;
-    }
-    .login-container h1 {
-        font-size: 24px;
-        margin-bottom: 20px;
-    }
-    .msg {
-        display: {% if msg %}block{% else %}none{% endif %};
-        margin-bottom: 10px;
-        padding: 10px;
-        background-color: #f2dede;
-        color: #a94442;
-        border: 1px solid #ebccd1;
-        border-radius: 5px;
-    }
-    input[type="text"],
-    input[type="password"],
-    button {
-        display: block;
-        width: 100%;
-        margin-bottom: 10px;
-        padding: 10px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        box-sizing: border-box;
-    }
-    button {
-        background-color: #4A724A;
-        color: #fff;
-        font-size: 16px;
-        cursor: pointer;
-    }
-    button:hover {
-        background-color: #386e40;
-    }
-    
-      .login-container h1 {
-        font-size: 24px;
-        margin-bottom: 20px;
+      .green-btn:hover {
+          background-color: #2d5a2c; 
       }
-      input[type="text"],
-      input[type="password"],
-      button {
-        display: block;
-        width: 100%;
-        margin-bottom: 10px;
-        padding: 10px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        box-sizing: border-box;
-      }
-      button {
-        background-color: #4a724a;
-        color: #fff;
-        font-size: 16px;
-        cursor: pointer;
-      }
-      button:hover {
-        background-color: #386e40;
-      }
-    </style>
-    <title>Rākau Gardening Society Login</title>
-  </head>
-  <body>
-    <div class="login-container">
-      <h1>Welcome to the Rākau Garden</h1>
-      <form action="/login" method="POST">
-        <input type="text" name="username" placeholder="Username" required />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          required
-        />
-        <div class="msg">{{ msg }}</div>
-        <button type="submit">Login</button>
-      </form>
+    </style>   
+</head>
+<body>
+
+<section class="bg-light p-3 p-md-4 p-xl-5 vh-100">
+  <div class="container h-100">
+    <div class="row h-100 justify-content-center align-items-center">
+      <div class="col-12 col-xxl-11">
+        <div class="card border-light-subtle shadow-sm">
+          <div class="row g-0">
+            <div class="col-12 col-md-6">
+              <img class="img-fluid rounded-start w-100 h-100 object-fit-cover" loading="lazy" src="static/img/login.png" alt="Welcome back you've been missed!">
+            </div>
+            <div class="col-12 col-md-6 d-flex align-items-center justify-content-center">
+              <div class="col-12 col-lg-11 col-xl-10">
+                <div class="card-body p-3 p-md-4 p-xl-5">
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="mb-5">
+                        <div class="text-center mb-4">
+                          <a href="#!">
+                            <img src="static/img/logo.png" alt="Rākau Logo" class="img-fluid logo-img">
+                          </a>
+                        </div>
+                        <h4 class="text-center" style="font-size: 35px;">Welcome back you've been missed!</h4>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                      <p class="text-center mt-4 mb-5" style="font-size: 30px;">Sign in here</p>
+                    </div>
+                  </div>
+                  <form action="/login" method="POST">
+                    <div class="row gy-3 overflow-hidden">
+                      <div class="col-12">
+                        <div class="form-floating mb-3">
+                          <input type="text" class="form-control" name="username" id="username" placeholder="Username" required>
+                          <label for="username" class="form-label">Username</label>
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <div class="form-floating mb-3">
+                          <input type="password" class="form-control" name="password" id="password" value="" placeholder="Password" required>
+                          <label for="password" class="form-label">Password</label>
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" name="remember_me" id="remember_me">
+                          <label class="form-check-label text-secondary" for="remember_me">
+                            Keep me logged in
+                          </label>
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <div class="d-grid">
+                          <button type="submit" class="btn green-btn btn-lg">Login</button>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="d-flex gap-2 gap-md-4 flex-column flex-md-row justify-content-md-center mt-5">
+                        <a href="{{ url_for('register') }}"  class="link-secondary text-decoration-none">New Member? Sign Up here</a>
+                        <a href="{{url_for('home')}}" class="link-secondary text-decoration-none">Go Back</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </body>
+  </div>
+</section>
+
+</body>
 </html>

@@ -187,3 +187,4 @@ def logout():
    session.pop('role', None)
    # Redirect to login page
    return redirect(url_for('home'))
+

@@ -53,7 +53,7 @@ def instructor_lessons():
         member_id = request.args.get('member_id', default=None, type=int)
 
         # Get instructor ID based on logged in user
-        cursor.execute("SELECT related_instructor_id FROM User WHERE user_name = %s", (user_name,))
+        cursor.execute("SELECT related_instructor_id FROM user WHERE user_name = %s", (user_name,))
         result = cursor.fetchone()
         if result is None:
             cursor.close()

@@ -51,6 +51,11 @@
                       <p class="text-center mt-4 mb-5" style="font-size: 30px;">Sign in here</p>
                     </div>
                   </div>
+                  
+                  {% if msg %}
+                  <p class="alert alert-danger" role="alert">{{ msg }}</p>
+                  {% endif %}
+
                   <form action="/login" method="POST">
                     <div class="row gy-3 overflow-hidden">
                       <div class="col-12">

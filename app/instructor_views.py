@@ -115,7 +115,8 @@ def instructor_lessons():
 @app.route('/instructor/profile')
 def instructor_profile():
     if 'loggedin' in session and session['loggedin']:
-        messages = get_flashed_messages()
+        #messages = get_flashed_messages()
+        messages=""
         encoded_instructor_profile = []
 
         cursor = utils.getCursor()

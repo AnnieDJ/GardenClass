@@ -407,20 +407,123 @@ def manager_dashboard_different():
     else:
         return redirect(url_for('login'))
 
-@app.route('/another/route/using/instructor_dashboard')
-def instructor_dashboard_different():
+
+@app.route('/manager/mgr_lessons')
+def manager_lessons():
     if 'loggedin' in session and session['loggedin']:
         cursor = utils.getCursor()
-        cursor.execute("SELECT * FROM lessons ORDER BY date, start_time, instructor_id=1")
-        lesson_data = cursor.fetchall()
-        cursor.execute("SELECT * FROM workshops ORDER BY date, start_time LIMIT 2")
-        workshop_data = cursor.fetchall()
-        cursor.execute("SELECT * FROM news ORDER BY date_published LIMIT 1")
-        news_data = cursor.fetchall()
-        
+
+        # Fetch parameters from request
+        instructor_id = request.args.get('instructor_id')
+        member_id = request.args.get('member_id')
+        date = request.args.get('date')
+        location_id = request.args.get('location_id')
+
+        # Initialize params list for the queries
+        ool_params = []
+        lessons_params = []
+
+        # Common filters applicable to both queries, with their parameters
+        ool_where_clauses = []
+        lessons_where_clauses = []
+
+        # Add common filters with table alias to avoid ambiguity
+        if instructor_id:
+            ool_where_clauses.append("o.instructor_id = %s")
+            lessons_where_clauses.append("l.instructor_id = %s")
+            ool_params.append(instructor_id)
+            lessons_params.append(instructor_id)
+        if date:
+            ool_where_clauses.append("o.date = %s")
+            lessons_where_clauses.append("l.date = %s")
+            ool_params.append(date)
+            lessons_params.append(date)
+        if location_id:
+            ool_where_clauses.append("o.location_id = %s")
+            lessons_where_clauses.append("l.location_id = %s")
+            ool_params.append(location_id)
+            lessons_params.append(location_id)
+
+        # Add One-on-One Lessons specific filters
+        if member_id:
+            ool_where_clauses.append("o.member_id = %s")
+            ool_params.append(member_id)
+
+        # Construct WHERE clause for One-on-One Lessons query with JOIN to get member details
+        ool_where_clause = " AND ".join(ool_where_clauses) if ool_where_clauses else "1=1"
+        ool_query = f"""SELECT o.*, m.user_name, m.first_name, m.last_name FROM `one-on-one lessons` o 
+                        JOIN member m ON o.member_id = m.member_id
+                        WHERE {ool_where_clause} 
+                        ORDER BY o.date, o.start_time"""
+
+        # Execute query for One-on-One Lessons
+        cursor.execute(ool_query, ool_params)
+        one_on_one_lessons_data = cursor.fetchall()
+
+        # Construct WHERE clause for Lessons query with JOIN to get instructor details
+        lessons_where_clause = " AND ".join(lessons_where_clauses) if lessons_where_clauses else "1=1"
+        lessons_query = f"""SELECT l.*, i.user_name, i.first_name, i.last_name FROM `lessons` l 
+                            JOIN instructor i ON l.instructor_id = i.instructor_id
+                            WHERE {lessons_where_clause} 
+                            ORDER BY l.date, l.start_time"""
+
+        # Execute query for Lessons
+        cursor.execute(lessons_query, lessons_params)
+        group_lessons_data = cursor.fetchall()
+
         cursor.close()
-        # Make sure the username and role are set in the session as well
-        return render_template("instructor/instr_dashboard.html", lessons=lesson_data,workshops=workshop_data, news=news_data, username=session['username'], role=session['role'])
-        
+
+        return render_template('manager/mgr_lessons.html',
+                               one_on_one_lessons_data=one_on_one_lessons_data,
+                               group_lessons_data=group_lessons_data,
+                               role=session['role'])
     else:
         return redirect(url_for('login'))
+
+
+
+
+
+
+
+
+
+
+@app.route('/manager/workshops')
+def manager_workshops():
+    if 'loggedin' in session and session['loggedin']:
+        cursor = utils.getCursor()
+        
+        instructor_id = request.args.get('instructor_id')
+        date = request.args.get('date')
+        location_id = request.args.get('location_id')  # Assuming the correct parameter is location_id
+        
+        params = []
+        conditions = []
+        query = """
+        SELECT w.*, i.first_name, i.last_name FROM workshops w
+        JOIN instructor i ON w.instructor_id = i.instructor_id
+        """
+
+        if instructor_id:
+            conditions.append("w.instructor_id = %s")
+            params.append(instructor_id)
+        if date:
+            conditions.append("w.date = %s")
+            params.append(date)
+        if location_id:  # Ensure you are using location_id or the correct column name
+            conditions.append("w.location_id = %s")  # Corrected column name if it's location_id
+            params.append(location_id)
+        
+        if conditions:
+            query += " WHERE " + " AND ".join(conditions)
+        
+        query += " ORDER BY w.date"
+        
+        cursor.execute(query, params)  # Using parameters to safely execute the query
+        workshops_data = cursor.fetchall()
+        
+        return render_template('manager/mgr_workshops.html', workshops=workshops_data, role=session['role'])
+    else:
+        return redirect(url_for('login'))
+

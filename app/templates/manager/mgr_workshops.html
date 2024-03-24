@@ -82,16 +82,49 @@
     height: 400px;
     margin-right: 45px;
   }
+  .card-footer {
+    padding: 20px;
+    background-color: #f1f1f1;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
+
+  .btn {
+    padding: 10px 15px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .btn.edit-lesson {
+    background-color: #4caf50;
+    color: white;
+  }
+
+  .btn.cancel-lesson {
+    background-color: #f44336;
+    color: white;
+    margin-left: 80px;
+  }
+
+  .btn.add-lesson {
+    background-color: #4caf50;
+    color: white;
+  }
 </style>
 
 <div class="back-arrow">
-  <a href="{{ url_for('instructor_dashboard') }}">&#x2190; Back</a>
+  <a
+  href="{{ url_for('manager_dashboard_different') }}"
+  title="Go back to Dashboard"
+  >&#x2190; Back</a
 </div>
 
 <div class="container">
   <div class="content-wrapper">
     <div class="filter-section">
-      <form action="{{ url_for('instructor_workshops') }}" method="get">
+      <form action="{{ url_for('manager_workshops') }}" method="get">
         <label for="instructor_id">Instructor ID:</label>
         <input type="text" name="instructor_id" id="instructor_id" />
 
@@ -124,11 +157,18 @@
           <p><strong>End Time:</strong> {{ workshop.end_time }}</p>
           <p><strong>Capacity: </strong>{{ workshop.capacity }}</p>
           <p><strong>Price:</strong> {{ workshop.price }}</p>
+          <div class="lesson-actions">
+            <button class="btn edit-lesson">Edit</button>
+            <button class="btn cancel-lesson">Cancel</button>
+          </div>
         </div>
       </div>
       {% else %}
       <p>No workshops found.</p>
       {% endfor %}
+    </div>
+    <div class="card-footer">
+      <button class="btn add-lesson">Add workshops</button>
     </div>
   </div>
 </div>

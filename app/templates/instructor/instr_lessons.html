@@ -1,133 +1,153 @@
 {% extends 'base.html' %} {% block content %}
 
 <style>
-  body {
-    font-family: "Times New Roman", sans-serif;
-    background-color: #f9f9f9;
-    margin: 0;
-    padding: 0;
+  .body {
+    font-family: "Times New Roman", sans-serif; 
+  }
+  .back-arrow {
+    position: absolute; 
+    top: 70px; 
+    left: 10px;
   }
 
-  .nav-bar {
-    background-color: #2c662d;
-    color: white;
-    padding: 10px 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  .back-arrow a {
+    color: #2c662d;
+    text-decoration: none; 
+    font-size: 30px;
   }
 
-  /* Main content area */
+  .back-arrow a:hover {
+    text-decoration: underline; 
+  }
   .main-content {
-    display: flex;
-    justify-content: space-between;
-    margin-left: 200px;
+    display: flex; /* 使用 flexbox 布局 */
+    gap: 20px; /* 设置元素之间的间距 */
+    padding-top: 20px; /* 距离顶部的间距 */
+    margin-left: 50px; /* 左侧间距 */
+    align-items: flex-start; /* 将元素顶部对齐 */
+  }
+
+  .filter-section {
+    width: 20%; /* 调整宽度为容器的 20% */
     padding: 20px;
-  }
-
-  .card {
-    width: 32%;
-    margin: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+    background-color: #f9f9f9;
   }
 
-  .card-header {
-    background-color: #2c662d;
-    color: white;
-    padding: 10px;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
+  form {
+    margin: 80px 0 40px 0; /* Top and bottom margins remain the same, right margin is 0, left margin is 0 to align to left */
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    width: fit-content;
+    display: block;
   }
 
-  .card-content {
-    padding: 10px;
-    min-height: 0;
-    flex-grow: 1;
+  label {
+    display: block; /* Each label on its own line */
+    margin: 10px 0; /* Spacing above and below labels */
+    font-size: 18px; /* Consistent font size */
+    color: #333; /* Darker font color for better contrast */
   }
 
-  .card-footer {
-    padding: 10px;
-    background-color: #eff0f1;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    display: flex;
-    justify-content: space-between;
+  form select, form input[type="date"], form input[type="number"] {
+    font-size: 18px; /* Larger font size for better readability */
+    color: #333; /* Match label color for consistency */
+    padding: 10px; /* Padding for touch friendliness */
+    margin-bottom: 10px; /* Space between form elements */
+    border: 1px solid #ddd; /* Subtle border */
+    border-radius: 5px; /* Match form border radius */
+    background-color: white; /* White background for the input */
+    line-height: 1.5; /* Increased line height for readability */
+    display: block; /* Ensure inputs appear on a new line */
+    width: 100%; /* Full width inputs */
   }
 
-  /* Buttons */
-  .btn {
+  form input[type="submit"] {
     padding: 10px 20px;
-    margin-right: 10px;
-    background-color: #2c662d;
+    background-color: #4CAF50; /* Example primary color */
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    text-align: center;
+    font-size: 18px;
+    margin-top: 10px; /* Add some margin to the top */
   }
 
-  .btn:hover {
-    background-color: #3e7c3f;
+  form input[type="submit"]:hover {
+    background-color: #45a049; /* A slightly darker shade on hover */
+  }
+
+  .card-container {
+    display: flex; /* 启用 flexbox 布局 */
+    flex-grow: 1; /* 允许卡片容器占据剩余空间 */
+    gap: 10px;
+  }
+  .card {
+    flex-grow: 1; /* 卡片平均分配剩余空间 */
+  }
+
+  /* Styles for each individual card */
+  .card, .card-lesson {
+    flex: 1;
+    width: 500px; /* Each card will take up an equal amount of space */
+    border-radius: 5px; /* Rounded corners of the card */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Shadow effect for the card */
+    background-color: white;
+  }
+
+  /* Header styles for both types of cards */
+  .card-header, .card-header-lesson {
+    background-color: #2c662d; /* Background color for the header */
+    color: white; /* Text color for the header */
+    padding: 30px; /* Padding inside the header */
+    border-top-left-radius: 5px; /* Rounded top-left corner */
+    border-top-right-radius: 5px; /* Rounded top-right corner */
+  }
+
+  /* Content styles for both types of cards */
+  .card-content, .card-content-lesson {
+    padding: 30px; /* Padding inside the content area */
+  }
+
+  /* Item styles within the content for both types of cards */
+  .lesson-item, .lesson-item-lesson {
+    margin-bottom: 10px; /* Space between items */
+  }
+
+  /* Footer styles for both types of cards */
+  .card-footer {
+    padding: 20px; /* Padding inside the footer */
+    background-color: #f1f1f1; /* Background color for the footer */
+    border-bottom-left-radius: 5px; /* Rounded bottom-left corner */
+    border-bottom-right-radius: 5px; /* Rounded bottom-right corner */
+  }
+
+  /* Button styles */
+  .btn {
+    padding: 10px 15px; /* Padding inside the button */
+    margin-right: 5px; /* Space to the right of the button */
+    border: none; /* No border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+  }
+
+  /* Additional styles for different button types */
+  .btn.edit-lesson {
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+  }
+
+  .btn.cancel-lesson {
+    background-color: #f44336; /* Red background */
+    color: white; /* White text */
   }
 
   .btn.add-lesson {
-    background-color: #4a8c4a;
-  }
-
-  .btn.edit-lesson {
-    order: -1;
-    background-color: #3e8a51;
-  }
-
-  .btn.cancel-lesson {
-    background-color: #c42633;
-    margin-left: auto;
-  }
-
-  /* Utilities */
-  .text-center {
-    text-align: center;
-  }
-
-  .lesson-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 10px;
-  }
-
-  .btn.edit-lesson {
-    margin-right: auto;
-  }
-
-  .btn.cancel-lesson {
-    margin-left: auto;
-  }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    .main-content {
-      margin-left: 110px;
-      flex-wrap: wrap;
-    }
-
-    .card {
-      width: 100%;
-      height: auto;
-    }
-
-    .card-footer {
-      flex-direction: column;
-    }
-
-    .btn.add-lesson,
-    .btn-left {
-      margin-bottom: 10px;
-    }
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
   }
 </style>
 
@@ -137,7 +157,7 @@
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Course Listings</title>
+
       <!-- Add your CSS links here -->
       <script>
         function filterCourses() {
@@ -176,56 +196,92 @@
       <body>
         <div class="back-arrow">
           <!-- Updated the href to point to the 'instructor_dashboard' route -->
-          <a href="{{ url_for('instructor_dashboard') }}" title="Go back to Dashboard">&#x2190; Back</a>
+          <a href="{{ url_for('instructor_dashboard') }}"
+            >&#x2190; Back</a
+          >
         </div>
-        <h2>Course Listings</h2>
 
-      <!-- Filter Section -->
-      <form action="{{ url_for('instructor_lessons') }}" method="get">
-        <label for="statusFilter">Filter by status:</label>
-        <select id="statusFilter" name="status">
-          <option value="">All Statuses</option>
-          <option value="Scheduled">Scheduled</option>
-          <option value="Cancelled">Cancelled</option>
-          <option value="Completed">Completed</option>
-        </select>
-      
-        <label for="dateFilter">Filter by date:</label>
-        <input type="date" id="dateFilter" name="date">
-      
-        <label for="memberIDFilter">Filter by Member ID:</label>
-        <input type="number" id="memberIDFilter" name="member_id" min="1">
-      
-        <input type="submit" value="Filter">
-      </form>
+        <div class="main-content">
+          <!-- 过滤器部分、一对一课程卡片和课程卡片在同一水平线上 -->
+          <div class="filter-section">
+            <form action="{{ url_for('instructor_lessons') }}" method="get">
+              <label for="statusFilter">Filter by status:</label>
+              <select id="statusFilter" name="status">
+                <option value="">All Statuses</option>
+                <option value="Scheduled">Scheduled</option>
+                <option value="Cancelled">Cancelled</option>
+                <option value="Completed">Completed</option>
+              </select>
 
-      <!-- Table to display the courses -->
-      <div class="main-content">
-        <div class="card">
-          <h2 class="card-header">One-on-one Lesson</h2>
-          <div class="card-content">
-            {% for lessons in lessons %}
-            <div class="lesson-item">
-            <strong>Member ID:</strong> {{ lessons['member_id'] }}<br />
-            <strong>Date:</strong> {{ lessons['date'] }}<br />
-            <strong>Start Time:</strong> {{ lessons['start_time'] }}<br />
-            <strong>End Time:</strong> {{ lessons['end_time'] }}<br />
-            <strong>Location ID:</strong> {{ lessons['location_id'] }}<br />
-            <strong>Price:</strong> {{ lessons['price'] }}<br />
-            <strong>Status:</strong> {{ lessons['status'] }}
-            <div class="lesson-actions">
-              <button class="btn edit-lesson">Edit</button>
-              <button class="btn cancel-lesson">Cancel</button>
+              <label for="dateFilter">Filter by date:</label>
+              <input type="date" id="dateFilter" name="date" placeholder="yyyy/mm/DD">
+
+              <label for="memberIDFilter">Filter by Member ID:</label>
+              <input type="number" id="memberIDFilter" name="member_id" min="1">
+
+              <input type="submit" value="Filter">
+            </form>
+          </div>
+
+          <div class="card-container">
+            <!-- Card for One-on-One Lessons -->
+            <div class="card">
+              <h2 class="card-header">One-on-One Lessons</h2>
+              <div class="card-content">
+                {% for lesson in one_on_one_lessons %}
+                <div class="lesson-item">
+                  <strong>Member ID:</strong> {{ lesson['member_id'] }}<br />
+                  <strong>User name:</strong> {{ lesson['user_name'] }}<br />
+                  <strong>First name:</strong> {{ lesson['first_name'] }}<br />
+                  <strong>Last name:</strong> {{ lesson['last_name'] }}<br />
+                  <strong>Date:</strong> {{ lesson['date'] }}<br />
+                  <strong>Start Time:</strong> {{ lesson['start_time'] }}<br />
+                  <strong>End Time:</strong> {{ lesson['end_time'] }}<br />
+                  <strong>Location ID:</strong> {{ lesson['location_id'] }}<br />
+                  <strong>Price:</strong> {{ lesson['price'] }}<br />
+                  <strong>Status:</strong> {{ lesson['status'] }}
+                  <div class="lesson-actions">
+                    <button class="btn edit-lesson">Edit</button>
+                    <button class="btn cancel-lesson">Cancel</button>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+              <div class="card-footer">
+                <button class="btn add-lesson">Add Lesson</button>
+              </div>
+            </div>
+
+            <!-- Card for Lessons -->
+            <div class="card-lesson">
+              <h2 class="card-header-lesson">Lessons</h2>
+              <div class="card-content-lesson">
+                {% for lesson in group_lessons %}
+                <div class="lesson-item-lesson">
+                  <strong>Title:</strong> {{ lesson['title'] }}<br />
+                  <strong>Date:</strong> {{ lesson['date'] }}<br />
+                  <strong>Start Time:</strong> {{ lesson['start_time'] }}<br />
+                  <strong>End Time:</strong> {{ lesson['end_time'] }}<br />
+                  <strong>Location ID:</strong> {{ lesson['location_id'] }}<br />
+                  <strong>Capacity:</strong> {{ lesson['capacity'] }}<br />
+                  <strong>Price:</strong> {{ lesson['price'] }}
+                  <div class="lesson-actions">
+                    <button class="btn edit-lesson">Edit</button>
+                    <button class="btn cancel-lesson">Cancel</button>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+              <div class="card-footer">
+                <button class="btn add-lesson">Add Lesson</button>
+              </div>
             </div>
           </div>
-          {% endfor %}
         </div>
-        <div class="card-footer">
-          <button id="addLessonButton" class="btn add-lesson">Add Lesson</button>
 
-      <!-- Add your scripts if any -->
-    </body>
-  </html>
-</div>
+        <!-- Add your scripts if any -->
+      </body>
+    </html>
+  </div>
 
-{% endblock %}
+  {% endblock %}

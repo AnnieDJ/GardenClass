@@ -191,8 +191,8 @@
   <b></b>
   <a href="#" class="dropdown-btn">Workshop & Lesson Management</a>
   <div class="dropdown-container">
-    <a href="#">Manage Workshops</a>
-    <a href="#">Manage Lessons</a>
+    <a href="{{ url_for('manager_workshops') }}">Manage Workshops</a>
+    <a href="{{ url_for('manager_lessons') }}">Manage Lessons</a>
   </div>
   <b> </b>
   <a href="#" class="dropdown-btn">News Management</a>
@@ -207,7 +207,7 @@
 <div class="main-content">
   <!-- One-on-one Lesson Card -->
   <div class="card">
-    <h2 class="card-header">One-on-one Lesson</h2>
+    <h2 class="card-header">Lessons</h2>
     <div class="card-content">
       {% for lessons in lessons %}
       <div class="lesson-item">
@@ -228,7 +228,7 @@
     </div>
     <div class="card-footer">
       <button id="addLessonButton" class="btn add-lesson">Add Lesson</button>
-      <a href="#" class="news-link">Read more</a>
+      <a href="{{ url_for('manager_lessons') }}" class="news-link">Read more</a>
     </div>
   </div>
 
@@ -279,7 +279,11 @@
     </div>
     <div class="card-footer">
       <button class="btn add-lesson btn-left">Add Schedules</button>
-      <a href="#" class="news-link news-link-right">Read more</a>
+      <a
+        href="{{ url_for('manager_workshops') }}"
+        class="news-link news-link-right"
+        >Read more</a
+      >
     </div>
   </div>
 </div>

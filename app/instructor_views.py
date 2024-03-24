@@ -63,7 +63,7 @@ def instructor_lessons():
         # Modified query to fetch one-on-one lessons and join with the member table
         ool_query = """
         SELECT ool.*, m.first_name, m.last_name, m.user_name 
-        FROM `One-on-one lessons` ool
+        FROM `one-on-one lessons` ool
         JOIN `member` m ON ool.member_id = m.member_id 
         WHERE ool.instructor_id = %s
        """
@@ -148,20 +148,20 @@ def update_profile():
             new_phone = request.form.get('phone')
             new_address = request.form.get('address')
             role = session.get('role', 'unknown')  
-            cursor = utils.getCursor()
+            #cursor = utils.getCursor()
 
-            if role == 'Instructor':
-                cursor.execute('UPDATE agronomists SET first_name = %s, family_name = %s, email = %s, phone = %s , address = %s WHERE id = %s',
-                               (new_firstname, new_familyname, new_email, new_phone, new_address, session['id']))
-            else:
-                cursor.execute('UPDATE staff_admin SET first_name = %s, family_name = %s, email = %s, phone = %s WHERE id = %s',
-                               (new_firstname, new_familyname, new_email, new_phone, session['id']))
+            #if role == 'Instructor':
+                #cursor.execute('UPDATE agronomists SET first_name = %s, family_name = %s, email = %s, phone = %s , address = %s WHERE id = %s',
+                               #(new_firstname, new_familyname, new_email, new_phone, new_address, session['id']))
+            #else:
+               # cursor.execute('UPDATE staff_admin SET first_name = %s, family_name = %s, email = %s, phone = %s WHERE id = %s',
+                               #(new_firstname, new_familyname, new_email, new_phone, session['id']))
 
-            utils.connection.commit()
-            msg = 'Profile updated successfully!'
-        else:
-            msg = 'User not logged in'
-        flash(msg, 'success' if 'loggedin' in session else 'error')
+            #utils.connection.commit()
+            #msg = 'Profile updated successfully!'
+        #else:
+            #msg = 'User not logged in'
+        #flash(msg, 'success' if 'loggedin' in session else 'error')
     return redirect(url_for('profile'))
 
 

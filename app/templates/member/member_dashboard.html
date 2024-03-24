@@ -2,7 +2,7 @@
 
 
 {% block content %}
-
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <style>
     body {
         font-family: 'Arial', sans-serif;
@@ -92,6 +92,10 @@
     div.content {margin-left: 0;}
     }
 
+    .sidebar a.active {
+      font-weight: bold;
+    }
+
 /* On screens that are less than 400px, display the bar vertically, instead of horizontally */
     @media screen and (max-width: 400px) {
     .sidebar a {
@@ -126,48 +130,123 @@
     <div class="dashboard">
     
         <div class="workshops card">
-            <h2>Workshop Schedules</h2>
-                <h3>Introduction to Gardening</h3>
+            <h2>Uncoming Workshop</h2>
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row g-0">
+                  <div class="col-md-4">
+                    <img src="https://images.pexels.com/photos/4503269/pexels-photo-4503269.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2
+                    " class="img-fluid rounded-start" alt="...">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <h5 class="card-title">About Gardening</h5>
+                      <p class="card-text">Learn the basics of gardening, including soil preparation, planting, and watering.</p>
+                      <p class="card-text"><small class="text-body-secondary">View More Details</small></p>
+                    </div>
+                  </div>
+                </div>
+            </div>
+
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row g-0">
+                  <div class="col-md-4">
+                    <img src="https://images.pexels.com/photos/6231727/pexels-photo-6231727.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2
+                    " class="img-fluid rounded-start" alt="...">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <h5 class="card-title">Sustainable Gardening</h5>
+                      <p class="card-text">An approach to gardening that focuses on sustainability and eco-friendly practices.</p>
+                      <p class="card-text"><small class="text-body-secondary">View More Details</small></p>
+                    </div>
+                  </div>
+                </div>
+            </div>
+                <!-- <h3>Introduction to Gardening</h3>
                 <p><strong>Type:</strong> Beginners</p>
                 <p><strong>Date:</strong> March 20, 2024</p>
                 <p><strong>Time:</strong> 10:00 AM - 12:00 PM</p>
                 <p><strong>Location:</strong> Community Center, Room A</p>
                 <p><strong>Instructor:</strong> John Smith</p>
                 <p><strong>Details:</strong> Learn the basics of gardening, including soil preparation, planting, and watering.</p>
-                <p><strong>Cost:</strong> $25</p>
+                <p><strong>Cost:</strong> $25</p> -->
         </div>
     
         <div class="lessons card">
             <h2>Lesson Schedules</h2>
-                <h3>Pruning Techniques</h3>
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row g-0">
+                  <div class="col-md-4">
+                    <img src="https://images.pexels.com/photos/6231856/pexels-photo-6231856.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2
+                    " class="img-fluid rounded-start" alt="...">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <h5 class="card-title">Pruning Techniques</h5>
+                      <p class="card-text">Learn different pruning techniques to maintain healthy plants.</p>
+                      <p class="card-text"><small class="text-body-secondary">View More Details</small></p>
+                    </div>
+                  </div>
+                </div>
+            </div>
+
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row g-0">
+                  <div class="col-md-4">
+                    <img src="https://images.pexels.com/photos/9724436/pexels-photo-9724436.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2
+                    " class="img-fluid rounded-start" alt="...">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <h5 class="card-title">Flower Garden</h5>
+                      <p class="card-text">A workshop for beginners interested in starting their own flower garden.</p>
+                      <p class="card-text"><small class="text-body-secondary">View More Details</small></p>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            
+                <!-- <h3>Pruning Techniques</h3>
                 <p><strong>Date:</strong> March 25, 2024</p>
                 <p><strong>Time:</strong> 2:00 PM - 4:00 PM</p>
                 <p><strong>Location:</strong> Community Garden</p>
                 <p><strong>Instructor:</strong> Emily Johnson</p>
                 <p><strong>Details:</strong> Learn different pruning techniques to maintain healthy plants.</p>
-                <p><strong>Cost:</strong> $20</p>
+                <p><strong>Cost:</strong> $20</p> -->
             
         </div>
 
-        <div class="booking card">
+        <!-- <div class="booking card">
             <h2>Booking Management</h2>
             <p><strong>View Booking:</strong> Book lesson</p >
             <p><strong>Cancel Booking:</strong> cancel workshop</p >
-            <!-- More profile details -->
-        </div>
-    
-        <div class="subscription card">
+       
+        </div> -->
+        
+        <!-- <div class="subscription card">
             <h2>Subscription Details</h2>
             <p><strong>Status:</strong> Active</p>
             <p><strong>Renewal Date:</strong> March 15, 2025</p>
             <p><strong>Renewal Options:</strong> Renew subscription</p>
-        </div>
+        </div> -->
         
         
         <!-- More sections as needed -->
     </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function(){
+          $('.sidebar a').click(function(e){
+            e.preventDefault(); 
+            $('.sidebar a').removeClass('active');
+            $(this).addClass('active');
+          });
+        });
+      </script>
     </body>
 
 {%endblock%}

@@ -71,4 +71,4 @@ def member_view_instr():
         return render_template('/member/member_view_instr.html', member_view_instr=member_view_instr, role=session.get('role', 'member'))
     else:
         return redirect(url_for('member_dashboard'))
-    
+

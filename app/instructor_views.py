@@ -16,7 +16,7 @@ def instructor_dashboard():
         user_name = session['username']
         
         # First, get the related_instructor_id from the User table
-        cursor.execute("SELECT related_instructor_id FROM User WHERE user_name = %s", (user_name,))
+        cursor.execute("SELECT related_instructor_id FROM user WHERE user_name = %s", (user_name,))
         result = cursor.fetchone()  # Assuming each username uniquely corresponds to one related_instructor_id
         if result is None:
             cursor.close()

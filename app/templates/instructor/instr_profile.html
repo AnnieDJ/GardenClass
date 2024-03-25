@@ -59,20 +59,22 @@
 <div class="dashboard">
     <div class="profile card">
         <h2>Personal Profile</h2>
-        <!--img src="https://i.pinimg.com/564x/92/5c/52/925c52543aa8096c66214311fa598fbc.jpg" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%; display: block; margin: 0 auto 20px auto;"-->
-            {% if account[0][10] is not none %}
-                {% if account[0][10].endswith('.jpg') %}
-                    <img class="card-img-top" src="data:image/jpg;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
-                {% elif account[0][10].endswith('.jpeg') %}
-                    <img class="card-img-top" src="data:image/jpeg;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
-                {% elif account[0][10].endswith('.png') %}
-                    <img class="card-img-top" src="data:image/png;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
-                {% elif account[0][10].endswith('.gif') %}
-                    <img class="card-img-top" src="data:image/gif;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
-                {% endif %}
-            {% else %}
-                <img src="https://i.pinimg.com/564x/92/5c/52/925c52543aa8096c66214311fa598fbc.jpg" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%; display: block; margin: 0 auto 20px auto;">
+        {% if account[0][10] is not none %}
+            {% if account[0][10][-4:]|lower == '.jpg' %}
+                <img class="card-img-top" src="data:image/jpg;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
+            {% elif account[0][10][-5:]|lower == '.jpeg' %}
+                <img class="card-img-top" src="data:image/jpeg;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
+            {% elif account[0][10][-4:]|lower == '.png' %}
+                <img class="card-img-top" src="data:image/png;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
+            {% elif account[0][10][-4:]|lower == '.gif' %}
+                <img class="card-img-top" src="data:image/gif;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
             {% endif %}
+        {% else %}
+            <img src="https://i.pinimg.com/564x/92/5c/52/925c52543aa8096c66214311fa598fbc.jpg" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%; display: block; margin: 0 auto 20px auto;">
+        {% endif %}
+    
+    
+    
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 <div class="alert alert-success">

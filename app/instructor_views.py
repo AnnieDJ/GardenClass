@@ -127,33 +127,28 @@ def editinstrprofile():
             email = request.form.get('email')
             address = request.form.get('address')
             instructor_profile = request.form.get('instructor_profile')
-            instructor_image = request.files['instructor_image']
-            
+            instructor_image = request.files.get('instructor_image') 
+
             if instructor_image:
-                
                 if utils.allowed_file(instructor_image.filename):
                     filename = secure_filename(instructor_image.filename)
                     image_data = instructor_image.read()
-                    
-                    cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s, address = %s, instructor_profile = %s, instructor_image = %s WHERE user_name = %s",
-                                    (title, first_name, last_name, position, phone_number, email, address,instructor_profile, filename,image_data, session['username'],))
-                    
+
+                    cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s, address = %s, instructor_profile = %s, instructor_image_name = %s ,instructor_image = %s WHERE user_name = %s",
+                                    (title, first_name, last_name, position, phone_number, email, address, instructor_profile,filename,image_data, session['username'],))      
+                    return redirect(url_for('instructor_profile'))
                 else:
                     flash('Invalid file type, please upload a valid image file')
-                    
+            else:        
+                cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s, address = %s, instructor_profile = %s WHERE user_name = %s",
+                               (title, first_name, last_name, position, phone_number, email, address, instructor_profile, session['username'],))
+            
                 return redirect(url_for('instructor_profile'))
-                    
-            else:
-                cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s, address = %s, instructor_profile = %s \
-                   WHERE user_name = %s", (title, first_name, last_name, position, phone_number, email, address, instructor_profile, session['username'],))
 
-                return redirect(url_for('instructor_profile'))
         else:
             cursor.execute("SELECT * FROM instructor WHERE user_name = %s", (session['username'],))
             instructor = cursor.fetchone()
-        
-            return render_template('/instructor/edit_instr_profile.html', instructor = instructor, messages=messages,role=session['role'])
-        
+            return render_template('/instructor/edit_instr_profile.html', instructor=instructor, messages=messages, role=session['role'])
     else:
         return redirect(url_for('login'))
 

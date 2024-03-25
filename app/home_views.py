@@ -80,10 +80,10 @@ def register():
             msg = 'Please fill out all the fields!'
         elif not re.match(r'[^@]+@[^@]+\.[^@]+', request.form['email']):
             msg = 'Invalid email address!'
-        elif not re.match(r'^\d{10}$', request.form['phone']):
+        elif not re.match(r'^\d{9,12}$', request.form['phone']):
             msg = 'Invalid phone number!'
-        elif date_of_birth > utils.current_date_time():
-            msg = 'Date of Birth cannot be in the future!'
+        elif utils.register_age_validation(date_of_birth):
+            msg = 'member should be over 16 years old!'
         # Additional validation checks...
 
         elif not msg:
@@ -166,7 +166,8 @@ def payment():
              else:
                  #Monthly Pay
                 pay_amount = 100
-                expiry_date = utils.one_month_later()
+                expiry_date_origin = utils.one_month_later()
+                expiry_date = datetime(expiry_date_origin.year, expiry_date_origin.month, expiry_date_origin.day)
                 
              payment_date = utils.current_date_time()
             

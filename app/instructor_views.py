@@ -115,8 +115,7 @@ def instructor_lessons():
 @app.route('/instructor/profile')
 def instructor_profile():
     if 'loggedin' in session and session['loggedin']:
-        #messages = get_flashed_messages()
-        messages=""
+        
         encoded_instructor_profile = []
 
         cursor = utils.getCursor()
@@ -132,7 +131,7 @@ def instructor_profile():
             
         
         
-        return render_template('instructor/instr_profile.html', messages=messages, account=encoded_instructor_profile, role=session['role'])
+        return render_template('instructor/instr_profile.html', account=encoded_instructor_profile, role=session['role'])
        
     else:
        return redirect(url_for('login'))

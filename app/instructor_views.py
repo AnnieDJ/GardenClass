@@ -90,8 +90,6 @@ def instructor_lessons():
         # Make sure the username and role are set in the session as well
         
 
-
-
 @app.route('/instructor/profile')
 def instructor_profile():
     if 'loggedin' in session and session['loggedin']:
@@ -105,8 +103,6 @@ def instructor_profile():
 
         if instructor['instructor_image']:
             image_encode = base64.b64encode(instructor['instructor_image']).decode('utf-8')
-        else:
-            image_encode = None
         
         encoded_instructor_profile.append((
             instructor['instructor_id'], instructor['user_name'], instructor['title'], instructor['first_name'],
@@ -152,10 +148,7 @@ def editinstrprofile():
                 row = cursor.fetchone()
                 if row and row['instructor_image']:
                     image_encode = base64.b64encode(row['instructor_image']).decode('utf-8')
-                else:
-                    image_encode = None
-                    with open('image.jpg', 'wb') as file:
-                        file.write(image_data)
+
 
             cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s, address = %s, instructor_profile = %s WHERE user_name = %s",
                             (title, first_name, last_name, position, phone_number, email, address, instructor_profile, session['username'],))
@@ -170,35 +163,6 @@ def editinstrprofile():
     else:
         return redirect(url_for('login'))
 
-
-@app.route('/update_instrprofile', methods=['POST'])
-def update_instrprofile():
-    if request.method == "POST":
-        msg = ''
-        if 'loggedin' in session and session['loggedin']:
-            instructor_id = request.args.get('instructor_id')
-            new_username = request.form.get('username')
-            new_titlename = request.form.get('titlename')
-            new_firstname = request.form.get('firstname')
-            new_lastname = request.form.get('lastname')
-            new_postiton = request.form.get('position')
-            new_phone = request.form.get('phone')
-            new_email = request.form.get('email')
-            new_address = request.form.get('address')
-            new_profile = request.form.get('profile')
-            role = session.get('role', 'unknown')  
-            cursor = utils.getCursor()
-
-            if role == 'Instructor':
-                cursor.execute('UPDATE instructor SET user_name = %s, title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s , email = %s, address = %s, instructor_profile = %s  WHERE instructor_id = %s',
-                               (new_username,new_titlename,new_firstname,new_lastname,new_postiton,new_phone,new_email,new_profile,new_address, instructor_id))
-
-            utils.connection.commit()
-            msg = 'Profile updated successfully!'
-        else:
-            msg = 'User not logged in'
-        flash(msg, 'success' if 'loggedin' in session else 'error')
-    return redirect(url_for('instructor_profile'))
 
 
 @app.route('/instructor/workshops')

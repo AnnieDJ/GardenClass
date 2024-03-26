@@ -1,53 +1,90 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='basestyle.css') }}">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
-    <!-- Bootstrap CSS link -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Information - Rākau Gardening Society</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .msg {
-            color: red;
-            font-size: 14px;
-            margin-bottom: 10px;
+        .logo-img {
+            max-width: 175px;
+            height: auto;
+        }
+        .green-btn {
+            background-color: #3c763d;
+            color: white;
+        }
+        .green-btn:hover {
+            background-color: #2d5a2c;
+        }
+        .full-height {
+            height: 100vh;
+        }
+        .align-center {
+            align-items: center;
+        }
+        .form-floating {
+            margin-bottom: 15px;
+        }
+        .form-floating label {
+            color: #495057;
+        }
+        .form-check-label {
+            color: #6c757d;
+        }
+        .bank-info-title {
+            margin-bottom: 30px;
         }
     </style>
 </head>
-
 <body>
-    <header class="navbar">
-        <div class="navbar-container">
-            <h1 class="logo">Rākau Gardening Society Bank Information</h1>
+
+<section class="bg-light p-5 p-md-4 p-xl-5 vh-100">
+    <div class="container h-100">
+        <div class="row h-100 justify-content-center align-items-center">
+            <div class="col-12 col-md-8 col-lg-8 col-xl-6">
+                <div class="card border-light shadow-sm">
+                    <div class="card-body p-10">
+                        <div class="text-center mb-4">
+                            <a href="#!">
+                                <img src="static/img/logo.png" alt="Rākau Logo" class="img-fluid logo-img">
+                            </a>
+                        </div>
+                        <h2 class="text-center bank-info-title">Bank Information</h2>
+                        <!-- Include any messages or errors -->
+                        {% if msg %}
+                            <div class="msg">{{ msg }}</div>
+                        {% endif %}
+                        <form action="{{ url_for('bank_info') }}" method="post" autocomplete="off">
+                            <div class="form-floating mb-4">
+                                <select class="form-control" id="bank_name" name="bank_name" required>
+                                    <option value="ANZ">ANZ</option>
+                                    <option value="BNZ">BNZ</option>
+                                    <option value="ASB">ASB</option>
+                                    <option value="Westpac">Westpac</option>
+                                    <option value="Kiwibank">Kiwibank</option>
+                                </select>
+                                <label for="bank_name">Bank Name</label>
+                            </div>
+                            <div class="form-floating mb-4">
+                                <input type="text" class="form-control" id="bank_card" name="bank_card" placeholder="Bank Card" required>
+                                <label for="bank_card">Bank Card</label>
+                            </div>
+                            <div class="form-floating mb-4">
+                                <input type="text" class="form-control" id="security_code" name="security_code" placeholder="Security Code" required>
+                                <label for="security_code">Security Code</label>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn green-btn btn-lg">Next</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-    </header>
-<div class="modal-body">
-    {% if msg %}
-       <div class="msg">{{ msg }}</div>
-    {% else %}
-        <div class="msg"></div>
-    {% endif %}
-    <!-- Registration form -->
-    <form action="{{ url_for('bank_info') }}" method="post" autocomplete="off">
-        <!-- Form fields -->
-        <label for="bank_name">Bank Name:</label>
-        <select class="form-control" id="bank_name" name="bank_name" required>
-            <option value="ANZ"  selected>ANZ</option>
-            <option value="BNZ">BNZ</option>
-            <option value="ASB">ASB</option>
-            <option value="Westpac" >Westpac</option>
-            <option value="Kiwibank" >Kiwibank</option>
-        </select>
-        <div class="form-group">
-            <label for="bank_card">Bank Card:</label>
-            <input type="text" class="form-control" id="bank_card" name="bank_card" required>
-        </div>
-        <div class="form-group">
-            <label for="security_code">Security Code:</label>
-            <input type="text" class="form-control" id="security_code" name="security_code" required>
-        </div>
-        <button type="submit" class="btn btn-success">Next</button>
-    </form>
-</div>
+    </div>
+</section>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
+</html>

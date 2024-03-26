@@ -123,15 +123,16 @@ def instructor_profile():
 
         if instructor['instructor_image']:
             image_encode = base64.b64encode(instructor['instructor_image']).decode('utf-8')
-        
-
+        else:
+            image_encode = None
+            
         encoded_instructor_profile.append((
             instructor['instructor_id'], instructor['user_name'], instructor['title'], instructor['first_name'],
             instructor['last_name'], instructor['position'], instructor['phone_number'], instructor['email'],
-            instructor['address'], instructor['instructor_profile'], image_encode
+            instructor['address'], instructor['instructor_profile'], instructor['instructor_image_name'],image_encode
         ))
 
-        return render_template('/instructor/instr_profile.html', messages=messages, account=encoded_instructor_profile, role=session['role'])
+        return render_template('/instructor/instr_profile.html', account=encoded_instructor_profile, role=session['role'])
 
     else:
         return redirect(url_for('login'))
@@ -157,22 +158,18 @@ def editinstrprofile():
 
             if instructor_image:
                 if utils.allowed_file(instructor_image.filename):
+                    filename = secure_filename(instructor_image.filename)
                     image_data = instructor_image.read()
-                    image_encode = base64.b64encode(image_data).decode('utf-8')
 
-                    cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s, address = %s, instructor_profile = %s, instructor_image = %s WHERE user_name = %s",
-                                    (title, first_name, last_name, position, phone_number, email, address, instructor_profile, image_data, session['username'],))
+                    cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s, address = %s, instructor_profile = %s, instructor_image_name = %s, instructor_image = %s WHERE user_name = %s",
+                                    (title, first_name, last_name, position, phone_number, email, address, instructor_profile, filename, image_data, session['username'],))
                     flash('Profile updated successfully with image')
                 else:
                     flash('Invalid file type, please upload a valid image file')
             else:
-                cursor.execute("SELECT instructor_image FROM instructor WHERE user_name = %s", (session['username'],))
-                row = cursor.fetchone()
-                if row and row['instructor_image']:
-                    image_encode = base64.b64encode(row['instructor_image']).decode('utf-8')
+                
 
-
-            cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s, address = %s, instructor_profile = %s WHERE user_name = %s",
+               cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s, address = %s, instructor_profile = %s WHERE user_name = %s",
                             (title, first_name, last_name, position, phone_number, email, address, instructor_profile, session['username'],))
             flash('Profile updated successfully without image')
 

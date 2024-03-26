@@ -58,20 +58,17 @@
 
 <div class="dashboard">
     <div class="profile card">
-        <h2>Personal Profile</h2>
-        {% if account[0][10] is not none %}
-            {% if account[0][10][-4:]|lower == '.jpg' %}
-                <img class="card-img-top" src="data:image/jpg;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
-            {% elif account[0][10][-5:]|lower == '.jpeg' %}
-                <img class="card-img-top" src="data:image/jpeg;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
-            {% elif account[0][10][-4:]|lower == '.png' %}
-                <img class="card-img-top" src="data:image/png;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
-            {% elif account[0][10][-4:]|lower == '.gif' %}
-                <img class="card-img-top" src="data:image/gif;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
+        <h2>Instructor Profile</h2>
+        {% if image_encode %}
+            {% set image_format = 'jpeg' %}
+            {% if image_encode[-4:]|lower in ['.jpg', '.jpeg', '.png', '.gif'] %}
+                {% set image_format = image_encode[-3:]|lower %}
             {% endif %}
+            <img class="card-img-top" src="data:image/{{ image_format }};base64,{{ image_encode }}" alt="Profile Picture">
         {% else %}
-            <img src="https://i.pinimg.com/564x/92/5c/52/925c52543aa8096c66214311fa598fbc.jpg" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%; display: block; margin: 0 auto 20px auto;">
+            <img src="{{ url_for('static', filename='img/instructors/instr_john.jpg') }}" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%; display: block; margin: 0 auto 20px auto;">
         {% endif %}
+    
     
     
     

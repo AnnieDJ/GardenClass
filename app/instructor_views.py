@@ -90,6 +90,8 @@ def instructor_lessons():
         # Make sure the username and role are set in the session as well
         
 
+
+
 @app.route('/instructor/profile')
 def instructor_profile():
     if 'loggedin' in session and session['loggedin']:
@@ -98,19 +100,24 @@ def instructor_profile():
 
         cursor = utils.getCursor()
         instructorquery = "SELECT * FROM instructor WHERE instructor_id = %s;"
-        cursor.execute(instructorquery ,(session['id'],))
+        cursor.execute(instructorquery, (session['id'],))
         instructor = cursor.fetchone()
-        
-        if instructor['instructor_image'] is not None and instructor['instructor_image'] != '':
+
+        if instructor['instructor_image']:
             image_encode = base64.b64encode(instructor['instructor_image']).decode('utf-8')
-            encoded_instructor_profile.append((instructor['instructor_id'], instructor['user_name'],instructor['title'] ,instructor['first_name'], instructor['last_name'], instructor['position'],instructor['phone_number'],instructor['email'],instructor['address'],instructor['instructor_profile'],instructor['instructor_image'],image_encode))
         else:
-            encoded_instructor_profile.append((instructor['instructor_id'], instructor['user_name'],instructor['title'],instructor['first_name'], instructor['last_name'], instructor['position'],instructor['phone_number'],instructor['email'],instructor['address'],instructor['instructor_profile'],instructor['instructor_image'],None))
-            
+            image_encode = None
+        
+        encoded_instructor_profile.append((
+            instructor['instructor_id'], instructor['user_name'], instructor['title'], instructor['first_name'],
+            instructor['last_name'], instructor['position'], instructor['phone_number'], instructor['email'],
+            instructor['address'], instructor['instructor_profile'], image_encode
+        ))
+
         return render_template('/instructor/instr_profile.html', messages=messages, account=encoded_instructor_profile, role=session['role'])
-       
     else:
-       return redirect(url_for('login'))
+        return redirect(url_for('login'))
+
 
 
 @app.route('/instructor/editinstrprofile', methods=['GET', 'POST'])
@@ -118,6 +125,7 @@ def editinstrprofile():
     if 'loggedin' in session and session['loggedin']:
         messages = get_flashed_messages()
         cursor = utils.getCursor()
+        image_encode = None
         if request.method == 'POST':
             title = request.form.get('title')
             first_name = request.form.get('first_name')
@@ -127,28 +135,38 @@ def editinstrprofile():
             email = request.form.get('email')
             address = request.form.get('address')
             instructor_profile = request.form.get('instructor_profile')
-            instructor_image = request.files.get('instructor_image') 
+            instructor_image = request.files.get('instructor_image')
 
             if instructor_image:
                 if utils.allowed_file(instructor_image.filename):
-                    filename = secure_filename(instructor_image.filename)
                     image_data = instructor_image.read()
+                    image_encode = base64.b64encode(image_data).decode('utf-8')
 
-                    cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s, address = %s, instructor_profile = %s, instructor_image_name = %s ,instructor_image = %s WHERE user_name = %s",
-                                    (title, first_name, last_name, position, phone_number, email, address, instructor_profile,filename,image_data, session['username'],))      
-                    return redirect(url_for('instructor_profile'))
+                    cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s, address = %s, instructor_profile = %s, instructor_image = %s WHERE user_name = %s",
+                                    (title, first_name, last_name, position, phone_number, email, address, instructor_profile, image_data, session['username'],))
+                    flash('Profile updated successfully with image')
                 else:
                     flash('Invalid file type, please upload a valid image file')
-            else:        
-                cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s, address = %s, instructor_profile = %s WHERE user_name = %s",
-                               (title, first_name, last_name, position, phone_number, email, address, instructor_profile, session['username'],))
-            
-                return redirect(url_for('instructor_profile'))
+            else:
+                cursor.execute("SELECT instructor_image FROM instructor WHERE user_name = %s", (session['username'],))
+                row = cursor.fetchone()
+                if row and row['instructor_image']:
+                    image_encode = base64.b64encode(row['instructor_image']).decode('utf-8')
+                else:
+                    image_encode = None
+                    with open('image.jpg', 'wb') as file:
+                        file.write(image_data)
+
+            cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s, address = %s, instructor_profile = %s WHERE user_name = %s",
+                            (title, first_name, last_name, position, phone_number, email, address, instructor_profile, session['username'],))
+            flash('Profile updated successfully without image')
+
+            return redirect(url_for('instructor_profile'))
 
         else:
             cursor.execute("SELECT * FROM instructor WHERE user_name = %s", (session['username'],))
             instructor = cursor.fetchone()
-            return render_template('/instructor/edit_instr_profile.html', instructor=instructor, messages=messages, role=session['role'])
+            return render_template('/instructor/edit_instr_profile.html', instructor=instructor, messages=messages, image_encode=image_encode,role=session['role'])
     else:
         return redirect(url_for('login'))
 

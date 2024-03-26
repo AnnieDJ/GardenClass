@@ -17,7 +17,7 @@ def instructor_dashboard():
         user_name = session['username']
         
         # First, get the related_instructor_id from the User table
-        cursor.execute("SELECT related_instructor_id FROM User WHERE user_name = %s", (user_name,))
+        cursor.execute("SELECT related_instructor_id FROM user WHERE user_name = %s", (user_name,))
         result = cursor.fetchone()  # Assuming each username uniquely corresponds to one related_instructor_id
         if result is None:
             cursor.close()
@@ -53,38 +53,58 @@ def instructor_lessons():
         date = request.args.get('date', default=None, type=str)
         member_id = request.args.get('member_id', default=None, type=int)
 
-        cursor.execute("SELECT related_instructor_id FROM User WHERE user_name = %s", (user_name,))
+        # Get instructor ID based on logged in user
+        cursor.execute("SELECT related_instructor_id FROM user WHERE user_name = %s", (user_name,))
         result = cursor.fetchone()
         if result is None:
             cursor.close()
             return "Instructor ID not found for the current user", 404
-
         related_instructor_id = result['related_instructor_id']
 
-        # Start building the query with no filters
-        query = "SELECT * FROM lessons WHERE instructor_id = %s"
-        query_params = [related_instructor_id]
+        # Modified query to fetch one-on-one lessons and join with the member table
+        ool_query = """
+        SELECT ool.*, m.first_name, m.last_name, m.user_name 
+        FROM `one-on-one lessons` ool
+        JOIN `member` m ON ool.member_id = m.member_id 
+        WHERE ool.instructor_id = %s
+       """
 
-        # Append filters to the query if they are provided
+       
+        ool_params = [related_instructor_id]
+
         if status:
-            query += " AND status = %s"
-            query_params.append(status)
+            ool_query += " AND ool.status = %s"
+            ool_params.append(status)
         if date:
-            query += " AND date = %s"
-            query_params.append(date)
-        if member_id is not None:  # checking if it's not None because 0 is a valid ID but falsy
-            query += " AND member_id = %s"
-            query_params.append(member_id)
+            ool_query += " AND ool.date = %s"
+            ool_params.append(date)
+        if member_id is not None:
+            ool_query += " AND ool.member_id = %s"
+            ool_params.append(member_id)
 
-        # Add ordering by date and start time
-        query += " ORDER BY date, start_time"
+        ool_query += " ORDER BY ool.date, ool.start_time"
+        cursor.execute(ool_query, tuple(ool_params))
+        one_on_one_lessons_data = cursor.fetchall()
 
-        # Execute the built query
-        cursor.execute(query, query_params)
-        lessons_data = cursor.fetchall()
+        # Assuming group lessons query remains unchanged
+        lessons_query = "SELECT * FROM `lessons` WHERE instructor_id = %s"
+        lessons_params = [related_instructor_id]
+
+        if date:
+            lessons_query += " AND date = %s"
+            lessons_params.append(date)
+
+        lessons_query += " ORDER BY date, start_time"
+        cursor.execute(lessons_query, tuple(lessons_params))
+        group_lessons_data = cursor.fetchall()
 
         cursor.close()
-        return render_template("/instructor/instr_lessons.html", lessons=lessons_data, role=session['role'])
+        return render_template(
+            "/instructor/instr_lessons.html",
+            one_on_one_lessons=one_on_one_lessons_data,
+            group_lessons=group_lessons_data,
+            role=session['role']
+        )
     else:
         return redirect(url_for('login'))
         # Make sure the username and role are set in the session as well
@@ -93,7 +113,7 @@ def instructor_lessons():
 @app.route('/instructor/profile')
 def instructor_profile():
     if 'loggedin' in session and session['loggedin']:
-        messages = get_flashed_messages()
+        
         encoded_instructor_profile = []
 
         cursor = utils.getCursor()
@@ -104,6 +124,7 @@ def instructor_profile():
         if instructor['instructor_image']:
             image_encode = base64.b64encode(instructor['instructor_image']).decode('utf-8')
         
+
         encoded_instructor_profile.append((
             instructor['instructor_id'], instructor['user_name'], instructor['title'], instructor['first_name'],
             instructor['last_name'], instructor['position'], instructor['phone_number'], instructor['email'],
@@ -111,6 +132,7 @@ def instructor_profile():
         ))
 
         return render_template('/instructor/instr_profile.html', messages=messages, account=encoded_instructor_profile, role=session['role'])
+
     else:
         return redirect(url_for('login'))
 
@@ -165,13 +187,42 @@ def editinstrprofile():
 
 
 
+
 @app.route('/instructor/workshops')
 def instructor_workshops():
     if 'loggedin' in session and session['loggedin']:
         cursor = utils.getCursor()
         
-        # ... Code to retrieve workshops data ...
+        instructor_id = request.args.get('instructor_id')
+        date = request.args.get('date')
+        location_id = request.args.get('location_id')  # Updated variable name to match column
         
-        return render_template('instructor/instr_workshops.html', workshops=workshops_data)
+        query = """
+        SELECT w.*, i.first_name, i.last_name FROM workshops w
+        JOIN instructor i ON w.instructor_id = i.instructor_id
+        """
+        
+        params = []
+        conditions = []
+        
+        if instructor_id:
+            conditions.append("w.instructor_id = %s")
+            params.append(instructor_id)
+        if date:
+            conditions.append("w.date = %s")
+            params.append(date)
+        if location_id:
+            conditions.append("w.location_id = %s")  # Corrected to use the accurate column name
+            params.append(location_id)
+        
+        if conditions:
+            query += " WHERE " + " AND ".join(conditions)
+        
+        query += " ORDER BY w.date"
+        
+        cursor.execute(query, tuple(params))  # Execute the query with parameters
+        workshops_data = cursor.fetchall()
+        
+        return render_template('instructor/instr_workshops.html', workshops=workshops_data, role=session['role'])
     else:
         return redirect(url_for('login'))

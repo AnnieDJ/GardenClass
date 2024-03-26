@@ -4,6 +4,7 @@ import mysql.connector
 from flask_hashing import Hashing
 from app import app
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 
 hashing = Hashing()
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -30,9 +31,7 @@ def one_month_later():
     
     current_datetime = datetime.now()
     
-    days_in_current_month = (current_datetime.replace(day=1) + timedelta(days=32)).day
-
-    one_month_later = current_datetime.replace(day=min(current_datetime.day, days_in_current_month)) + timedelta(days=32)
+    one_month_later = current_datetime + relativedelta(months=1)
     
     return one_month_later
 
@@ -43,3 +42,12 @@ def one_year_later():
     one_year_later = current_date + timedelta(days=365)
     
     return one_year_later
+
+def register_age_validation(date_of_birth):
+    current_date = datetime.now()
+    sixteen_years_ago = timedelta(days=16*365)
+    person_date = current_date - date_of_birth
+    if person_date > sixteen_years_ago:
+        return False
+    else:
+        return True

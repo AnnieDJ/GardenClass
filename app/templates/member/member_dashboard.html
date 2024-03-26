@@ -2,7 +2,7 @@
 
 
 {% block content %}
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
 <style>
     body {
         font-family: 'Arial', sans-serif;
@@ -46,7 +46,7 @@
         margin-right: 100px;
         padding: 0;
         width: 200px;
-        background-color: #f1f1f1;
+        background-color: #ebeeea;
         position: fixed;
         
         height: 100%;
@@ -64,14 +64,16 @@
 
 /* Active/current link */
     .sidebar a.active {
-        background-color: #4A724A;
         color: white;
+        font-weight: bold;
     }
 
 /* Links on mouse-over */
     .sidebar a:hover:not(.active) {
         background-color: #4A724A;
         color: white;
+        font-weight: bold;
+        
     }
 
 /* Page content. The value of the margin-left property should match the value of the sidebar's width property */
@@ -92,9 +94,6 @@
     div.content {margin-left: 0;}
     }
 
-    .sidebar a.active {
-      font-weight: bold;
-    }
 
 /* On screens that are less than 400px, display the bar vertically, instead of horizontally */
     @media screen and (max-width: 400px) {
@@ -115,7 +114,7 @@
 <body>
         <!-- The sidebar -->
     <div class="sidebar">
-        <a class="active" href="#dashboard">Dashboard</a>
+        <a href="#dashboard">Dashboard</a>
         <a href="#workshops">Workshops</a>
         <a href="{{ url_for('member_view_instr') }}">Individual Lessons</a>
         <a href="#booking">Booking</a>
@@ -235,18 +234,5 @@
     </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-        $(document).ready(function(){
-          $('.sidebar a').click(function(e){
-            e.preventDefault(); 
-            $('.sidebar a').removeClass('active');
-            $(this).addClass('active');
-          });
-        });
-      </script>
-    </body>
 
 {%endblock%}

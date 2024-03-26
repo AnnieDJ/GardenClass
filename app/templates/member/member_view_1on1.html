@@ -1,0 +1,50 @@
+{% extends 'base.html' %} {% block content %}
+
+
+<h2>Available One-on-One Lessons with Your Favourite Instructor</h2>
+
+<table class="table table-striped lesson-table">
+<thead>
+  <tr>
+    <th><strong>Instructor</srtong></th>
+    <th><strong>1on1 Lesson</srtong></th>
+    <th><strong>Date</strong></th>
+    <th><strong>Start Time</strong></th>
+    <th><strong>End Time</strong></th>
+    <th><strong>Location</strong></th>
+    <th><strong>Price (NZ$)</strong></th>
+    <th><strong>Action</strong></th>
+    </tr>
+  </thead>
+
+  <tbody>
+  {% for lesson in one_on_one_lessons_data %}
+
+  <tr class="lesson-item">
+      <td>{{ lesson.instructor_id }}</td>
+      <td></td>
+      <td>{{ lesson.date }}</td>
+      <td>{{ lesson.start_time }}</td>
+      <td>{{ lesson.end_time }}</td>
+      <td>{{ lesson.location_id }}</td>
+      <td>{{ lesson.price }}</td>
+      <td>
+      <a href="{{ url_for('member_view_1on1', instructor_id=lesson.instructor_id) }}"
+        class="btn btn-primary"
+        >Book Now</a>
+      </td>
+    </tr>
+    {% else %}
+    <tr>
+  <td colspan="9"> No available lessons at this moment.</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+    <div>
+ <a href="{{ url_for('member_view_instr') }}" class="btn btn-secondary"
+          >Back to List</a
+        >
+      </div>
+{% endblock %}

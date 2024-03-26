@@ -72,3 +72,39 @@ def member_view_instr():
     else:
         return redirect(url_for('member_dashboard'))
 
+
+
+## Member view instructor available lessons ##
+@app.route('/member/member_view_1on1')
+def member_view_1on1():
+    if 'loggedin' in session and session['loggedin']:
+        cursor = utils.getCursor()
+
+        # Fetch instructor_id from request when a member clicks on an instructor image
+        instructor_id = request.args.get('instructor_id')
+        if not instructor_id:
+            return "Instructor ID not provided."
+        
+        try: 
+        # Prepare the query for fetching available lessons by the instructor
+            ool_query = """SELECT * FROM `one-on-one lessons` 
+                           WHERE instructor_id = %s AND status = 'Scheduled' 
+                           ORDER BY date, start_time"""
+
+        # Execute the query
+            cursor.execute(ool_query, (instructor_id,))
+            one_on_one_lessons_data = cursor.fetchall()
+        
+        except Exception as e:
+            print (f"Database query failed: {e}")
+            one_on_one_lessons_data = []
+        finally:
+            cursor.close()
+        
+        # Render the template with the fetched data
+        return render_template('member/member_view_1on1.html', 
+                               one_on_one_lessons_data=one_on_one_lessons_data, 
+                               role=session['role'])
+    else:
+        return redirect(url_for('member_view_instr')) 
+    

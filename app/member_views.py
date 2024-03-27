@@ -108,3 +108,19 @@ def member_view_1on1():
     else:
         return redirect(url_for('member_view_instr')) 
     
+
+
+## Member workshop ##
+@app.route('/workshoplist')
+def workshoplist():
+    connection = utils.getCursor()
+    connection.execute("SELECT * FROM workshops;")
+    workshopList = connection.fetchall()
+    return render_template('member_workshop.html', role=session.get('role', 'member'),workshop_list = workshopList)
+
+@app.route('/workshopimage')
+def workshopimage():
+    connection = utils.getCursor()
+    connection.execute("SELECT * FROM workshops;")
+    workshopImage = connection.fetchall()
+    return render_template('member_workshop.html', role=session.get('role', 'member'),workshop_image = workshopImage)

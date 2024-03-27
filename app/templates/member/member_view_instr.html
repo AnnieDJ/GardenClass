@@ -134,109 +134,112 @@
     font-weight: bold;
   }
 
+  body {
+    font-family: "Arial", sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+  }
 
-      body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f4f4f4;
-        margin: 0;
-        padding: 0;
-    }
-    
-    .navbar {
-        background-color: #4A724A;
-        color: white;
-        padding: 10px 20px;
-        text-align: center;
-    }
-    
-    .dashboard {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-        padding: 20px;
-    }
-    
-    .card {
-        background-color: #fff;
-        border-radius: 8px;
-        padding: 20px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        overflow: hidden;
-    }
-    
-    .card h2 {
-        background-color: #e7f4e4;
-        color: #333;
-        padding: 10px;
-        margin: -20px -20px 20px -20px;
-        text-align: center;
-    }
-    
-    /* The side navigation menu */
+  .navbar {
+    background-color: #4a724a;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+  }
+
+  .dashboard {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .card {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+
+  .card h2 {
+    background-color: #e7f4e4;
+    color: #333;
+    padding: 10px;
+    margin: -20px -20px 20px -20px;
+    text-align: center;
+  }
+
+  /* The side navigation menu */
+  .sidebar {
+    margin-right: 100px;
+    padding: 0;
+    width: 200px;
+    background-color: #f1f1f1;
+    position: fixed;
+
+    height: 100%;
+    overflow: auto;
+    left: 0;
+  }
+
+  /* Sidebar links */
+  .sidebar a {
+    display: block;
+    color: black;
+    padding: 16px;
+    text-decoration: none;
+  }
+
+  /* Active/current link */
+  .sidebar a.active {
+    background-color: #4a724a;
+    color: white;
+  }
+
+  /* Links on mouse-over */
+  .sidebar a:hover:not(.active) {
+    background-color: #4a724a;
+    color: white;
+  }
+
+  /* Page content. The value of the margin-left property should match the value of the sidebar's width property */
+  div.content {
+    margin-left: 100px;
+    padding: 1px 16px;
+    height: 1000px;
+  }
+
+  /* On screens that are less than 700px wide, make the sidebar into a topbar */
+  @media screen and (max-width: 700px) {
     .sidebar {
-        margin-right: 100px;
-        padding: 0;
-        width: 200px;
-        background-color: #f1f1f1;
-        position: fixed;
-        
-        height: 100%;
-        overflow: auto;
-        left: 0;
+      width: 100%;
+      height: auto;
+      position: relative;
     }
-
-/* Sidebar links */
     .sidebar a {
-        display: block;
-        color: black;
-        padding: 16px;
-        text-decoration: none;
+      float: left;
     }
-
-/* Active/current link */
-    .sidebar a.active {
-        background-color: #4A724A;
-        color: white;
-    }
-
-/* Links on mouse-over */
-    .sidebar a:hover:not(.active) {
-        background-color: #4A724A;
-        color: white;
-    }
-
-/* Page content. The value of the margin-left property should match the value of the sidebar's width property */
     div.content {
-        margin-left: 100px;
-        padding: 1px 16px;
-        height: 1000px;
-        }
-
-/* On screens that are less than 700px wide, make the sidebar into a topbar */
-    @media screen and (max-width: 700px) {
-    .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-        }
-    .sidebar a {float: left;}
-    div.content {margin-left: 0;}
+      margin-left: 0;
     }
+  }
 
-/* On screens that are less than 400px, display the bar vertically, instead of horizontally */
-    @media screen and (max-width: 400px) {
+  /* On screens that are less than 400px, display the bar vertically, instead of horizontally */
+  @media screen and (max-width: 400px) {
     .sidebar a {
-        text-align: center;
-        float: none;
-        }
+      text-align: center;
+      float: none;
     }
-    
-    /* Responsive layout adjustments */
-    @media (max-width: 768px) {
-        .dashboard {
-            grid-template-columns: 1fr;
-        }
+  }
+
+  /* Responsive layout adjustments */
+  @media (max-width: 768px) {
+    .dashboard {
+      grid-template-columns: 1fr;
     }
+  }
 </style>
 
 <head>
@@ -253,69 +256,74 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 
-
-
 <body>
-        <!-- The sidebar -->
-    <div class="sidebar">
-        <a href="{{ url_for('member_dashboard') }}">Dashboard</a>
-        <a href="#workshops">Workshops</a>
-        <a class="active" href="#individual lessons">Individual Lessons</a>
-        <a href="#booking">Booking</a>
-        <a href="#news">News</a>
-        <a href="#payment">Payment</a>
-        <a href="#password">Password</a>
-    </div>
+  <!-- The sidebar -->
+  <div class="sidebar">
+    <a href="{{ url_for('member_dashboard') }}">Dashboard</a>
+    <a href="#workshops">Workshops</a>
+    <a class="active" href="member_view_instr">Individual Lessons</a>
+    <a href="#booking">Booking</a>
+    <a href="#news">News</a>
+    <a href="#payment">Payment</a>
+    <a href="#password">Password</a>
+  </div>
 
-<!-- Team -->
-<section id="team" class="pb-5">
-  <div class="container">
-    <h5 class="section-title h1">Choose an instructor for your lesson</h5>
-    <div class="row">
-      {% if member_view_instr %} {% for instructor in member_view_instr %}
-      <!-- Team member -->
-      <div class="col-xs-12 col-sm-6 col-md-4">
-        <div class="image-flip">
-          <div class="mainflip">
-            <div class="frontside">
-              <div class="card">
-                <div class="card-body text-center">
-                  <p>
-                    <img
-                      class="img-fluid"
-                      src="{{ url_for('static', filename='img/instructors/' ~ instructor.instructor_image_name) }}"
-                      alt="instructor image"
-                    />
-                  </p>
-                  <h4 class="card-title">
-                    {{ instructor.title }} {{ instructor.first_name }} {{
-                    instructor.last_name }}
-                  </h4>
-                  <p class="card-text">{{ instructor.position }}</p>
+  <!-- Team -->
+  <section id="team" class="pb-5">
+    <div class="container">
+      <h5 class="section-title h1">Choose an instructor for your lesson</h5>
+      <div class="row">
+        {% if member_view_instr %} {% for instructor in member_view_instr %}
+        <!-- Team member -->
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="image-flip">
+            <div class="mainflip">
+              <div class="frontside">
+                <div class="card">
+                  <div class="card-body text-center">
+                    <p>
+                      <img
+                        class="img-fluid"
+                        src="{{ url_for('static', filename='img/instructors/' ~ instructor.instructor_image_name) }}"
+                        alt="instructor image"
+                      />
+                    </p>
+                    <h4 class="card-title">
+                      {{ instructor.title }} {{ instructor.first_name }} {{
+                      instructor.last_name }}
+                    </h4>
+                    <p class="card-text">{{ instructor.position }}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="backside">
-              <div class="card">
-                <div class="card-body text-center mt-4">
-                  <h4 class="card-title">About {{ instructor.first_name }}</h4>
-                  <p class="card-text">{{ instructor.instructor_profile }}</p>
-                  <a href="#" class="btn btn-primary btn-sm" style="color: white; font-weight: bold;">
-                  <i class="fas fa-calendar-check" style="color: white;"></i> Book Now
-                  </a>
+              <div class="backside">
+                <div class="card">
+                  <div class="card-body text-center mt-4">
+                    <h4 class="card-title">
+                      About {{ instructor.first_name }}
+                    </h4>
+                    <p class="card-text">{{ instructor.instructor_profile }}</p>
+                    <a
+                      href="{{ url_for('member_view_1on1', instructor_id=instructor.instructor_id) }}"
+                      class="btn btn-primary btn-sm"
+                      style="color: white; font-weight: bold"
+                    >
+                      <i class="fas fa-calendar-check" style="color: white"></i>
+                      Book Now
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+        {% else %}
+        <div class="col-12">
+          <p>No instructors found.</p>
+        </div>
+        {% endfor %} {% endif %}
       </div>
-      {% else %}
-      <div class="col-12">
-        <p>No instructors found.</p>
-      </div>
-      {% endfor %} {% endif %}
     </div>
-  </div>
-</section>
+  </section>
 </body>
 {% endblock %}

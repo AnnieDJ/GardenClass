@@ -17,14 +17,17 @@
                     {% if role == 'Manager' %}
                     <li><a href="{{ url_for('manager_dashboard') }}"><i class="fas fa-home"></i>Home</a></li>
                     <li><a href="{{ url_for('manager_profile') }}"><i class="fas fa-user-circle"></i>Profile</a></li>
+                    <li><a href="{{url_for('password')}}"><i class="fas fa-key"></i> Password</a></li>
                     <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
                     {% elif role == 'Instructor' %}
                     <li><a href="{{ url_for('instructor_dashboard') }}"><i class="fas fa-home"></i>Home</a></li>
                     <li><a href="{{ url_for('instructor_profile') }}"><i class="fas fa-user-circle"></i>Profile</a></li>
+                    <li><a href="{{url_for('password')}}"><i class="fas fa-key"></i> Password</a></li>
                     <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
                     {% elif role == 'Member' %}
                     <li><a href="{{ url_for('member_dashboard') }}"><i class="fas fa-home"></i>Home</a></li>
                     <li><a href="{{ url_for('member_profile') }}"><i class="fas fa-user-circle"></i>Profile</a></li>
+                    <li><a href="{{url_for('password')}}"><i class="fas fa-key"></i> Password</a></li>
                     <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
                     {% else %}
                     <ul>

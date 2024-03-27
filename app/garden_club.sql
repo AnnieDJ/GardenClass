@@ -102,8 +102,9 @@ CREATE TABLE IF NOT EXISTS workshops (
 );
 
 -- Create Lessons table
-CREATE TABLE IF NOT EXISTS lessons (
+CREATE TABLE IF NOT EXISTS one_one_one_lessons (
     lesson_id INT PRIMARY KEY AUTO_INCREMENT,
+    lesson_name VARCHAR(255),
     instructor_id INT,
     member_id INT,
     manager_id INT,
@@ -119,16 +120,31 @@ CREATE TABLE IF NOT EXISTS lessons (
     FOREIGN KEY (manager_id) REFERENCES manager(manager_id) ON DELETE CASCADE
 );
 
+
+CREATE TABLE IF NOT EXISTS lessons (
+  lesson_id INT AUTO_INCREMENT PRIMARY KEY,
+  instructor_id INT NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  date DATE NOT NULL,
+  start_time TIME NOT NULL,
+  end_time TIME NOT NULL,
+  location_id INT NOT NULL,
+  capacity INT NOT NULL,
+  price INT NOT NULL
+);
+
 -- Create Bookings table
 CREATE TABLE IF NOT EXISTS bookings (
     booking_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT,
     workshop_id INT NULL,
     lesson_id INT NULL,
+    one_on_one_id INT NULL,
     booking_type ENUM('Workshop', 'Lesson'),
     status ENUM('Booked', 'Cancelled'),
     FOREIGN KEY (user_id) REFERENCES member(member_id) ON DELETE CASCADE,
     FOREIGN KEY (workshop_id) REFERENCES workshops(workshop_id) ON DELETE SET NULL,
+    FOREIGN KEY (one_on_one_id) REFERENCES one_one_one_lessons(lesson_id) ON DELETE SET NULL,
     FOREIGN KEY (lesson_id) REFERENCES lessons(lesson_id) ON DELETE SET NULL
 );
 

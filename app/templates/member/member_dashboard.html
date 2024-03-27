@@ -1,173 +1,275 @@
-{% extends 'base.html' %}
-
-
-{% block content %}
-
+{% extends 'base.html' %} {% block content %}
+<link
+  rel="stylesheet"
+  href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+/>
 <style>
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f4f4f4;
-        margin: 0;
-        padding: 0;
+  body {
+    font-family: "Arial", sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+  }
+
+  .navbar {
+    background-color: #4a724a;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+  }
+
+  .card {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+
+
+    height: 100%;
+    overflow: auto;
+    left: 0;
+  }
+
+  /* Sidebar links */
+  .sidebar a {
+    display: block;
+    color: black;
+    padding: 16px;
+    text-decoration: none;
+  }
+
+  /* Active/current link */
+  .sidebar a.active {
+    background-color: #4a724a;
+    color: white;
+  }
+
+  /* Links on mouse-over */
+  .sidebar a:hover:not(.active) {
+    background-color: #4a724a;
+    color: white;
+  }
+
+  /* Page content. The value of the margin-left property should match the value of the sidebar's width property */
+  div.content {
+    margin-left: 100px;
+    padding: 1px 16px;
+    height: 1000px;
+  }
+
+  /* On screens that are less than 700px wide, make the sidebar into a topbar */
+  @media screen and (max-width: 700px) {
+    .sidebar {
+      width: 100%;
+      height: auto;
+      position: relative;
     }
-    
-    .navbar {
-        background-color: #4A724A;
-        color: white;
-        padding: 10px 20px;
-        text-align: center;
+
+
+  /* On screens that are less than 400px, display the bar vertically, instead of horizontally */
+  @media screen and (max-width: 400px) {
+    .sidebar a {
+      text-align: center;
+      float: none;
     }
-    
+  }
+
+  /* Responsive layout adjustments */
+  @media (max-width: 768px) {
     .dashboard {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-        padding: 20px;
-    }
-    
-    .card {
-        background-color: #fff;
-        border-radius: 8px;
-        padding: 20px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        overflow: hidden;
-    }
-    
-    .card h2 {
-        background-color: #e7f4e4;
-        color: #333;
-        padding: 10px;
-        margin: -20px -20px 20px -20px;
-        text-align: center;
-    }
-    
-    /* The side navigation menu */
-    .sidebar {
-        margin-right: 100px;
-        padding: 0;
-        width: 200px;
-        background-color: #f1f1f1;
-        position: fixed;
-        
-        height: 100%;
-        overflow: auto;
-        left: 0;
-    }
+      grid-template-columns: 1fr;
+    } 
+  }
 
-/* Sidebar links */
-    .sidebar a {
-        display: block;
-        color: black;
-        padding: 16px;
-        text-decoration: none;
-    }
-
-/* Active/current link */
-    .sidebar a.active {
-        background-color: #4A724A;
-        color: white;
-    }
-
-/* Links on mouse-over */
-    .sidebar a:hover:not(.active) {
-        background-color: #4A724A;
-        color: white;
-    }
-
-/* Page content. The value of the margin-left property should match the value of the sidebar's width property */
-    div.content {
-        margin-left: 100px;
-        padding: 1px 16px;
-        height: 1000px;
-        }
-
-/* On screens that are less than 700px wide, make the sidebar into a topbar */
-    @media screen and (max-width: 700px) {
-    .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-        }
-    .sidebar a {float: left;}
-    div.content {margin-left: 0;}
-    }
-
-/* On screens that are less than 400px, display the bar vertically, instead of horizontally */
-    @media screen and (max-width: 400px) {
-    .sidebar a {
-        text-align: center;
-        float: none;
-        }
-    }
-    
-    /* Responsive layout adjustments */
-    @media (max-width: 768px) {
-        .dashboard {
-            grid-template-columns: 1fr;
-        }
-    }
+  /* Dropdown styles */
+  .dropdown-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none; /* Add this line */
+  }
+  
+  .dropdown-container {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  
+  .dropdown-container a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  .dropdown-container a:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .dropdown:hover .dropdown-container {
+    display: block;
+  }
+  
+  .dropdown:hover .dropdown-btn {
+    background-color: #3e8e41;
+  }  
+  
 </style>
 
 <body>
-        <!-- The sidebar -->
-    <div class="sidebar">
-        <a class="active" href="#dashboard">Dashboard</a>
-        <a href="#workshops">Workshops</a>
-        <a href="{{ url_for('member_view_instr') }}">Individual Lessons</a>
-        <a href="#booking">Booking</a>
-        <a href="#news">News</a>
-        <a href="#payment">Payment</a>
-        <a href="#password">Password</a>
     </div>
-  
-    <!-- Page content -->
-    <div class="content">
+    <a href="#password">Password</a>
+  </div>
 
+  <!-- Page content -->
+  <div class="content">
     <div class="dashboard">
-    
-        <div class="workshops card">
-            <h2>Workshop Schedules</h2>
-                <h3>Introduction to Gardening</h3>
+      <div class="workshops card">
+        <h2>Uncoming Workshop</h2>
+        <div class="card mb-3" style="max-width: 540px">
+          <div class="row g-0">
+            <div class="col-md-4">
+              <img
+                src="https://images.pexels.com/photos/4503269/pexels-photo-4503269.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2
+                    "
+                class="img-fluid rounded-start"
+                alt="..."
+              />
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title">About Gardening</h5>
+                <p class="card-text">
+                  Learn the basics of gardening, including soil preparation,
+                  planting, and watering.
+                </p>
+                <p class="card-text">
+                  <small class="text-body-secondary">View More Details</small>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-3" style="max-width: 540px">
+          <div class="row g-0">
+            <div class="col-md-4">
+              <img
+                src="https://images.pexels.com/photos/6231727/pexels-photo-6231727.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2
+                    "
+                class="img-fluid rounded-start"
+                alt="..."
+              />
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title">Sustainable Gardening</h5>
+                <p class="card-text">
+                  An approach to gardening that focuses on sustainability and
+                  eco-friendly practices.
+                </p>
+                <p class="card-text">
+                  <small class="text-body-secondary">View More Details</small>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- <h3>Introduction to Gardening</h3>
                 <p><strong>Type:</strong> Beginners</p>
                 <p><strong>Date:</strong> March 20, 2024</p>
                 <p><strong>Time:</strong> 10:00 AM - 12:00 PM</p>
                 <p><strong>Location:</strong> Community Center, Room A</p>
                 <p><strong>Instructor:</strong> John Smith</p>
                 <p><strong>Details:</strong> Learn the basics of gardening, including soil preparation, planting, and watering.</p>
-                <p><strong>Cost:</strong> $25</p>
+                <p><strong>Cost:</strong> $25</p> -->
+      </div>
+
+      <div class="lessons card">
+        <h2>Lesson Schedules</h2>
+        <div class="card mb-3" style="max-width: 540px">
+          <div class="row g-0">
+            <div class="col-md-4">
+              <img
+                src="https://images.pexels.com/photos/6231856/pexels-photo-6231856.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2
+                    "
+                class="img-fluid rounded-start"
+                alt="..."
+              />
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title">Pruning Techniques</h5>
+                <p class="card-text">
+                  Learn different pruning techniques to maintain healthy plants.
+                </p>
+                <p class="card-text">
+                  <small class="text-body-secondary">View More Details</small>
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
-    
-        <div class="lessons card">
-            <h2>Lesson Schedules</h2>
-                <h3>Pruning Techniques</h3>
+
+        <div class="card mb-3" style="max-width: 540px">
+          <div class="row g-0">
+            <div class="col-md-4">
+              <img
+                src="https://images.pexels.com/photos/9724436/pexels-photo-9724436.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2
+                    "
+                class="img-fluid rounded-start"
+                alt="..."
+              />
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title">Flower Garden</h5>
+                <p class="card-text">
+                  A workshop for beginners interested in starting their own
+                  flower garden.
+                </p>
+                <p class="card-text">
+                  <small class="text-body-secondary">View More Details</small>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- <h3>Pruning Techniques</h3>
                 <p><strong>Date:</strong> March 25, 2024</p>
                 <p><strong>Time:</strong> 2:00 PM - 4:00 PM</p>
                 <p><strong>Location:</strong> Community Garden</p>
                 <p><strong>Instructor:</strong> Emily Johnson</p>
                 <p><strong>Details:</strong> Learn different pruning techniques to maintain healthy plants.</p>
-                <p><strong>Cost:</strong> $20</p>
-            
-        </div>
+                <p><strong>Cost:</strong> $20</p> -->
+      </div>
 
-        <div class="booking card">
+      <!-- <div class="booking card">
             <h2>Booking Management</h2>
             <p><strong>View Booking:</strong> Book lesson</p >
             <p><strong>Cancel Booking:</strong> cancel workshop</p >
-            <!-- More profile details -->
-        </div>
-    
-        <div class="subscription card">
+       
+        </div> -->
+
+      <!-- <div class="subscription card">
             <h2>Subscription Details</h2>
             <p><strong>Status:</strong> Active</p>
             <p><strong>Renewal Date:</strong> March 15, 2025</p>
             <p><strong>Renewal Options:</strong> Renew subscription</p>
-        </div>
-        
-        
-        <!-- More sections as needed -->
-    </div>
-    </div>
+        </div> -->
 
-    </body>
+      <!-- More sections as needed -->
+    </div>
+  </div>
+
 
 {%endblock%}

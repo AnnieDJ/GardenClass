@@ -40,7 +40,15 @@
         margin: -20px -20px 20px -20px;
         text-align: center;
     }
-    
+
+    .profile-picture img {
+    width: 150px; 
+    height: 150px; 
+    border-radius: 50%; 
+    object-fit: cover; 
+    object-position: center; 
+    }
+
     .update-profile-button {
         display: flex;
         justify-content: flex-end;
@@ -59,6 +67,7 @@
 <div class="dashboard">
     <div class="profile card">
         <h2>Instructor Profile</h2>
+        <div class="profile-picture">
         {% if account[0][10] is not none %}
             {% if account[0][10].endswith('.jpg') %}
                 <img class="card-img-top" src="data:image/jpg;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
@@ -72,7 +81,7 @@
         {% else %}
             <img src="https://i.pinimg.com/564x/92/5c/52/925c52543aa8096c66214311fa598fbc.jpg" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%; display: block; margin: 0 auto 20px auto;">
        {% endif %}
-    
+        </div>
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 <div class="alert alert-success">

@@ -18,13 +18,6 @@
     text-align: center;
   }
 
-  .dashboard {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    padding: 20px;
-  }
-
   .card {
     background-color: #fff;
     border-radius: 8px;
@@ -33,21 +26,6 @@
     overflow: hidden;
   }
 
-  .card h2 {
-    background-color: #e7f4e4;
-    color: #333;
-    padding: 10px;
-    margin: -20px -20px 20px -20px;
-    text-align: center;
-  }
-
-  /* The side navigation menu */
-  .sidebar {
-    margin-right: 100px;
-    padding: 0;
-    width: 200px;
-    background-color: #f1f1f1;
-    position: fixed;
 
     height: 100%;
     overflow: auto;
@@ -88,17 +66,7 @@
       height: auto;
       position: relative;
     }
-    .sidebar a {
-      float: left;
-    }
-    div.content {
-      margin-left: 0;
-    }
-  }
 
-  .sidebar a.active {
-    font-weight: bold;
-  }
 
   /* On screens that are less than 400px, display the bar vertically, instead of horizontally */
   @media screen and (max-width: 400px) {
@@ -157,21 +125,6 @@
 </style>
 
 <body>
-  <!-- The sidebar -->
-  <div class="sidebar">
-    <a class="active" href="#dashboard">Dashboard</a>
-    <a href="#workshops">Workshops</a>
-    <a href="{{ url_for('member_view_instr') }}">Individual Lessons</a>
-    <a href="#booking">Booking</a>
-    <a href="#news">News</a>
-    <div class="dropdown">
-      <a href="#" class="dropdown-btn">Payment</a>
-      <div class="dropdown-container">
-        <a href="{{ url_for('member_pay_subscription') }}">Subscription Payment</a>
-        <a href="#">Workshop Payment</a>
-        <a href="#">One On One Lessons Payment</a>
-        <a href="#">Lessons Payment</a>
-      </div>
     </div>
     <a href="#password">Password</a>
   </div>
@@ -318,18 +271,5 @@
     </div>
   </div>
 
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script>
-    $(document).ready(function () {
-      $(".sidebar a").click(function () {
-        $(".sidebar a").removeClass("active");
-        $(this).addClass("active");
-        window.location.href = $(this).attr("href");
-      });
-    });
-  </script>
-</body>
 
 {%endblock%}

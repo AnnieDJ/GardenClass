@@ -3,4 +3,29 @@
 
 
 
+<div class="row">
+    {% for guide in guide_list %}
+      <div class="col-md-4 mb-4">
+        <div class="card" style="width: 18rem;">
+          {% for image in image_list if image[1] == guide[0] %}
+            {% if "://" in image[2] %}
+              <img src="{{ image[2] }}" class="card-img-top" alt="Image" style="width: 100%; height: 150px; object-fit: cover;">
+            {% else %}
+              {% set local_image_path = url_for('static', filename='images/' + image[2]) %} 
+              <img src="{{ local_image_path }}" class="card-img-top" alt="Image" style="width: 100%; height: 150px; object-fit: cover;">
+            {% endif %}
+          {% endfor %}
+          <div class="card-body">
+            <h5 class="card-title">{{ guide[2] }}</h5>
+            <p class="card-text">{{ guide[3] }}</p>
+            <a href="{{ url_for('agronomistguide', guide_id=guide[0]) }}" class="btn btn-success">View</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  
+
+
+
 {% endblock %}

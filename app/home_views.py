@@ -179,6 +179,59 @@ def payment():
     
     return render_template('/register/payment.html')
 
+
+@app.route('/password', methods=['GET', 'POST'])
+def password():
+    if 'loggedin' in session and session['loggedin']:
+        msg = request.args.get('msg', '') 
+        cursor = utils.getCursor()
+        cursor.execute('SELECT * FROM user WHERE user_id = %s', (session['id'],))
+        user_data = cursor.fetchone()
+        return render_template('password.html', user_data=user_data, msg=msg,role=session['role'])
+    return redirect(url_for('login'))
+
+
+@app.route('/change_password', methods=['POST'])
+def change_password():
+    if 'loggedin' in session and session['loggedin']:
+        msg = ''
+        current_password = request.form.get('currentpassword')
+        new_password = request.form.get('newpassword')
+        confirm_password = request.form.get('confirmpassword')
+
+        cursor = utils.getCursor()
+        cursor.execute('SELECT password FROM user WHERE user_id = %s', (session['id'],))
+        result = cursor.fetchone()
+
+        if result:
+            if not utils.hashing.check_value(result[0], current_password, salt='schwifty'):
+                msg = 'Current password is incorrect'
+            elif new_password != confirm_password:
+                msg = 'New password and confirm password do not match'
+            elif len(new_password) < 8:
+                msg = 'New password must be at least 8 characters long'
+            elif not re.search(r'\d', new_password):
+                msg = 'New password must contain at least one digit'
+            elif not re.search(r'[A-Za-z]', new_password):
+                msg = 'New password must contain at least one letter'
+            elif not re.search(r'[^A-Za-z0-9]', new_password):
+                msg = 'New password must contain at least one special character'
+            else:
+                hashed_new_password = utils.hashing.hash_value(new_password, salt='schwifty')
+                cursor.execute('UPDATE user SET password = %s WHERE id = %s', (hashed_new_password, session['id']))
+                utils.connection.commit()
+                msg = 'Password updated successfully!'
+                return redirect(url_for('password', msg=msg)) 
+
+        else:
+            msg = 'User not found'
+
+        return render_template('password.html', msg=msg, role=session['role'])
+    
+    return redirect(url_for('login'))
+
+
+
 @app.route('/logout')
 def logout():
     # Remove session data, this will log the user out

@@ -226,11 +226,18 @@ def change_password():
             msg = 'New password must contain at least one special character'
         else:
             hashed_new_password = utils.hashing.hash_value(new_password, salt='schwifty')
-            cursor.execute('UPDATE user SET password = %s WHERE user_id = %s', (hashed_new_password, session['id']))
+
+            if session.get('role') == 'Member':
+                cursor.execute('UPDATE user SET password = %s WHERE related_member_id = %s AND role = %s', (hashed_new_password, user_id, 'Member'))
+            elif session.get('role') == 'Manager':
+                cursor.execute('UPDATE user SET password = %s WHERE related_manager_id = %s AND role = %s', (hashed_new_password, user_id, 'Manager'))
+            elif session.get('role') == 'Instructor':
+                cursor.execute('UPDATE user SET password = %s WHERE related_instructor_id = %s AND role = %s', (hashed_new_password, user_id, 'Instructor'))
+
             utils.connection.commit()
             session['password'] = hashed_new_password
             msg = 'Password updated successfully!'
-            return redirect(url_for('password', msg=msg)) 
+            return redirect(url_for('password', msg=msg))
 
         return render_template('password.html', msg=msg,role=session['role'])
     return redirect(url_for('login'))

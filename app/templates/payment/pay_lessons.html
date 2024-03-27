@@ -1,3 +1,33 @@
 {% extends 'base.html' %}
 {% block content %}
+{% if msg %}
+<div class="alert alert-info">{{ msg }}</div>
+{% endif %}
+
+<div class="container">
+    <h2>Pay Lessons</h2>
+    <form method="POST" class="needs-validation" novalidate>
+        <div class="mb-3">
+            <select class="form-label" id="bank_name" name="bank_name" required>
+                <option value="ANZ" {% if bank_info[bank_name] == 'ANZ' %} selected {% endif %}>ANZ</option>
+                <option value="BNZ" {% if bank_info[bank_name] == 'BNZ' %} selected {% endif %}>BNZ</option>
+                <option value="ASB" {% if bank_info[bank_name] == 'ASB' %} selected {% endif %}>ASB</option>
+                <option value="Westpac" {% if bank_info[bank_name] == 'Westpac' %} selected {% endif %}>Westpac</option>
+                <option value="Kiwibank" {% if bank_info[bank_name] == 'Kiwibank' %} selected {% endif %}>Kiwibank</option>
+            </select>
+            <label for="bank_name">Bank Name</label>
+        </div>
+        <div class="mb-3">
+            <input type="text" class="form-control" id="bank_card" name="bank_card" placeholder="Bank Card" value = "{{bank_info['bank_card']}}" required>
+            <label for="bank_card">Bank Card</label>
+        </div>
+        <div class="mb-3">
+            <input type="text" class="form-control" id="security_code" name="security_code" placeholder="Security Code" value = "{{bank_info['security_code']}}" required>
+            <label for="security_code">Security Code</label>
+        </div>
+
+        <button type="submit" class="btn btn-success btn-lg{% if disable %} disabled{% endif %}">Pay Now</button>
+    </form>
+</div>
+
 {% endblock %}

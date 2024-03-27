@@ -87,7 +87,7 @@ def member_view_1on1():
         
         try: 
         # Prepare the query for fetching available lessons by the instructor
-            ool_query = """SELECT * FROM `one-on-one lessons` 
+            ool_query = """SELECT * FROM `one_on_one_lessons` 
                            WHERE instructor_id = %s AND status = 'Scheduled' 
                            ORDER BY date, start_time"""
 

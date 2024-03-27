@@ -451,7 +451,7 @@ def manager_lessons():
 
         # Construct WHERE clause for One-on-One Lessons query with JOIN to get member details
         ool_where_clause = " AND ".join(ool_where_clauses) if ool_where_clauses else "1=1"
-        ool_query = f"""SELECT o.*, m.user_name, m.first_name, m.last_name FROM `one-on-one lessons` o 
+        ool_query = f"""SELECT o.*, m.user_name, m.first_name, m.last_name FROM `one_on_one_lessons` o 
                         JOIN member m ON o.member_id = m.member_id
                         WHERE {ool_where_clause} 
                         ORDER BY o.date, o.start_time"""

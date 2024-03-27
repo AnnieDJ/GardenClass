@@ -184,3 +184,34 @@ CREATE TABLE IF NOT EXISTS news (
 );
 
 
+
+ALTER TABLE bookings DROP FOREIGN KEY bookings_ibfk_3;ALTER TABLE lessons
+DROP COLUMN lesson_id,
+DROP COLUMN manager_id;
+
+
+ALTER TABLE workshops DROP FOREIGN KEY workshops_ibfk_3;ALTER TABLE workshops DROP COLUMN manager_id;
+
+ 
+ RENAME TABLE lessons TO `One-On-One lessons`;
+ 
+ 
+
+CREATE TABLE lessons (
+  lesson_id INT AUTO_INCREMENT PRIMARY KEY,
+  instructor_id INT NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  date DATE NOT NULL,
+  start_time TIME NOT NULL,
+  end_time TIME NOT NULL,
+  location_id INT NOT NULL,
+  capacity INT NOT NULL,
+  price INT NOT NULL
+);
+
+
+ALTER TABLE workshops
+ADD COLUMN workshop_image VARCHAR(255);
+
+
+ALTER TABLE `one-on-one lessons` RENAME TO one_on_one_lessons;

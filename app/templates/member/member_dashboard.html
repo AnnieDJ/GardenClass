@@ -112,8 +112,48 @@
   @media (max-width: 768px) {
     .dashboard {
       grid-template-columns: 1fr;
-    }
+    } 
   }
+
+  /* Dropdown styles */
+  .dropdown-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none; /* Add this line */
+  }
+  
+  .dropdown-container {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  
+  .dropdown-container a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  .dropdown-container a:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .dropdown:hover .dropdown-container {
+    display: block;
+  }
+  
+  .dropdown:hover .dropdown-btn {
+    background-color: #3e8e41;
+  }  
+  
 </style>
 
 <body>
@@ -124,7 +164,15 @@
     <a href="{{ url_for('member_view_instr') }}">Individual Lessons</a>
     <a href="#booking">Booking</a>
     <a href="#news">News</a>
-    <a href="#payment">Payment</a>
+    <div class="dropdown">
+      <a href="#" class="dropdown-btn">Payment</a>
+      <div class="dropdown-container">
+        <a href="{{ url_for('member_pay_subscription') }}">Subscription Payment</a>
+        <a href="#">Workshop Payment</a>
+        <a href="#">One On One Lessons Payment</a>
+        <a href="#">Lessons Payment</a>
+      </div>
+    </div>
     <a href="#password">Password</a>
   </div>
 

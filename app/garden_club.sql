@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS bookings (
     status ENUM('Booked', 'Cancelled'),
     FOREIGN KEY (user_id) REFERENCES member(member_id) ON DELETE CASCADE,
     FOREIGN KEY (workshop_id) REFERENCES workshops(workshop_id) ON DELETE SET NULL,
-    FOREIGN KEY (one_on_one_id) REFERENCES one_one_one_lessons(lesson_id) ON DELETE SET NULL,
+    FOREIGN KEY (one_on_one_id) REFERENCES one_on_one_lessons(lesson_id) ON DELETE SET NULL,
     FOREIGN KEY (lesson_id) REFERENCES lessons(lesson_id) ON DELETE SET NULL
 );
 

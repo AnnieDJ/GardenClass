@@ -134,7 +134,7 @@
 
 <div class="main-content">
   <div class="card">
-    <h2 class="card-header">One-on-one Lesson</h2>
+    <h2 class="card-header">Lessons</h2>
     <div class="card-content">
       {% for lessons in lessons %}
       <div class="lesson-item">
@@ -146,15 +146,10 @@
         <strong>Location ID:</strong> {{ lessons['location_id'] }}<br />
         <strong>Price:</strong> {{ lessons['price'] }}<br />
         <strong>Status:</strong> {{ lessons['status'] }}
-        <div class="lesson-actions">
-          <button class="btn edit-lesson">Edit</button>
-          <button class="btn cancel-lesson">Cancel</button>
-        </div>
       </div>
       {% endfor %}
     </div>
     <div class="card-footer">
-      <button id="addLessonButton" class="btn add-lesson">Add Lesson</button>
       <a href="{{ url_for('instructor_lessons') }}" class="news-link"
         >Read more</a
       >

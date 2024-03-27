@@ -5,7 +5,7 @@ from flask import flash,get_flashed_messages
 from datetime import datetime
 from app import utils
 import base64
-
+from flask import jsonify
 
 @app.route('/instructor/dashboard')
 def instructor_dashboard():
@@ -63,7 +63,7 @@ def instructor_lessons():
         # Modified query to fetch one-on-one lessons and join with the member table
         ool_query = """
         SELECT ool.*, m.first_name, m.last_name, m.user_name 
-        FROM `one-on-one lessons` ool
+        FROM `one_on_one_lessons` ool
         JOIN `member` m ON ool.member_id = m.member_id 
         WHERE ool.instructor_id = %s
        """
@@ -106,6 +106,7 @@ def instructor_lessons():
         )
     else:
         return redirect(url_for('login'))
+
 
 
 
@@ -205,3 +206,6 @@ def instructor_workshops():
         return render_template('instructor/instr_workshops.html', workshops=workshops_data, role=session['role'])
     else:
         return redirect(url_for('login'))
+
+
+

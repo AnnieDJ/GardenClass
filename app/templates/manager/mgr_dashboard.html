@@ -219,15 +219,10 @@
         <strong>Location ID:</strong> {{ lessons['location_id'] }}<br />
         <strong>Price:</strong> {{ lessons['price'] }}<br />
         <strong>Status:</strong> {{ lessons['status'] }}
-        <div class="lesson-actions">
-          <button class="btn edit-lesson">Edit</button>
-          <button class="btn cancel-lesson">Cancel</button>
-        </div>
       </div>
       {% endfor %}
     </div>
     <div class="card-footer">
-      <button id="addLessonButton" class="btn add-lesson">Add Lesson</button>
       <a href="{{ url_for('manager_lessons') }}" class="news-link">Read more</a>
     </div>
   </div>
@@ -243,15 +238,10 @@
         <p><strong>Content:</strong> {{news['content'] }}</p>
         <p><strong>Data Published:</strong> {{ news['dtat_published'] }}</p>
         <p><strong>Author ID:</strong> {{ news['author_id'] }}</p>
-        <div class="lesson-actions">
-          <button class="btn edit-lesson">Edit</button>
-          <button class="btn cancel-lesson">Cancel</button>
-        </div>
       </div>
       {% endfor %}
     </div>
     <div class="card-footer">
-      <button class="btn add-lesson btn-left">Add News</button>
       <a href="#" class="news-link news-link-right">Read more</a>
     </div>
   </div>
@@ -270,15 +260,10 @@
         <p><strong>Location ID:</strong> {{ workshops['location_id'] }}</p>
         <p><strong>Capacity:</strong> {{ workshops['capacity'] }}</p>
         <p><strong>Price:</strong> {{ workshops['price'] }}</p>
-        <div class="lesson-actions">
-          <button class="btn edit-lesson">Edit</button>
-          <button class="btn cancel-lesson">Cancel</button>
-        </div>
       </div>
       {% endfor %}
     </div>
     <div class="card-footer">
-      <button class="btn add-lesson btn-left">Add Schedules</button>
       <a
         href="{{ url_for('manager_workshops') }}"
         class="news-link news-link-right"

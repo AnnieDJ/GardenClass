@@ -108,3 +108,7 @@ def member_view_1on1():
     else:
         return redirect(url_for('member_view_instr')) 
     
+
+
+## Member workshop ##
+    

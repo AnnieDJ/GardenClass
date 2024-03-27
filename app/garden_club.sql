@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS workshops (
 );
 
 -- Create Lessons table
-CREATE TABLE IF NOT EXISTS one_one_one_lessons (
+CREATE TABLE IF NOT EXISTS one_on_one_lessons (
     lesson_id INT PRIMARY KEY AUTO_INCREMENT,
     lesson_name VARCHAR(255),
     instructor_id INT,

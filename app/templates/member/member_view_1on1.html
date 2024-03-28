@@ -1,50 +1,143 @@
 {% extends 'base.html' %} {% block content %}
 
+<style>
+  .container-custom {
+    padding-left: 1in;
+    padding-right: 1in;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
 
-<h2>Available One-on-One Lessons with Your Favourite Instructor</h2>
+  .page-title,
+  .subtitle {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
 
-<table class="table table-striped lesson-table">
-<thead>
-  <tr>
-    <th><strong>Instructor</srtong></th>
-    <th><strong>1on1 Lesson</srtong></th>
-    <th><strong>Date</strong></th>
-    <th><strong>Start Time</strong></th>
-    <th><strong>End Time</strong></th>
-    <th><strong>Location</strong></th>
-    <th><strong>Price (NZ$)</strong></th>
-    <th><strong>Action</strong></th>
-    </tr>
-  </thead>
+  .search-form-group,
+  .back-to-list {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: calc(100% - 2in);
+    display: block;
+  }
 
-  <tbody>
-  {% for lesson in one_on_one_lessons_data %}
+  .form-inline input[type="text"],
+  .form-inline input[type="date"] {
+    width: 100%;
+    margin-right: 10px;
+  }
 
-  <tr class="lesson-item">
-      <td>{{ lesson.instructor_id }}</td>
-      <td></td>
-      <td>{{ lesson.date }}</td>
-      <td>{{ lesson.start_time }}</td>
-      <td>{{ lesson.end_time }}</td>
-      <td>{{ lesson.location_id }}</td>
-      <td>{{ lesson.price }}</td>
-      <td>
-      <a href="{{ url_for('member_view_1on1', instructor_id=lesson.instructor_id) }}"
-        class="btn btn-primary"
-        >Book Now</a>
-      </td>
-    </tr>
-    {% else %}
-    <tr>
-  <td colspan="9"> No available lessons at this moment.</td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
+  .search-btn {
+    display: inline-block;
+    margin-right: 5px;
+  }
 
-    <div>
- <a href="{{ url_for('member_view_instr') }}" class="btn btn-secondary"
-          >Back to List</a
-        >
-      </div>
-{% endblock %}
+  .lesson-table {
+    width: calc(100% - 2in);
+    margin-left: 1in;
+    margin-right: 1in;
+    box-sizing: border-box;
+  }
+
+  .back-to-list {
+    width: fit-content;
+    display: block;
+    margin-right: auto;
+    margin-left: 1in;
+  }
+</style>
+
+<div class="container-custom">
+  <h2 class="page-title">Available One-on-One Lessons</h2>
+  <p class="subtitle">
+    Browse and book personalized lessons with your chosen instructor
+  </p>
+
+  <div class="search-form-group">
+    <form
+      action="{{ url_for('search_1on1_lessons') }}"
+      method="post"
+      class="form-inline search-form"
+    >
+      <input
+        type="text"
+        class="form-control"
+        name="lesson_name"
+        placeholder="Enter 1on1 Lesson name"
+      />
+      <input
+        type="date"
+        class="form-control"
+        name="date"
+        placeholder="Enter Date"
+      />
+      <input
+        type="text"
+        class="form-control"
+        name="location"
+        placeholder="Enter Location"
+      />
+      <button type="submit" class="btn btn-primary search-btn">Search</button>
+      <button type="button" class="btn btn-info cancel-btn" onclick="goBack()">
+        Cancel
+      </button>
+    </form>
+  </div>
+
+  <table class="table table-striped lesson-table">
+    <thead>
+      <tr>
+        <th><strong>Instructor</strong></th>
+        <th><strong>Topic</strong></th>
+        <th><strong>Date</strong></th>
+        <th><strong>Start Time</strong></th>
+        <th><strong>End Time</strong></th>
+        <th><strong>Location</strong></th>
+        <th><strong>Price (NZ$)</strong></th>
+        <th><strong>Action</strong></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for lesson in one_on_one_lessons_data %}
+
+      <tr class="lesson-item">
+        <td>{{ lesson.instructor_id }}</td>
+        <td>{{ lesson.lesson_name }}</td>
+        <td>{{ lesson.date }}</td>
+        <td>{{ lesson.start_time }}</td>
+        <td>{{ lesson.end_time }}</td>
+        <td>{{ lesson.location_id }}</td>
+        <td>{{ lesson.price }}</td>
+        <td>
+          <a
+            href="{{ url_for('member_view_1on1', instructor_id=lesson.instructor_id) }}"
+            class="btn btn-primary"
+            >Book Now</a
+          >
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="9">No available lessons at this moment.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="back-to-list">
+    <a href="{{ url_for('member_view_instr') }}" class="btn btn-secondary"
+      >Back</a
+    >
+  </div>
+
+  {% endblock %}
+
+  <script>
+    function goBack() {
+      location.reload();
+    }
+  </script>
+</div>

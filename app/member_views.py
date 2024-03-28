@@ -124,3 +124,53 @@ def workshopimage():
     connection.execute("SELECT * FROM workshops;")
     workshopImage = connection.fetchall()
     return render_template('member_workshop.html', role=session.get('role', 'member'),workshop_image = workshopImage)
+
+
+
+    
+## Member Search 1-on-1 lessons ##
+@app.route('/search_1on1_lessons', methods=['POST'])
+def search_1on1_lessons():
+    if 'loggedin' in session and session['loggedin']:
+        cursor = utils.getCursor()
+        
+        lesson_name = request.form.get('lesson_name', '')
+        date = request.form.get('date', '')
+        location = request.form.get('location', '')
+        
+        query = """SELECT * FROM `one_on_one_lessons` WHERE status = 'Scheduled'"""
+        query_params = []
+        
+        # Add search filters to the query only if they have values
+        if lesson_name:
+            query += " AND lesson_name LIKE %s"
+            query_params.append(f"%{lesson_name}%")
+        if date:
+            query += " AND date = %s"
+            query_params.append(date)
+        if location:
+            query += " AND location_id LIKE %s"
+            query_params.append(f"%{location}%")
+        
+        query += " ORDER BY date, start_time"
+
+        try:
+            # Execute the search query
+            print("Executing SQL query:", query)
+            print("With parameters:", query_params)
+    
+            cursor.execute(query, tuple(query_params))
+            lessons = cursor.fetchall()
+            
+            print("Lessons fetched:", lessons)
+
+        except Exception as e:
+            print(f"Database query failed: {e}")
+            lessons = []
+        finally:
+            cursor.close()
+
+        # Render the template with the search results
+        return render_template('member/member_view_1on1.html', one_on_one_lessons_data=lessons, role=session['role'])
+    else:
+        return redirect(url_for('login')) 

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Expired Subscription Details{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Expired Subscription Details</h2>
+
+    <div class="form-group row">
+    <form class="col-sm-10" action="/expired_sub_search" method="GET">
+        <div class="input-group">
+            <input type="text" class="form-control" id="search" name="search" placeholder="Enter first name, last name, type, start date , end date or status">
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-success">Search</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+    <div class="alert alert-info" role="alert">
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+{% endwith %}
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Type</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sub in subscription %}
+                <tr>
+                    <td>{{ sub['first_name'] }}</td>
+                    <td>{{ sub['last_name'] }}</td>
+                    <td>{{ sub['type'] }}</td>
+                    <td>{{ sub['start_date'] }}</td>
+                    <td>{{ sub['end_date'] }}</td>
+                    <td>{{ sub['status'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

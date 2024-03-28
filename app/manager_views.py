@@ -480,15 +480,6 @@ def manager_lessons():
     else:
         return redirect(url_for('login'))
 
-
-
-
-
-
-
-
-
-
 @app.route('/manager/workshops')
 def manager_workshops():
     if 'loggedin' in session and session['loggedin']:
@@ -527,3 +518,71 @@ def manager_workshops():
     else:
         return redirect(url_for('login'))
 
+
+@app.route('/manager/expired_subscriptions', methods=['GET', 'POST'])
+def expired_subscriptions():
+    if 'loggedin' in session and session['loggedin']:
+         cursor = utils.getCursor()
+         cursor.execute('SELECT member.first_name,member.last_name, subscriptions.*\
+                          FROM subscriptions\
+                          JOIN member\
+                          ON subscriptions.user_id = member.member_id\
+                          WHERE status = \'Expired\'\
+                          OR (status = \'Active\' AND end_date <= DATE_ADD(CURDATE(), INTERVAL 30 DAY));')
+         subscription = cursor.fetchall()
+    
+         return render_template('/manager/mgr_expired_subscriptions.html', subscription=subscription, role=session['role'])
+    else:
+        return redirect(url_for('login'))
+    
+@app.route('/expired_sub_search')
+def expired_sub_search():
+    if 'loggedin' in session and session['loggedin']:
+        query = request.args.get('search', '')
+      
+        cursor = utils.getCursor()
+        cursor.execute('SELECT member.first_name,member.last_name, subscriptions.* FROM subscriptions JOIN member ON subscriptions.user_id = member.member_id;')
+        users = cursor.fetchall()
+        
+        if query is None or query == '':
+            return redirect(url_for('expired_subscriptions'))
+        
+        matched_profiles = []
+        for user in users:
+            if query.lower() in user['first_name'].lower():
+               cursor.execute("SELECT member.first_name,member.last_name, subscriptions.* FROM subscriptions JOIN member ON subscriptions.user_id = member.member_id WHERE first_name LIKE CONCAT('%', %s, '%');",(user['first_name'],))
+               member_profile_list = cursor.fetchall()
+               matched_profiles.extend(member_profile_list)
+            
+            elif query.lower() in user['last_name'].lower():
+               cursor.execute("SELECT member.first_name,member.last_name, subscriptions.* FROM subscriptions JOIN member ON subscriptions.user_id = member.member_id WHERE last_name LIKE CONCAT('%', %s, '%');",(user['last_name'],))
+               member_profile_list = cursor.fetchall()
+               matched_profiles.extend(member_profile_list)
+            
+            elif query.lower() in user['type'].lower():
+                cursor.execute("SELECT member.first_name,member.last_name, subscriptions.* FROM subscriptions JOIN member ON subscriptions.user_id = member.member_id WHERE type LIKE CONCAT('%', %s, '%');",(user['type'],))
+                member_profile_list = cursor.fetchall()
+                matched_profiles.extend(member_profile_list)
+            
+            elif query.lower() in user['start_date'].strftime('%Y-%m-%d').lower():
+                cursor.execute("SELECT member.first_name, member.last_name, subscriptions.* FROM subscriptions JOIN member ON subscriptions.user_id = member.member_id WHERE start_date LIKE CONCAT('%', %s, '%');", (user['start_date'].strftime('%Y-%m-%d'),))
+                member_profile_list = cursor.fetchall()
+                matched_profiles.extend(member_profile_list)
+            
+            elif query.lower() in user['end_date'].strftime('%Y-%m-%d').lower():
+                cursor.execute("SELECT member.first_name,member.last_name, subscriptions.* FROM subscriptions JOIN member ON subscriptions.user_id = member.member_id WHERE end_date LIKE CONCAT('%', %s, '%');",(user['end_date'].strftime('%Y-%m-%d'),))
+                member_profile_list = cursor.fetchall()
+                matched_profiles.extend(member_profile_list)
+                
+            elif query.lower() in user['status'].lower():
+                cursor.execute("SELECT member.first_name,member.last_name, subscriptions.* FROM subscriptions JOIN member ON subscriptions.user_id = member.member_id WHERE status LIKE CONCAT('%', %s, '%');",(user['status'],))
+                member_profile_list = cursor.fetchall()
+                matched_profiles.extend(member_profile_list)
+        
+        if not matched_profiles:
+            flash('No matching users found.', 'info')
+            return redirect(url_for('expired_subscriptions'))
+        else:
+            return render_template("manager/mgr_expired_subscriptions.html", subscription=matched_profiles, role=session['role'])
+    else:
+         return redirect(url_for('login'))

@@ -16,10 +16,10 @@ def member_pay_one_one_one_lesson(lesson_id):
                          FROM one_on_one_lessons \
                          JOIN bookings\
                          ON one_on_one_lessons.lesson_id = bookings.one_on_one_id\
-                         WHERE one_on_one_lessons.lesson_id =%s;'(lesson_id,))
+                         WHERE one_on_one_lessons.lesson_id =%s;',(lesson_id,))
         one_on_one_lesson = cursor.fetchone()
         
-        cursor.execute('SELECT * FROM bank_info WHERE member_id = %s;' , (session['id'],))
+        cursor.execute('SELECT * FROM bank_info WHERE member_id = %s;' ,(session['id'],))
         bank_info = cursor.fetchone()
         
         if one_on_one_lesson is not None and one_on_one_lesson['booking_status'] == 'Booked':
@@ -30,8 +30,8 @@ def member_pay_one_one_one_lesson(lesson_id):
                 
                 payment_date = utils.current_date_time()
                
-                cursor.execute('UPDATE bank_info SET bank_name = %s, security_code = %s, bank_card = %s WHERE member_id = %s',(bank_name,security_code,bank_card,session['id'],))
-                cursor.execute('INSERT payments (user_id,amount,payment_type,payment_date,status) VALUES (%s,%s,%s,%s,%s)'(session['id'],one_on_one_lesson['price'],'Lesson',payment_date,'Completed'))
+                cursor.execute('UPDATE bank_info SET bank_name = %s,security_code = %s, bank_card = %s WHERE member_id = %s',(bank_name,security_code,bank_card,session['id'],))
+                cursor.execute('INSERT payments (user_id,amount,payment_type,payment_date,status) VALUES (%s,%s,%s,%s,%s)',(session['id'],one_on_one_lesson['price'],'Lesson',payment_date,'Completed'))
                 return redirect(url_for('member_dashboard'))
             else:
              return render_template('/payment/pay_one_on_one_lesson.html', bank_info = bank_info, username=session['username'], role=session['role'])   
@@ -54,7 +54,7 @@ def member_pay_lesson(lesson_id):
                         FROM lessons \
                         JOIN bookings\
                         ON lessons.lesson_id = bookings.lesson_id\
-                        WHERE lessons.lesson_id =%s;'(lesson_id,))
+                        WHERE lessons.lesson_id =%s;',(lesson_id,))
         lesson = cursor.fetchone()
         
         cursor.execute('SELECT * FROM bank_info WHERE member_id = %s;' , (session['id'],))
@@ -69,7 +69,7 @@ def member_pay_lesson(lesson_id):
                 payment_date = utils.current_date_time()
                
                 cursor.execute('UPDATE bank_info SET bank_name = %s, security_code = %s, bank_card = %s WHERE member_id = %s',(bank_name,security_code,bank_card,session['id'],))
-                cursor.execute('INSERT payments (user_id,amount,payment_type,payment_date,status) VALUES (%s,%s,%s,%s,%s)'(session['id'],lesson['price'],'Lesson',payment_date,'Completed'))
+                cursor.execute('INSERT payments (user_id,amount,payment_type,payment_date,status) VALUES (%s,%s,%s,%s,%s)',(session['id'],lesson['price'],'Lesson',payment_date,'Completed',))
                 return redirect(url_for('member_dashboard'))
             else:
              return render_template('/payment/pay_lessons.html', bank_info = bank_info, username=session['username'], role=session['role'])   
@@ -91,7 +91,7 @@ def member_pay_workshop(workshop_id):
                         FROM workshops \
                         JOIN bookings\
                         ON workshops.workshop_id = bookings.lesson_id\
-                        WHERE workshops.workshop_id =%s;'(workshop_id,))
+                        WHERE workshops.workshop_id =%s;',(workshop_id,))
         workshop = cursor.fetchone()
         
         cursor.execute('SELECT * FROM bank_info WHERE member_id = %s;' , (session['id'],))
@@ -106,7 +106,7 @@ def member_pay_workshop(workshop_id):
                 payment_date = utils.current_date_time()
                
                 cursor.execute('UPDATE bank_info SET bank_name = %s, security_code = %s, bank_card = %s WHERE member_id = %s',(bank_name,security_code,bank_card,session['id'],))
-                cursor.execute('INSERT payments (user_id,amount,payment_type,payment_date,status) VALUES (%s,%s,%s,%s,%s)'(session['id'],workshop['price'],'Workshop',payment_date,'Completed'))
+                cursor.execute('INSERT payments (user_id,amount,payment_type,payment_date,status) VALUES (%s,%s,%s,%s,%s)',(session['id'],workshop['price'],'Workshop',payment_date,'Completed'))
                 return redirect(url_for('member_dashboard'))
             else:
              return render_template('/payment/pay_workshop.html', bank_info = bank_info, username=session['username'], role=session['role'])   

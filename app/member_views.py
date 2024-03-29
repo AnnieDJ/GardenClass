@@ -207,7 +207,23 @@ def book_lesson():
 def view_news():
     if 'loggedin' in session and session['loggedin']:
         cursor = utils.getCursor()
-        cursor.execute("SELECT news_id, title, content, date_published FROM news ORDER BY date_published DESC")
+        
+        title = request.args.get('title')
+        date = request.args.get('date')
+        
+        sql_query = "SELECT news_id, title, content, date_published FROM news WHERE 1=1"
+        query_params = []
+        
+        if title:
+            sql_query += " AND title LIKE %s"
+            query_params.append(f"%{title}%")
+        if date:
+            sql_query += " AND DATE(date_published) = %s"
+            query_params.append(date)
+        
+        sql_query += " ORDER BY date_published DESC"
+        
+        cursor.execute(sql_query, query_params)
         news_articles = cursor.fetchall()
         return render_template('member/view_news.html', news_articles=news_articles)
         

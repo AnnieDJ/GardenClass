@@ -1,0 +1,29 @@
+{% extends 'base.html' %} {% block content %}
+
+<div class="container-custom">
+  <h2 class="page-title">Booking Summary</h2>
+  <!-- Display booking details -->
+  <div class="booking-details">
+    <h3>Lesson Details</h3>
+    <p><strong>Instructor ID:</strong> {{ booking.instructor_id }}</p>
+    <p><strong>Lesson:</strong> {{ booking.lesson_name }}</p>
+    <p><strong>Date:</strong> {{ booking.date }}</p>
+    <p>
+      <strong>Time:</strong> {{ booking.start_time }} to {{ booking.end_time }}
+    </p>
+    <p><strong>Location ID:</strong> {{ booking.location_id }}</p>
+    <p><strong>Price:</strong> NZ$ {{ booking.price }}</p>
+  </div>
+
+  <!-- Add link to proceed to payment or additional confirmation -->
+  <a
+    href="{{ url_for('process_payment', booking_id=booking.lesson_id) }}"
+    class="btn btn-primary"
+    >Proceed to Payment</a
+  >
+
+  <a href="{{ url_for('search_1on1_lessons') }}" class="btn btn-secondary"
+    >Back to Lessons</a
+  >
+</div>
+{% endblock %}

@@ -3,6 +3,7 @@ from flask import render_template, redirect, url_for
 from flask import session,request
 from app import utils
 
+
 ## Member dashboard ##
 @app.route('/member/dashboard')
 def member_dashboard():
@@ -129,14 +130,15 @@ def workshopimage():
 
     
 ## Member Search 1-on-1 lessons ##
-@app.route('/search_1on1_lessons', methods=['POST'])
+@app.route('/search_1on1_lessons', methods=['GET', 'POST'])
 def search_1on1_lessons():
     if 'loggedin' in session and session['loggedin']:
+        msg = request.args.get('msg', None)
         cursor = utils.getCursor()
         
-        lesson_name = request.form.get('lesson_name', '')
-        date = request.form.get('date', '')
-        location = request.form.get('location', '')
+        lesson_name = request.form.get('lesson_name', '') if request.method == 'POST' else ''
+        date = request.form.get('date', '') if request.method == 'POST' else ''
+        location = request.form.get('location', '') if request.method == 'POST' else ''
         
         query = """SELECT * FROM `one_on_one_lessons` WHERE status = 'Scheduled'"""
         query_params = []
@@ -154,11 +156,7 @@ def search_1on1_lessons():
         
         query += " ORDER BY date, start_time"
 
-        try:
-            # Execute the search query
-            print("Executing SQL query:", query)
-            print("With parameters:", query_params)
-    
+        try: 
             cursor.execute(query, tuple(query_params))
             lessons = cursor.fetchall()
             
@@ -171,6 +169,48 @@ def search_1on1_lessons():
             cursor.close()
 
         # Render the template with the search results
-        return render_template('member/member_view_1on1.html', one_on_one_lessons_data=lessons, role=session['role'])
+        return render_template('member/member_view_1on1.html', one_on_one_lessons_data=lessons, role=session['role'], msg=msg)
     else:
-        return redirect(url_for('login')) 
+        return redirect(url_for('member_view_instr')) 
+
+
+
+## Member book 1 on1 ##
+@app.route('/book_lesson', methods=['POST'])
+def book_lesson():
+    lesson_id = request.form.get('lesson_id')
+    
+    if not lesson_id:
+        return redirect(url_for('search_1on1_lessons', msg='No lesson selected.'))
+
+    try:
+        cursor = utils.getCursor()
+        # Fetch the lesson details to display on the booking summary page
+        cursor.execute("SELECT * FROM one_on_one_lessons WHERE lesson_id = %s AND status = 'Scheduled'", (lesson_id,))
+        booking_details = cursor.fetchone()
+
+        if booking_details:
+            return render_template('booking_summary.html', booking=booking_details)
+        else:
+            return redirect(url_for('search_1on1_lessons', msg='Sorry, this lesson is no longer available or does not exist.'))
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return redirect(url_for('search_1on1_lessons', msg='An error occurred while retrieving the lesson details.'))
+
+    finally:
+        cursor.close()
+
+
+## Member view news ##
+@app.route('/view_news')
+def view_news():
+    if 'loggedin' in session and session['loggedin']:
+        cursor = utils.getCursor()
+        cursor.execute("SELECT news_id, title, content, date_published FROM news ORDER BY date_published DESC")
+        news_articles = cursor.fetchall()
+        return render_template('member/view_news.html', news_articles=news_articles)
+        
+    else: 
+        return redirect(url_for('member/member_dashboard'))
+            

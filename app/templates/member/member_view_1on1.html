@@ -55,6 +55,10 @@
     Browse and book personalized lessons with your chosen instructor
   </p>
 
+  {% if msg %}
+  <div class="alert alert-info">{{ msg }}</div>
+  {% endif %}
+
   <div class="search-form-group">
     <form
       action="{{ url_for('search_1on1_lessons') }}"
@@ -80,7 +84,11 @@
         placeholder="Enter Location"
       />
       <button type="submit" class="btn btn-primary search-btn">Search</button>
-      <button type="button" class="btn btn-info cancel-btn" onclick="goBack()">
+      <button
+        type="button"
+        class="btn btn-info cancel-btn"
+        onclick="clearForm()"
+      >
         Cancel
       </button>
     </form>
@@ -112,11 +120,7 @@
         <td>{{ lesson.location_id }}</td>
         <td>{{ lesson.price }}</td>
         <td>
-          <a
-            href="{{ url_for('member_view_1on1', instructor_id=lesson.instructor_id) }}"
-            class="btn btn-primary"
-            >Book Now</a
-          >
+          <button onclick="showBookingSummary({{ lesson }})" class="btn btn-primary">Book Now</button>
         </td>
       </tr>
       {% else %}
@@ -136,8 +140,8 @@
   {% endblock %}
 
   <script>
-    function goBack() {
-      location.reload();
+    function clearForm() {
+      document.querySelector(".search-form").reset();
     }
   </script>
 </div>

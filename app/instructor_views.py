@@ -240,7 +240,13 @@ def instr_view_news():
         title = request.args.get('title')
         date = request.args.get('date')
         
-        sql_query = "SELECT news_id, title, content, details, date_published, author_id FROM instr_news WHERE 1=1"
+        sql_query = """
+        SELECT n.news_id, n.title, n.content, n.details, n.date_published, 
+               m.first_name, m.last_name
+        FROM instr_news n
+        JOIN manager m ON n.author_id = m.manager_id
+        WHERE 1=1
+        """
         query_params = []
         
         if title:
@@ -258,4 +264,21 @@ def instr_view_news():
         
     else: 
         return redirect(url_for('instructor/instr_dashboard'))
+
+           
             
+## Instructor News - Read More ##
+@app.route('/instr_news_details/<int:news_id>')
+def instr_news_details(news_id):
+    cursor = utils.getCursor()
+    
+    # Fetch the specific news article by id
+    cursor.execute("SELECT title, content, date_published, details FROM news WHERE news_id = %s", (news_id,))
+    article = cursor.fetchone()
+
+    # Check if the article was found
+    if article:
+        return render_template('instructor/instr_news_details.html', article=article)
+    else:
+        # If no article found with the provided id, you can redirect to a 404 page or back to the news list
+        return "Article not found", 404

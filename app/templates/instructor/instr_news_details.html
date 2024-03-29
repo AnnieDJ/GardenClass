@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="news-container">
+  <h1><div class="news-container">
+  <h1>Instructor - News Details</h1></h1>
+
+<div class="news-detail-container">
+    <h1>{{ article.title }}</h1>
+    <p><strong>Date Published:</strong> {{ article.date_published.strftime('%d %B, %Y') }}</p>
+    <div class="news-content">
+        {{ article.content | safe }}
+    </div>
+    <div class="news-details">
+        {{ article.details | safe }}
+    </div>
+    <a href="{{ url_for('instr_view_news') }}">Back to News List</a>
+</div>
+{% endblock %}

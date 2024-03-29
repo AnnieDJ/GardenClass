@@ -15,8 +15,9 @@
     <thead>
       <tr>
         <th>Title</th>
-        <th>Summary</th>
+        <th>Content</th>
         <th>Date Published</th>
+        <th>Released By</th>
         <th>Read More</th>
       </tr>
     </thead>
@@ -26,7 +27,12 @@
         <td>{{ article.title }}</td>
         <td>{{ article.content }}</td>
         <td>{{ article.date_published.strftime('%d %B, %Y') }}</td>
-        <td><a href="#">Read more...</a></td>
+        <td>{{ article.first_name }} {{ article.last_name }}</td>
+        <td>
+          <a href="{{ url_for('member_news_details', news_id=article.news_id) }}"
+            >Read more...</a
+          >
+        </td>
       </tr>
       {% endfor %}
     </tbody>

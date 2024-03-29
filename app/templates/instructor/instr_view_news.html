@@ -1,4 +1,11 @@
 {% extends 'base.html' %} {% block content %}
+
+<div class="back-arrow">
+  <a href="{{ url_for('instructor_dashboard') }}" title="Go back to Dashboard"
+    >&#x2190; Back</a
+  >
+</div>
+
 <div class="news-container">
   <h1>Instructor's Greenboard</h1>
 
@@ -16,7 +23,6 @@
       <tr>
         <th>Title</th>
         <th>Content</th>
-        <th>Details</th>
         <th>Date Published</th>
         <th>Released By</th>
         <th>Read More</th>
@@ -27,10 +33,13 @@
       <tr class="news-article">
         <td>{{ article.title }}</td>
         <td>{{ article.content }}</td>
-        <td>{{ article.details }}</td>
         <td>{{ article.date_published.strftime('%d %B, %Y') }}</td>
-        <td>{{ article.author_id }}</td>
-        <td><a href="#">Read more...</a></td>
+        <td>{{ article.first_name }} {{ article.last_name }}</td>
+        <td>
+          <a href="{{ url_for('instr_news_details', news_id=article.news_id) }}"
+            >Read more...</a
+          >
+        </td>
       </tr>
       {% endfor %}
     </tbody>

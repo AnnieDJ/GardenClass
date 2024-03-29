@@ -8,6 +8,8 @@ from werkzeug.utils import secure_filename
 import base64
 from flask import jsonify
 
+
+## Instructor Dashboard ##
 @app.route('/instructor/dashboard')
 def instructor_dashboard():
     if 'loggedin' in session and session['loggedin']:
@@ -42,6 +44,8 @@ def instructor_dashboard():
         return redirect(url_for('login'))
 
 
+
+## Instructor Lessons ##
 @app.route('/instructor/lessons')
 def instructor_lessons():
     if 'loggedin' in session and session['loggedin']:
@@ -110,6 +114,7 @@ def instructor_lessons():
         # Make sure the username and role are set in the session as well
         
 
+## Instuctor's Profile ##
 @app.route('/instructor/profile')
 def instructor_profile():
     if 'loggedin' in session and session['loggedin']:
@@ -138,7 +143,7 @@ def instructor_profile():
         return redirect(url_for('login'))
 
 
-
+## Instructor Edit Profile ##
 @app.route('/instructor/editinstrprofile', methods=['GET', 'POST'])
 def editinstrprofile():
     if 'loggedin' in session and session['loggedin']:
@@ -184,7 +189,7 @@ def editinstrprofile():
 
 
 
-
+## Instructor Workshop ##
 @app.route('/instructor/workshops')
 def instructor_workshops():
     if 'loggedin' in session and session['loggedin']:
@@ -226,3 +231,31 @@ def instructor_workshops():
 
 
 
+## Instructor View News ##
+@app.route('/instr_view_news')
+def instr_view_news():
+    if 'loggedin' in session and session['loggedin']:
+        cursor = utils.getCursor()
+        
+        title = request.args.get('title')
+        date = request.args.get('date')
+        
+        sql_query = "SELECT news_id, title, content, details, date_published, author_id FROM instr_news WHERE 1=1"
+        query_params = []
+        
+        if title:
+            sql_query += " AND title LIKE %s"
+            query_params.append(f"%{title}%")
+        if date:
+            sql_query += " AND DATE(date_published) = %s"
+            query_params.append(date)
+        
+        sql_query += " ORDER BY date_published DESC"
+        
+        cursor.execute(sql_query, query_params)
+        news_articles = cursor.fetchall()
+        return render_template('instructor/instr_view_news.html', news_articles=news_articles)
+        
+    else: 
+        return redirect(url_for('instructor/instr_dashboard'))
+            

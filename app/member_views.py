@@ -203,8 +203,8 @@ def book_lesson():
 
 
 ## Member view news ##
-@app.route('/view_news')
-def view_news():
+@app.route('/member_view_news')
+def member_view_news():
     if 'loggedin' in session and session['loggedin']:
         cursor = utils.getCursor()
         
@@ -225,7 +225,7 @@ def view_news():
         
         cursor.execute(sql_query, query_params)
         news_articles = cursor.fetchall()
-        return render_template('member/view_news.html', news_articles=news_articles)
+        return render_template('member/member_view_news.html', news_articles=news_articles)
         
     else: 
         return redirect(url_for('member/member_dashboard'))

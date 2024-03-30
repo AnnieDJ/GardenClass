@@ -1,90 +1,219 @@
-{% extends 'base.html' %}
+{% extends 'manager/mgr_dashboard.html' %}
 
 {% block content %}
 
-<style>
-  .profile-pic {
-    width: 200px;
-    height: auto;
-  }
 
-    .alert-info {
-        background-color: #d4edda;
-        border-color: #c3e6cb;
-        color: #155724;
-    }
-
-    .btn-primary {
-        background-color: #28a745;
-        border-color: #28a745;
-    }
-
-    .btn-primary:hover {
-        background-color: #218838;
-        border-color: #1e7e34;
-    }
-
-    .btn-secondary {
-        background-color: #6c757d;
-        border-color: #6c757d;
-    }
-
-    .btn-secondary:hover {
-        background-color: #5a6268;
-        border-color: #545b62;
-    }
-</style>
-
-<div class="container">
-  <h1 class="mt-5">Manager Profile: {{ manager_profile[0][3] }} {{ manager_profile[0][4] }}</h1>
-
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <div class="alert alert-info" role="alert">
-        <ul>
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
+<!-- Breadcrumb -->
+<section class="py-3 py-md-4 py-xl-5 bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h1 class="h4">Profile</h1>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb m-0 fs-7">
+            <li class="breadcrumb-item"><a class="link-primary text-decoration-none" href="{{ url_for('manager_dashboard') }}">Home</a></li>
+            <li class="breadcrumb-item">Profile Management</li>
+            <li class="breadcrumb-item active" aria-current="page">Your Profile</li>
+          </ol>
+        </nav>
+      </div>
     </div>
-    {% endif %}
-    {% endwith %}
-
-  <div class="profile-image">
-    {% if manager_profile[0][8] is not none %}
-        {% if manager_profile[0][8].endswith('.jpg') %}
-        <img class="card-img-top profile-pic" src="data:image/jpg;base64,{{ manager_profile[0][9] }}"
-            alt="{{ manager_profile[0][1] }}">
-        {% elif manager_profile[0][8].endswith('.jpeg') %}
-        <img class="card-img-top profile-pic" src="data:image/jpeg;base64,{{ manager_profile[0][9] }}"
-            alt="{{ manager_profile[0][1] }}">
-        {% elif manager_profile[0][8].endswith('.png') %}
-        <img class="card-img-top profile-pic" src="data:image/png;base64,{{ manager_profile[0][9] }}"
-            alt="{{ manager_profile[0][1] }}">
-        {% elif manager_profile[0][8].endswith('.gif') %}
-        <img class="card-img-top profile-pic" src="data:image/gif;base64,{{ manager_profile[0][9] }}"
-            alt="{{ manager_profile[0][1] }}">
-        {% endif %}
-        {% else %}
-        <img src="{{ url_for('static', filename='img/manager.jpg') }}" alt="Profile Picture" class="profile-pic" />
-{% endif %}
   </div>
+</section>
 
-  <div class="profile-detail">
-    <p><strong>Staff ID:</strong> {{ manager_profile[0][0] }}</p>
-    <p><strong>Username:</strong> {{ manager_profile[0][1] }}</p>
-    <p><strong>Title:</strong> {{ manager_profile[0][2] }}</p>
-    <p><strong>First Name:</strong> {{ manager_profile[0][3] }}</p>
-    <p><strong>Last Name:</strong> {{ manager_profile[0][4] }}</p>
-    <p><strong>Position:</strong> {{ manager_profile[0][5] }}</p>
-    <p><strong>Phone Number:</strong> {{ manager_profile[0][6] }}</p>
-    <p><strong>Email:</strong> {{ manager_profile[0][7] }}</p>
-    <p><strong>Gardening Experience:</strong> {{ manager_profile[0][10] }}</p>
-  </div>
 
-  <a href="{{ url_for('editmanagerprofile') }}" class="btn btn-primary">Update Profile</a>
-
-  <a href="{{ url_for('manager_dashboard') }}" class="btn btn-secondary">Back to List</a>
-</div>
+<!-- Section - Bootstrap Brain Component -->
+                  <section class="pb-3 pb-md-4 pb-xl-5 bg-light">
+                    <div class="container">
+                      <div class="row gy-4 gy-lg-0">
+                        <div class="col-12 col-lg-4 col-xl-3">
+                          <div class="row gy-4">
+                            <div class="col-12">
+                              <div class="card widget-card border-light shadow-sm">
+                                <div class="card-header text-bg-primary">Welcome</div>
+                                <div class="card-body">
+                                  <div class="text-center mb-3">
+                                    <img src="{{ url_for('static', filename='img/manager.jpg') }}" class="img-fluid rounded-circle" alt="Profile Photo">
+                                  </div>
+                                  <h5 class="text-center mb-1">{{ manager_profile[0][3] }} {{ manager_profile[0][4] }}</h5>
+                                  <p class="text-center text-secondary mb-4">Rākau Manager</p>
+                                  <ul class="list-group list-group-flush mb-4">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                      <h6 class="m-0">Staff ID</h6>
+                                      <span>{{ manager_profile[0][0] }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                      <h6 class="m-0">Position</h6>
+                                      <span>{{ manager_profile[0][5] }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12 col-lg-8 col-xl-9">
+                          <div class="card widget-card border-light shadow-sm">
+                            <div class="card-body p-4">
+                              <ul class="nav nav-tabs" id="profileTab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                  <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview-tab-pane" type="button" role="tab" aria-controls="overview-tab-pane" aria-selected="true">Overview</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                  <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Profile</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                  <button class="nav-link" id="password-tab" data-bs-toggle="tab" data-bs-target="#password-tab-pane" type="button" role="tab" aria-controls="password-tab-pane" aria-selected="false">Password</button>
+                                </li>
+                              </ul>
+                              <div class="tab-content pt-4" id="profileTabContent">
+                                <div class="tab-pane fade show active" id="overview-tab-pane" role="tabpanel" aria-labelledby="overview-tab" tabindex="0">
+                                  <h5 class="mb-3">Profile</h5>
+                                  <div class="row g-0">
+                                    <div class="col-5 col-md-3 bg-light border-bottom border-white border-3">
+                                      <div class="p-2">Staff ID</div>
+                                    </div>
+                                    <div class="col-7 col-md-9 bg-light border-start border-bottom border-white border-3">
+                                      <div class="p-2">{{ manager_profile[0][0] }}</div>
+                                    </div>
+                                    <div class="col-5 col-md-3 bg-light border-bottom border-white border-3">
+                                      <div class="p-2">Username</div>
+                                    </div>
+                                    <div class="col-7 col-md-9 bg-light border-start border-bottom border-white border-3">
+                                      <div class="p-2">{{ manager_profile[0][1] }}</div>
+                                    </div>
+                                    <div class="col-5 col-md-3 bg-light border-bottom border-white border-3">
+                                      <div class="p-2">First Name</div>
+                                    </div>
+                                    <div class="col-7 col-md-9 bg-light border-start border-bottom border-white border-3">
+                                      <div class="p-2">{{ manager_profile[0][3] }}</div>
+                                    </div>
+                                    <div class="col-5 col-md-3 bg-light border-bottom border-white border-3">
+                                      <div class="p-2">Last Name</div>
+                                    </div>
+                                    <div class="col-7 col-md-9 bg-light border-start border-bottom border-white border-3">
+                                      <div class="p-2">{{ manager_profile[0][4] }}</div>
+                                    </div>
+                                    <div class="col-5 col-md-3 bg-light border-bottom border-white border-3">
+                                      <div class="p-2">Position</div>
+                                    </div>
+                                    <div class="col-7 col-md-9 bg-light border-start border-bottom border-white border-3">
+                                      <div class="p-2">{{ manager_profile[0][5] }}</div>
+                                    </div>
+                                    <div class="col-5 col-md-3 bg-light border-bottom border-white border-3">
+                                      <div class="p-2">Phone Number</div>
+                                    </div>
+                                    <div class="col-7 col-md-9 bg-light border-start border-bottom border-white border-3">
+                                      <div class="p-2">{{ manager_profile[0][6] }}</div>
+                                    </div>
+                                    <div class="col-5 col-md-3 bg-light border-bottom border-white border-3">
+                                      <div class="p-2">Email</div>
+                                    </div>
+                                    <div class="col-7 col-md-9 bg-light border-start border-bottom border-white border-3">
+                                      <div class="p-2">{{ manager_profile[0][7] }}</div>
+                                    </div>
+                                    <div class="col-5 col-md-3 bg-light border-bottom border-white border-3">
+                                      <div class="p-2">Gardening Experience</div>
+                                    </div>
+                                    <div class="col-7 col-md-9 bg-light border-start border-bottom border-white border-3">
+                                      <div class="p-2">{{ manager_profile[0][10] }}</div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+                                  <form action="{{ url_for('editmanagerprofile') }}" method="post" enctype="multipart/form-data" class="row gy-3 gy-xxl-4">
+                                    <div class="col-12">
+                                      <div class="row gy-2">
+                                        <label class="col-12 form-label m-0">Profile Image</label>
+                                        <div class="col-12">
+                                          <img src="{{ url_for('static', filename='img/manager.jpg') }}" width="200" height="200" class="img-fluid" alt="Profile Photo">
+                                        </div>
+                                        <div class="col-12">
+                                          <input type="file" id="manager_image" name="manager_image" hidden>
+                                          <label for="manager_image" class="btn bg-primary link-light lh-1 p-2 rounded" style="cursor: pointer;">
+                                            <i class="bi bi-upload"></i> Choose File to Upload
+                                          </label>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                      <label class="form-label">Staff ID (view only)</label>
+                                      <input type="text" class="form-control" name="user_id" placeholder="user_id" value="{{ manager_profile[0][0] }}"readonly>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                      <label class="form-label">Username (view only)</label>
+                                      <input type="text" class="form-control" name="username" placeholder="username" value="{{ manager_profile[0][1] }}"readonly>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                      <label for="inputTitle" class="form-label">Title</label>
+                                      <select class="form-control" placeholder="title" value="{{ manager_profile[0][2] }}"  required>
+                                        <option value="Mr" {% if manager_profile[0][2] == 'Mr' %} selected {% endif %}>Mr</option>
+                                        <option value="Mrs" {% if manager_profile[0][2] == 'Mrs' %} selected {% endif %}>Mrs</option>
+                                        <option value="Miss" {% if manager_profile[0][2] == 'Miss' %} selected {% endif %}>Miss</option>
+                                        <option value="Dr." {% if manager_profile[0][2]== 'Dr.' %} selected {% endif %}>Dr.</option>
+                                        <option value="Prof." {% if manager_profile[0][2] == 'Prof.' %} selected {% endif %}>Prof.</option>
+                                      </select>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                    </div>
+                                    <div class="col-md-6">
+                                      <label class="labels">First Name</label>
+                                      <input type="text" class="form-control" name="first_name" placeholder="first_name" value="{{ manager_profile[0][3] }}" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                      <label class="labels">Surname</label>
+                                      <input type="text" class="form-control" name="last_name" placeholder="surname" value="{{ manager_profile[0][4] }}" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                      <label class="labels">Position</label>
+                                      <input type="text" class="form-control" name="position" placeholder="position" value="{{ manager_profile[0][5] }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                      <label class="labels">Phone Number</label>
+                                      <input type="text" class="form-control" name="phone_number" placeholder="phone_number" value="{{ manager_profile[0][6] }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                      <label class="labels">Email</label>
+                                      <input type="email" class="form-control" name="email" placeholder="email" value="{{ manager_profile[0][7] }}" required>
+                                    </div>
+                                    <div class="col-md-12">
+                                      <label class="labels">Gardening Experience</label>
+                                      <input type="text" class="form-control" name="gardening_experience" placeholder="gardening_experience" value="{{ manager_profile[0][10] }}">
+                                    </div>
+                                    <div class="col-12">
+                                      <button type="submit" class="btn btn-primary">Update & Save</button>
+                                    </div>
+                                  </form>
+                                </div>
+                                <div class="tab-pane fade" id="password-tab-pane" role="tabpanel" aria-labelledby="password-tab" tabindex="0">
+                                  <form action="{{ url_for('change_password') }}" method="post">
+                                    <div class="row gy-3 gy-xxl-4">
+                                      <div class="col-12">
+                                        <label for="currentPassword" class="form-label">Current Password</label>
+                                        <input type="password" class="form-control" id="currentPassword" name="currentpassword" required>
+                                      </div>
+                                      <div class="col-12">
+                                        <label for="newPassword" class="form-label">New Password</label>
+                                        <input type="password" class="form-control" id="newPassword" name="newpassword" required>
+                                      </div>
+                                      <div class="col-12">
+                                        <label for="confirmPassword" class="form-label">Confirm Password</label>
+                                        <input type="password" class="form-control" id="confirmPassword" name="confirmpassword" required>
+                                      </div>
+                                      <div class="col-12">
+                                        <button type="submit" class="btn btn-primary">Change Password</button>
+                                      </div>
+                                    </div>
+                                  </form>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
 
 {% endblock %}

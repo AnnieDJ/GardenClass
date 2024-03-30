@@ -1,16 +1,57 @@
 from app import app
-from flask import render_template,redirect,url_for
+from flask import render_template,redirect,url_for, g
 from flask import session,request,jsonify,flash
 from app import utils
 from werkzeug.utils import secure_filename
 import base64
 
+@app.context_processor
+def inject_user_details():
+    if 'loggedin' in session and session['loggedin']:
+        # Assuming you store username in session['username']
+        cursor = utils.getCursor()
+        cursor.execute("SELECT first_name, last_name, email FROM manager WHERE user_name = %s", (session['username'],))
+        manager_profile = cursor.fetchone()
+        cursor.close()
+        if manager_profile:
+            full_name = f"{manager_profile['first_name']} {manager_profile['last_name']}"
+            email = manager_profile['email']
+            # Return a dictionary that has the variables you want to inject
+            return {'manager_name': full_name, 'email': email}
+        return {}
+    return {} 
+
 ## Manager Dashboard ##
 @app.route('/manager/dashboard')
 def manager_dashboard():
     if 'loggedin' in session and session['loggedin']:
-        return render_template("/manager/mgr_dashboard.html", username=session['username'], role=session['role'])
+        cursor = utils.getCursor()
 
+        cursor.execute("SELECT * FROM manager WHERE user_name = %s", (session['username'],))
+        manager_profile = cursor.fetchone()
+
+        cursor.execute("SELECT * FROM lessons ORDER BY date, start_time LIMIT 2")
+        lesson_data = cursor.fetchall()
+        cursor.execute("SELECT * FROM workshops ORDER BY date, start_time LIMIT 2")
+        workshop_data = cursor.fetchall()
+        cursor.execute("SELECT * FROM news ORDER BY date_published LIMIT 1")
+        news_data = cursor.fetchall()
+        
+        cursor.close()
+
+        if manager_profile:
+            return render_template("/manager/mgr_dashboard.html", lessons=lesson_data,
+                                   workshops=workshop_data, news=news_data,
+                                   username=session['username'], role=session['role'],
+                                   manager_name=f"{manager_profile['first_name']} {manager_profile['last_name']}",
+                                   email=manager_profile['email'])
+        else:
+            # Handle case where manager profile is not found
+            flash('Manager profile not found', 'error')
+            return redirect(url_for('login'))
+    
+    else:
+        return redirect(url_for('login'))
 
 
 ## Manger view own profile ##
@@ -79,7 +120,7 @@ def editmanagerprofile():
             cursor.execute("SELECT * FROM manager WHERE user_name = %s", (session['username'],))
             manager_profile = cursor.fetchone()
         
-            return render_template('/manager/edit_mgr_profile.html', manager_profile = manager_profile, role=session['role'])
+            return render_template('/manager/mgr_profile.html', manager_profile = manager_profile, role=session['role'])
         
     else:
         return redirect(url_for('login'))
@@ -386,26 +427,6 @@ def member_search():
             return render_template("manager/manage_member_profile.html", member_profile=matched_profiles, role=session['role'])
     else:
          return redirect(url_for('login'))
-
-   
-   
-@app.route('/another/route/using/manager_dashboard')
-def manager_dashboard_different():
-    if 'loggedin' in session and session['loggedin']:
-        cursor = utils.getCursor()
-        cursor.execute("SELECT * FROM lessons ORDER BY date, start_time LIMIT 2")
-        lesson_data = cursor.fetchall()
-        cursor.execute("SELECT * FROM workshops ORDER BY date, start_time LIMIT 2")
-        workshop_data = cursor.fetchall()
-        cursor.execute("SELECT * FROM news ORDER BY date_published LIMIT 1")
-        news_data = cursor.fetchall()
-        
-        cursor.close()
-        # Make sure the username and role are set in the session as well
-        return render_template("manager/mgr_dashboard.html", lessons=lesson_data,workshops=workshop_data, news=news_data, username=session['username'], role=session['role'])
-    
-    else:
-        return redirect(url_for('login'))
 
 
 @app.route('/manager/mgr_lessons')

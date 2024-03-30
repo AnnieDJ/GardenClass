@@ -1,8 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'manager/mgr_dashboard.html' %}
 
 {% block title %}Member Details{% endblock %}
 
 {% block content %}
+
+<section>
 <div class="container mt-5">
     <h2>Member Details</h2>
     <div class="form-group row">
@@ -73,6 +75,7 @@
         </table>
     </div>
 </div>
+</section>
 
 <script>
     function confirmDelete(url) {

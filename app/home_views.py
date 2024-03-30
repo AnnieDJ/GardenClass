@@ -59,7 +59,7 @@ def login():
                 elif role == 'Instructor':
                     return redirect(url_for('instructor_dashboard'))
                 elif role == 'Manager':
-                    return redirect(url_for('manager_dashboard_different'))
+                    return redirect(url_for('manager_dashboard'))
             else:
                 msg ='Invalid Password!'
         else:

@@ -1,62 +1,31 @@
   
-	{% extends 'base.html' %}
+	{% extends 'instructor/instr_dashboard.html' %}
 
-  {% block title %}Lessons Details{% endblock %}
+
   
   {% block content %}
-  <style>
-    .container {
-      font-family: "Times New Roman", sans-serif;
-    }
-    .back-arrow {
-      position: absolute;
-      top: 70px;
-      left: 10px;
-    }
   
-    .back-arrow a {
-      color: #2c662d;
-      text-decoration: none;
-      font-size: 30px;
-    }
-  
-    .back-arrow a:hover {
-      text-decoration: underline;
-    }
-    .btn {
-      border: none;
-      color: white;
-      padding: 10px 15px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-  
-    .btn-success {
-      background-color: #4CAF50; /* Green for general actions */
-    }
-  
-    .btn-primary {
-      background-color: #007bff; /* Blue for edit actions */
-    }
-  
-    .btn-danger {
-      background-color: #f44336; /* Red for delete actions */
-    }
-  
-    .table-striped > tbody > tr:nth-of-type(odd) {
-      background-color: rgba(0,0,0,.05); /* Zebra striping for table */
-    }
-  
-    .alert-info {
-      color: #31708f;
-      background-color: #d9edf7;
-      border-color: #bce8f1;
-      padding: 15px;
-      border-radius: 4px;
-    }
-  </style>
+
+  <!-- Breadcrumb -->
+<section class="py-3 py-md-4 py-xl-5 bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h1 class="h4">Lessons Management</h1>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb m-0 fs-7">
+            <li class="breadcrumb-item"><a class="link-primary text-decoration-none" href="{{ url_for('instructor_dashboard') }}">Home</a></li>
+            <li class="breadcrumb-item">Lessons</li>
+            <li class="breadcrumb-item active" aria-current="page">Details</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <section>
   <div class="container mt-5">
-    <h2>Lessons Details</h2>
     <div class="form-group row">
   
        
@@ -94,14 +63,10 @@
         </script>
       </head>
       <body>
+    </body>
+    </div>
+
         <body>
-          <div class="back-arrow">
-            <!-- Updated the href to point to the 'instructor_dashboard' route -->
-            <a href="{{ url_for('instructor_dashboard') }}"
-              >&#x2190; Back</a
-            >
-          </div>
-  
           <div class="main-content">
             <!-- 过滤器部分、一对一课程卡片和课程卡片在同一水平线上 -->
             <div class="filter-section">
@@ -201,5 +166,5 @@
         </body>
       </html>
     </div>
-  
+  </section>
     {% endblock %}

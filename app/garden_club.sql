@@ -1,6 +1,6 @@
---DROP SCHEMA IF EXISTS garden_club;
---CREATE SCHEMA garden_club;
---USE garden_club;
+-- DROP SCHEMA IF EXISTS garden_club;
+-- CREATE SCHEMA garden_club;
+-- USE garden_club;
 
 -- Create member table
 CREATE TABLE IF NOT EXISTS member (
@@ -183,3 +183,4 @@ CREATE TABLE IF NOT EXISTS news (
     FOREIGN KEY (user_id) REFERENCES member(member_id) ON DELETE CASCADE,
     FOREIGN KEY (author_id) REFERENCES manager(manager_id) ON DELETE CASCADE
 );
+

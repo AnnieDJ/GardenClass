@@ -1,114 +1,228 @@
-{% extends 'base.html' %}
+{% extends 'instructor/instr_dashboard.html' %}
 
 {% block content %}
 
-
-<style>
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f4f4f4;
-        margin: 0;
-        padding: 0;
-    }
-    
-    .navbar {
-        background-color: #4A724A;
-        color: white;
-        padding: 10px 20px;
-        text-align: center;
-    }
-    
-    .dashboard {
-        display: grid;
-        padding: 20px;
-        height: 100vh; 
-        max-width: 600px; 
-        margin: 0 auto;
-    }
-    
-    .card {
-        background-color: #fff;
-        border-radius: 8px;
-        padding: 20px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    .card h2 {
-        background-color: #e7f4e4;
-        color: #333;
-        padding: 10px;
-        margin: -20px -20px 20px -20px;
-        text-align: center;
-    }
-
-    .profile-picture img {
-    width: 150px; 
-    height: 150px; 
-    border-radius: 50%; 
-    object-fit: cover; 
-    object-position: center; 
-    }
-
-    .update-profile-button {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 0px;
-    }
-    /* Add more styles as needed */
-    
-    /* Responsive layout adjustments */
-    @media (max-width: 768px) {
-        .dashboard {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>
-
-<div class="dashboard">
-    <div class="profile card">
-        <h2>Instructor Profile</h2>
-        <div class="profile-picture">
-        {% if account[0][10] is not none %}
-            {% if account[0][10].endswith('.jpg') %}
-                <img class="card-img-top" src="data:image/jpg;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
-            {% elif account[0][10].endswith('.jpeg') %}
-                <img class="card-img-top" src="data:image/jpeg;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
-            {% elif account[0][10].endswith('.png') %}
-                <img class="card-img-top" src="data:image/png;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
-            {% elif account[0][10].endswith('.gif') %}
-                <img class="card-img-top" src="data:image/gif;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
-            {% endif %}
-        {% else %}
-            <img src="https://i.pinimg.com/564x/92/5c/52/925c52543aa8096c66214311fa598fbc.jpg" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%; display: block; margin: 0 auto 20px auto;">
-       {% endif %}
+<!-- Breadcrumb -->
+<section class="py-3 py-md-4 py-xl-5 bg-light">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <h1 class="h4">Profile</h1>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb m-0 fs-7">
+              <li class="breadcrumb-item"><a class="link-primary text-decoration-none" href="{{ url_for('instructor_dashboard') }}">Home</a></li>
+              <li class="breadcrumb-item">Profile Management</li>
+              <li class="breadcrumb-item active" aria-current="page">Your Profile</li>
+            </ol>
+          </nav>
         </div>
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <div class="alert alert-success">
-                    {{ messages[0] }}
-                </div>
-            {% endif %}
-        {% endwith %}
-
-        <div class="profile-detail">
-            <p><strong>Instructor ID:</strong> {{ account[0][0] }}</p>
-            <p><strong>Username:</strong> {{ account[0][1] }}</p>
-            <p><strong>Title:</strong> {{ account[0][2] }}</p>
-            <p><strong>First Name:</strong> {{ account[0][3] }}</p>
-            <p><strong>Last Name:</strong> {{ account[0][4] }}</p>
-            <p><strong>Position:</strong> {{ account[0][5] }}</p>
-            <p><strong>Phone Number:</strong> {{ account[0][6] }}</p>
-            <p><strong>Email:</strong> {{ account[0][7] }}</p>
-            <p><strong>Address:</strong> {{ account[0][8] }}</p>
-            <p><strong>Instructor Profile:</strong> {{ account[0][9] }}</p>
-          </div>
-        <div class="mt-3 d-flex justify-content-between align-items-center">
-            <a href="{{ url_for('editinstrprofile') }}" class="btn" style="width: 100px; background-color: #4A724A; color: white;">Update</a>
-
-            <a href="{{ url_for('instructor_dashboard') }}" class="btn" style="width: 100px; background-color: #4A724A; color: white;">Back</a>
-        </div>
+      </div>
     </div>
-</div>
+  </section>
+  
+<!-- Section - Bootstrap Brain Component -->
+<section class="pb-3 pb-md-4 pb-xl-5 bg-light">
+    <div class="container">
+      <div class="row gy-4 gy-lg-0">
+        <div class="col-12 col-lg-4 col-xl-3">
+          <div class="row gy-4">
+            <div class="col-12">
+              <div class="card widget-card border-light shadow-sm">
+                <div class="card-header text-bg-primary">Welcome</div>
+                <div class="card-body">
+                  <div class="text-center mb-3">
+                    <img src="https://i.pinimg.com/564x/92/5c/52/925c52543aa8096c66214311fa598fbc.jpg" class="img-fluid rounded-circle" alt="Profile Photo">
+                  </div>
+                  <h5 class="text-center mb-1">{{ account[0][3] }} {{ account[0][4] }}</h5>
+                  <p class="text-center text-secondary mb-4">Rākau Manager</p>
+                  <ul class="list-group list-group-flush mb-4">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      <h6 class="m-0">Instructor ID</h6>
+                      <span>{{ account[0][0] }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      <h6 class="m-0">Position</h6>
+                      <span>{{ account[0][5] }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-8 col-xl-9">
+          <div class="card widget-card border-light shadow-sm">
+            <div class="card-body p-4">
+              <ul class="nav nav-tabs" id="profileTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview-tab-pane" type="button" role="tab" aria-controls="overview-tab-pane" aria-selected="true">Overview</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Profile</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="password-tab" data-bs-toggle="tab" data-bs-target="#password-tab-pane" type="button" role="tab" aria-controls="password-tab-pane" aria-selected="false">Password</button>
+                </li>
+              </ul>
+              <div class="tab-content pt-4" id="profileTabContent">
+                <div class="tab-pane fade show active" id="overview-tab-pane" role="tabpanel" aria-labelledby="overview-tab" tabindex="0">
+                  <h5 class="mb-3">Profile</h5>
+                  <div class="row g-0">
+                    <div class="col-5 col-md-3 bg-light border-bottom border-white border-3">
+                      <div class="p-2">Instructor ID</div>
+                    </div>
+                    <div class="col-7 col-md-9 bg-light border-start border-bottom border-white border-3">
+                      <div class="p-2">{{ account[0][0] }}</div>
+                    </div>
+                    <div class="col-5 col-md-3 bg-light border-bottom border-white border-3">
+                      <div class="p-2">Username</div>
+                    </div>
+                    <div class="col-7 col-md-9 bg-light border-start border-bottom border-white border-3">
+                      <div class="p-2">{{ account[0][1] }}</div>
+                    </div>
+                    <div class="col-5 col-md-3 bg-light border-bottom border-white border-3">
+                      <div class="p-2">First Name</div>
+                    </div>
+                    <div class="col-7 col-md-9 bg-light border-start border-bottom border-white border-3">
+                      <div class="p-2">{{ account[0][3] }}</div>
+                    </div>
+                    <div class="col-5 col-md-3 bg-light border-bottom border-white border-3">
+                      <div class="p-2">Last Name</div>
+                    </div>
+                    <div class="col-7 col-md-9 bg-light border-start border-bottom border-white border-3">
+                      <div class="p-2">{{ account[0][4] }}</div>
+                    </div>
+                    <div class="col-5 col-md-3 bg-light border-bottom border-white border-3">
+                      <div class="p-2">Position</div>
+                    </div>
+                    <div class="col-7 col-md-9 bg-light border-start border-bottom border-white border-3">
+                      <div class="p-2">{{ account[0][5] }}</div>
+                    </div>
+                    <div class="col-5 col-md-3 bg-light border-bottom border-white border-3">
+                      <div class="p-2">Phone Number</div>
+                    </div>
+                    <div class="col-7 col-md-9 bg-light border-start border-bottom border-white border-3">
+                      <div class="p-2">{{ account[0][6] }}</div>
+                    </div>
+                    <div class="col-5 col-md-3 bg-light border-bottom border-white border-3">
+                      <div class="p-2">Email</div>
+                    </div>
+                    <div class="col-7 col-md-9 bg-light border-start border-bottom border-white border-3">
+                      <div class="p-2">{{ account[0][7] }}</div>
+                    </div>
+                    <div class="col-5 col-md-3 bg-light border-bottom border-white border-3">
+                      <div class="p-2">Address</div>
+                    </div>
+                    <div class="col-7 col-md-9 bg-light border-start border-bottom border-white border-3">
+                      <div class="p-2">{{ account[0][8] }}</div>
+                    </div>
+                    <div class="col-5 col-md-3 bg-light border-bottom border-white border-3">
+                        <div class="p-2">Instructor Profile</div>
+                      </div>
+                      <div class="col-7 col-md-9 bg-light border-start border-bottom border-white border-3">
+                        <div class="p-2">{{ account[0][9] }}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+                  <form action="{{ url_for('editinstrprofile') }}" method="post" enctype="multipart/form-data" class="row gy-3 gy-xxl-4">
+                    <div class="col-12">
+                      <div class="row gy-2">
+                        <label class="col-12 form-label m-0">Profile Image</label>
+                        <div class="col-12">
+                          <img src="https://i.pinimg.com/564x/92/5c/52/925c52543aa8096c66214311fa598fbc.jpg" width="200" height="200" class="img-fluid" alt="Profile Photo">
+                        </div>
+                        <div class="col-12">
+                            <input type="file" class="form-control-file" id="instructor_image" name="instructor_image" hidden>
+                            <label for="instructor_image" class="btn bg-primary link-light lh-1 p-2 rounded" style="cursor: pointer;">
+                              <i class="bi bi-upload"></i> Choose File to Upload
+                            </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label class="form-label">Instructor ID (view only)</label>
+                      <input type="text" class="form-control" name="user_id" placeholder="user_id" value="{{ account[0][0] }}"readonly>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label class="form-label">Username (view only)</label>
+                      <input type="text" class="form-control" name="username" placeholder="username" value="{{ account[0][1] }}"readonly>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label for="inputTitle" class="form-label">Title</label>
+                      <select class="form-control" placeholder="title" value="{{ account[0][2] }}"  required>
+                        <option value="Mr" {% if account[0][2] == 'Mr' %} selected {% endif %}>Mr</option>
+                        <option value="Mrs" {% if account[0][2] == 'Mrs' %} selected {% endif %}>Mrs</option>
+                        <option value="Miss" {% if account[0][2] == 'Miss' %} selected {% endif %}>Miss</option>
+                        <option value="Dr." {% if account[0][2]== 'Dr.' %} selected {% endif %}>Dr.</option>
+                        <option value="Prof." {% if account[0][2] == 'Prof.' %} selected {% endif %}>Prof.</option>
+                      </select>
+                    </div>
+                    <div class="col-12 col-md-6">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="labels">First Name</label>
+                      <input type="text" class="form-control" name="first_name" placeholder="first_name" value="{{ account[0][3] }}" required>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="labels">Last Name</label>
+                      <input type="text" class="form-control" name="last_name" placeholder="surname" value="{{ account[0][4] }}" required>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="labels">Position</label>
+                      <input type="text" class="form-control" name="position" placeholder="position" value="{{ account[0][5] }}">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="labels">Phone Number</label>
+                      <input type="text" class="form-control" name="phone_number" placeholder="phone_number" value="{{ account[0][6] }}">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="labels">Email</label>
+                      <input type="email" class="form-control" name="email" placeholder="email" value="{{ account[0][7] }}" required>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="labels">Address</label>
+                      <input type="text" class="form-control" name="address" placeholder="address" value="{{ account[0][8] }}" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="labels">Instructor Profile</label>
+                        <input type="text" class="form-control" name="instructor_profile" placeholder="instructor_profile" value="{{ account[0][9] }}">
+                      </div>
+                    <div class="col-12">
+                      <button type="submit" class="btn btn-primary">Update & Save</button>
+                    </div>
+                  </form>
+                </div>
+                <div class="tab-pane fade" id="password-tab-pane" role="tabpanel" aria-labelledby="password-tab" tabindex="0">
+                  <form action="{{ url_for('change_password') }}" method="post">
+                    <div class="row gy-3 gy-xxl-4">
+                      <div class="col-12">
+                        <label for="currentPassword" class="form-label">Current Password</label>
+                        <input type="password" class="form-control" id="currentPassword" name="currentpassword" required>
+                      </div>
+                      <div class="col-12">
+                        <label for="newPassword" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="newPassword" name="newpassword" required>
+                      </div>
+                      <div class="col-12">
+                        <label for="confirmPassword" class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" id="confirmPassword" name="confirmpassword" required>
+                      </div>
+                      <div class="col-12">
+                        <button type="submit" class="btn btn-primary">Change Password</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
 
 {% endblock %}

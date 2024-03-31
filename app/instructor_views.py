@@ -9,6 +9,30 @@ import base64
 from flask import jsonify
 
 
+@app.context_processor
+def inject_instructor_details():
+    if 'loggedin' in session and session['loggedin']:
+        cursor = utils.getCursor()
+        user_name = session.get('username')
+        
+        # Assuming you have a relationship between the user and the instructor,
+        # Fetch the instructor details based on the session's username
+        cursor.execute("""
+        SELECT i.first_name, i.last_name, i.email
+        FROM instructor i
+        JOIN user u ON i.instructor_id = u.related_instructor_id
+        WHERE u.user_name = %s
+        """, (user_name,))
+        instructor_info = cursor.fetchone()
+        cursor.close()
+        
+        if instructor_info:
+            full_name = f"{instructor_info['first_name']} {instructor_info['last_name']}"
+            email = instructor_info['email']
+            return {'instructor_name': full_name, 'instructor_email': email}
+    return {}
+
+
 ## Instructor Dashboard ##
 @app.route('/instructor/dashboard')
 def instructor_dashboard():

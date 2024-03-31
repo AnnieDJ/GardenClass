@@ -379,29 +379,8 @@
             Built by <a href="#" class="link-secondary text-decoration-none">Group AS - Schwifty</a> with <span class="text-accent">&#9829;</span>
           </div>
         </div>
-      {% endfor %}
-    </div>
-    <div class="card-footer">
-      <a href="{{ url_for('instr_view_news') }}" class="news-link news-link-right">Read more</a>
     </div>
   </div>
-
-  <!-- Workshop Schedules Card -->
-  <div class="card">
-    <h2 class="card-header">Workshops</h2>
-    <div class="card-content">
-      {% for workshops in workshops %}
-      <div class="workshop-item">
-        <p><strong>workshop ID:</strong> {{ workshops['workshop_id'] }}</p>
-        <p><strong>Instructor:</strong> {{ workshops['instructor_id'] }}</p>
-        <p><strong>Date:</strong> {{ workshops['date'] }}</p>
-        <p><strong>Start time:</strong> {{ workshops['start_time'] }}</p>
-        <p><strong>End time:</strong> {{ workshops['end_time'] }}</p>
-        <p><strong>Location ID:</strong> {{ workshops['location_id'] }}</p>
-        <p><strong>Capacity:</strong> {{ workshops['capacity'] }}</p>
-        <p><strong>Price:</strong> {{ workshops['price'] }}</p>
-      </div>
-    </div>
   </footer>
 
   <!-- Javascript Files: Vendors -->

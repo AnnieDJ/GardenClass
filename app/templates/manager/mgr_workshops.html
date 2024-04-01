@@ -29,11 +29,10 @@
     <div class="workshops-list">
       {% for workshop in workshops %}
       <div class="workshop-item">
-        <img
-          src="{{ url_for('static', filename=workshop.workshop_image) }}"
-          alt="Workshop Image"
-          class="workshop-image"
-        />
+        {% if workshop.workshop_image %}
+        <img src="{{ url_for('static', filename=workshop.workshop_image) }}" alt="Workshop Image" class="workshop-image" />
+        {% endif %}
+
         <div>
           <p><strong>Instructor ID: </strong>{{ workshop.instructor_id }}</p>
           <p><strong>First Name: </strong>{{ workshop.first_name }}</p>
@@ -51,6 +50,7 @@
           </div>
         </div>
       </div>
+    </div>
       {% else %}
       <p>No workshops found.</p>
       {% endfor %}

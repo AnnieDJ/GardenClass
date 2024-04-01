@@ -117,7 +117,7 @@ def workshoplist():
     connection = utils.getCursor()
     connection.execute("SELECT * FROM workshops;")
     workshopList = connection.fetchall()
-    return render_template('member_workshop.html', role=session.get('role', 'member'),workshop_list = workshopList)
+    return render_template('/member/member_workshop.html', role=session.get('role', 'member'),workshop_list = workshopList)
 
 @app.route('/workshopimage')
 def workshopimage():

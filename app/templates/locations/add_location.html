@@ -1,23 +1,46 @@
-{% extends 'base.html' %}
+{% extends 'manager/mgr_dashboard.html' %}
 
 {% block title %}New Location{% endblock %}
 
 {% block content %}
-<form method="POST" class="mb-4">
-    <div class="mb-3">
-        <label for="location_name" class="form-label">Location Name *</label>
-        <input type="text" name="location_name" class="form-control" required>
-    </div> 
-    <div class="mb-3">
-        <label for="location_address" class="form-label">Address *</label>
-        <input type="text" name="location_address" class="form-control" required>
-    </div>
-    <div class="mb-3">
-        <label for="capacity" class="form-label">Capacity *</label>
-        <input type="text" name="capacity" class="form-control" required>
-    </div>
 
-    <button type="submit" class="btn btn-success">Update Now</button>
-</form>
+<!-- Breadcrumb -->
+<section class="py-3 py-md-4 py-xl-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="h4">Location Management</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb m-0 fs-7">
+                        <li class="breadcrumb-item"><a class="link-primary text-decoration-none" href="{{ url_for('manager_dashboard') }}">Home</a></li>
+                        <li class="breadcrumb-item">Locations</li>
+                        <li class="breadcrumb-item active" aria-current="page">Add</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Add Form Section -->
+<section class="py-4">
+    <div class="container">
+        <form method="POST" class="mb-4">
+            <div class="mb-3">
+                <label for="location_name" class="form-label">Location Name *</label>
+                <input type="text" id="location_name" name="location_name" class="form-control" required>
+            </div> 
+            <div class="mb-3">
+                <label for="location_address" class="form-label">Address *</label>
+                <input type="text" id="location_address" name="location_address" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="capacity" class="form-label">Capacity *</label>
+                <input type="text" id="capacity" name="capacity" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-success">Add Now</button>
+        </form>
+    </div>
+</section>
 
 {% endblock %}

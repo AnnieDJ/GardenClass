@@ -1,6 +1,25 @@
 {% extends 'manager/mgr_dashboard.html' %}
 
 {% block content %}
+
+<!-- Breadcrumb -->
+<section class="py-3 py-md-4 py-xl-5 bg-light">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <h1 class="h4">Profile Management</h1>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb m-0 fs-7">
+              <li class="breadcrumb-item"><a class="link-primary text-decoration-none" href="{{ url_for('manager_dashboard') }}">Home</a></li>
+              <li class="breadcrumb-item">Instructor Profiles</li>
+              <li class="breadcrumb-item active" aria-current="page">Edit</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </section>
+
 <section>
 <div class="container">
     <h1 class="mt-5">Edit Detail: {{ instructor['user_name'] }}</h1>

@@ -4,6 +4,29 @@ from flask import session,request
 from app import utils
 
 
+@app.context_processor
+def inject_member_details():
+    if 'loggedin' in session and session['loggedin']:
+        cursor = utils.getCursor()
+        user_name = session.get('username')
+
+        # Fetch the member details based on the session's username
+        cursor.execute("""
+        SELECT m.first_name, m.last_name, m.email
+        FROM member m
+        JOIN user u ON m.member_id = u.related_member_id
+        WHERE u.user_name = %s
+        """, (user_name,))
+        member_info = cursor.fetchone()
+        cursor.close()
+        
+        if member_info:
+            full_name = f"{member_info['first_name']} {member_info['last_name']}"
+            email = member_info['email']
+            return {'member_name': full_name, 'member_email': email}
+    return {}
+
+
 ## Member dashboard ##
 @app.route('/member/dashboard')
 def member_dashboard():

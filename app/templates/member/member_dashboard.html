@@ -1,114 +1,33 @@
-{% extends 'base.html' %} {% block content %}
+<!doctype html>
+<html lang="en">
 
-<style>
-  body {
-    font-family: "Arial", sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-  }
+<head>
+  <!-- Required Meta Tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  .navbar {
-    background-color: #4a724a;
-    color: white;
-    padding: 10px 20px;
-    text-align: center;
-  }
+  <!-- Document Title, Description, and Author -->
+  <title>Rākau Member Dashboard</title>
 
-  .dashboard {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    padding: 20px;
-  }
+  <!-- Favicon and Touch Icons -->
+  <link rel="icon" type="image/png" sizes="512x512" href="/static/img/logo.png">
 
-  .card {
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-  }
 
-  .card h2 {
-    background-color: #e7f4e4;
-    color: #333;
-    padding: 10px;
-    margin: -20px -20px 20px -20px;
-    text-align: center;
-  }
+  <!-- Google Fonts Files -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-  /* The side navigation menu */
-  .sidebar {
-    margin-right: 100px;
-    padding: 0;
-    width: 200px;
-    background-color: #f1f1f1;
-    position: fixed;
-    height: 100%;
-    overflow: auto;
-    left: 0;
-  }
+  <!-- CSS Files -->
+  <link rel="stylesheet" href="/static/assets/css/console-bsb.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap/dist/css/jsvectormap.min.css">
 
-  /* Sidebar links */
-  .sidebar a {
-    display: block;
-    color: black;
-    padding: 16px;
-    text-decoration: none;
-  }
-
-  /* Active/current link */
-  .sidebar a.active {
-    background-color: #4a724a;
-    color: white;
-    font-weight: bold;
-  }
-
-  /* Links on mouse-over */
-  .sidebar a:hover:not(.active) {
-    background-color: #4a724a;
-    color: white;
-  }
-
-  /* Page content. The value of the margin-left property should match the value of the sidebar's width property */
-  div.content {
-    margin-left: 100px;
-    padding: 1px 16px;
-    height: 1000px;
-  }
-
-  /* On screens that are less than 700px wide, make the sidebar into a topbar */
-  @media screen and (max-width: 700px) {
-    .sidebar {
-      width: 100%;
-      height: auto;
-      position: relative;
-    }
-    .sidebar a {
-      float: left;
-    }
-    div.content {
-      margin-left: 0;
-    }
-  }
-
-  @media screen and (max-width: 400px) {
-    .sidebar a {
-      text-align: center;
-      float: none;
-    }
-  }
-
-  /* Responsive layout adjustments */
-  @media (max-width: 768px) {
-    .dashboard {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>
+  <!-- BSB Head -->
+</head>
 
 <body>
+<<<<<<< Updated upstream
   <!-- The sidebar -->
   <div class="sidebar">
     <a href=" ">Dashboard</a>
@@ -118,56 +37,320 @@
     <a href="{{url_for('member_pay_subscription')}}">Payment</a>
     <a href="{{url_for('member_view_news')}}">News</a>
   </div>
+=======
+>>>>>>> Stashed changes
 
-  <!-- Page content -->
-  <div class="content">
-    <div class="dashboard">
-      <div class="workshops card">
-        <h2>Workshop Schedules</h2>
-        <h3>Introduction to Gardening</h3>
-        <p><strong>Type:</strong> Beginners</p>
-        <p><strong>Date:</strong> March 20, 2024</p>
-        <p><strong>Time:</strong> 10:00 AM - 12:00 PM</p>
-        <p><strong>Location:</strong> Community Center, Room A</p>
-        <p><strong>Instructor:</strong> John Smith</p>
-        <p>
-          <strong>Details:</strong> Learn the basics of gardening, including
-          soil preparation, planting, and watering.
-        </p>
-        <p><strong>Cost:</strong> $25</p>
+  <!-- Header -->
+  <header id="header" class="bg-white border-bottom border-light-subtle sticky-top bsb-tpl-header-sticky">
+    <nav class="navbar navbar-expand-md bsb-navbar-3 bsb-tpl-navbar-sticky" data-bsb-sticky-target="#header">
+      <div class="container">
+        <ul class="navbar-nav">
+          <li class="nav-item me-3">
+            <a class="nav-link" href="#!" data-bs-toggle="offcanvas" data-bs-target="#bsbSidebar1" aria-controls="bsbSidebar1">
+              <i class="bi-filter-left fs-3 lh-1"></i>
+            </a>
+          </li>
+        </ul>
+        <a class="navbar-brand" href="{{ url_for('member_dashboard') }}">
+          <img src="/static/img/logo.png" class="bsb-tpl-logo" alt="Rākau Gardening Society Logo">
+          Rākau Gardening Society
+        </a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#bsbNavbar" aria-controls="bsbNavbar" aria-label="Toggle Navigation">
+          <i class="bi bi-three-dots"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="bsbNavbar">
+          <ul class="navbar-nav bsb-dropdown-menu-responsive ms-auto align-items-center">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle bsb-dropdown-toggle-caret-disable" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="position-relative">
+                  <i class="bi bi-search"></i>
+                </span>
+              </a>
+              <div class="dropdown-menu dropdown-menu-md-end bsb-dropdown-animation bsb-fadeIn">
+                <form class="row g-1 px-3 py-2 align-items-center">
+                  <div class="col-8">
+                    <label class="visually-hidden" for="inputSearchNavbar">Search</label>
+                    <input type="text" class="form-control" id="inputSearchNavbar">
+                  </div>
+                  <div class="col-4">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                  </div>
+                </form>
+              </div>
+            </li>
+
+            
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle bsb-dropdown-toggle-caret-disable" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="position-relative pt-1">
+                  <i class="bi bi-bell"></i>
+                  <span class="p-1 bg-accent border border-light rounded-circle position-absolute top-0 start-100 translate-middle">
+                    <span class="visually-hidden">New Notifications</span>
+                  </span>
+                </span>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-md-end bsb-dropdown-animation bsb-fadeIn">
+                <li>
+                  <a class="dropdown-item d-flex align-items-center" href="#!">
+                    <span>
+                      <i class="bi bi-envelope-fill me-2"></i>
+                      <span class="fs-7">New Messages</span>
+                    </span>
+                  </a>
+                </li> 
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
+                <li><a class="dropdown-item fs-7 text-center" href="#!">See All Notifications</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle bsb-dropdown-toggle-caret-disable" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="https://i.pinimg.com/564x/92/5c/52/925c52543aa8096c66214311fa598fbc.jpg" width="35" height="35" class="img-fluid rounded-circle" alt="Profile Photo">
+              </a>
+              <ul class="dropdown-menu dropdown-menu-md-end bsb-dropdown-animation bsb-fadeIn">
+                <li>
+                  <h6 class="dropdown-header fs-7 text-center">Welcome, {{ member_name }}!</h6>
+                </li>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
+                <li>
+                  <a href="{{ url_for('member_profile') }}" class="dropdown-item" aria-current="true">
+                    <div class="row g-0 align-items-center">
+                      <div class="col-3">
+                        <img src="https://i.pinimg.com/564x/92/5c/52/925c52543aa8096c66214311fa598fbc.jpg" width="55" height="55" class="img-fluid rounded-circle" alt="Profile Photo">
+                      </div>
+                      <div class="col-9">
+                        <div class="ps-3">
+                          <div class="text-secondary mt-1 fs-7">Member Account</div>
+                          <div class="text-secondary mt-1 fs-7">{{ member_email }}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{{ url_for('member_profile') }}">
+                    <span>
+                      <i class="bi bi-person-fill me-2"></i>
+                      <span class="fs-7">View Profile</span>
+                    </span>
+                  </a>
+                </li>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
+                <li>
+                  <a class="dropdown-item text-center" href="{{ url_for('logout') }}">
+                    <span>
+                      <span class="fs-7">Log Out</span>
+                    </span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
       </div>
+    </nav>
+  </header>
 
-      <div class="lessons card">
-        <h2>Lesson Schedules</h2>
-        <h3>Pruning Techniques</h3>
-        <p><strong>Date:</strong> March 25, 2024</p>
-        <p><strong>Time:</strong> 2:00 PM - 4:00 PM</p>
-        <p><strong>Location:</strong> Community Garden</p>
-        <p><strong>Instructor:</strong> Emily Johnson</p>
-        <p>
-          <strong>Details:</strong> Learn different pruning techniques to
-          maintain healthy plants.
-        </p>
-        <p><strong>Cost:</strong> $20</p>
+  <main id="main">
+    {% block content %}
+    <!-- Breadcrumb -->
+    <section class="py-3 py-md-4 py-xl-5 bg-light">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <h1 class="h4">Member Dashboard</h1>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb m-0 fs-7">
+                <li class="breadcrumb-item"><a class="link-primary text-decoration-none" href="{{ url_for('member_dashboard') }}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Overview</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
       </div>
+    </section>
 
-      <div class="booking card">
-        <h2>Booking Management</h2>
-        <p><strong>View Booking:</strong> Book lesson</p>
-        <p><strong>Cancel Booking:</strong> cancel workshop</p>
-        <!-- More profile details -->
-      </div>
 
-      <div class="subscription card">
-        <h2>Subscription Details</h2>
-        <p><strong>Status:</strong> Active</p>
-        <p><strong>Renewal Date:</strong> March 15, 2025</p>
-        <p><strong>Renewal Options:</strong> Renew subscription</p>
-      </div>
+    <section class="container my-4">
+        <div class="row gy-3 gy-md-4">
+          
+          <!-- Lesson Schedules Card -->
+          <div class="col-12">
+            <div class="card widget-card border-light shadow-sm">
+              <div class="card-header bg-transparent p-4 border-light-subtle">
+                <h5 class="card-title widget-card-title m-0">Lesson Schedules</h5>
+              </div>
+              <div class="card-body p-4">
+                <h3 class="h6">Pruning Techniques</h3>
+                <p><strong>Date:</strong> March 25, 2024</p>
+                <p><strong>Time:</strong> 2:00 PM - 4:00 PM</p>
+                <p><strong>Location:</strong> Community Garden</p>
+                <p><strong>Instructor:</strong> Emily Johnson</p>
+                <p>
+                  <strong>Details:</strong> Learn different pruning techniques to
+                  maintain healthy plants.
+                </p>
+                <p><strong>Cost:</strong> $20</p>
+                <a href="#" class="btn btn-success">Read More</a>
+              </div>
+            </div>
+          </div>
+      
+          <!-- Workshop Schedules Card -->
+          <div class="col-12">
+            <div class="card widget-card border-light shadow-sm">
+              <div class="card-header bg-transparent p-4 border-light-subtle">
+                <h5 class="card-title widget-card-title m-0">Workshop Schedules</h5>
+              </div>
+              <div class="card-body p-4">
+                <h3 class="h6">Introduction to Gardening</h3>
+                <p><strong>Type:</strong> Beginners</p>
+                <p><strong>Date:</strong> March 20, 2024</p>
+                <p><strong>Time:</strong> 10:00 AM - 12:00 PM</p>
+                <p><strong>Location:</strong> Community Center, Room A</p>
+                <p><strong>Instructor:</strong> John Smith</p>
+                <p>
+                  <strong>Details:</strong> Learn the basics of gardening, including
+                  soil preparation, planting, and watering.
+                </p>
+                <p><strong>Cost:</strong> $25</p>
+                <a href="#" class="btn btn-success">Read More</a>
+              </div>
+            </div>
+          </div>
+      
+          <!-- Booking Management Card -->
+          <div class="col-12 col-lg-6">
+            <div class="card widget-card border-light shadow-sm">
+              <div class="card-header bg-transparent p-4 border-light-subtle">
+                <h5 class="card-title widget-card-title m-0">My Booking</h5>
+              </div>
+              <div class="card-body p-4">
+                <p><strong>View Booking:</strong> Book lesson</p>
+                <p><strong>Cancel Booking:</strong> cancel workshop</p>
+                <a href="#" class="btn btn-success">Read More</a>
+              </div>
+            </div>
+          </div>
+      
+          <!-- Subscription Details Card -->
+          <div class="col-12 col-lg-6">
+            <div class="card widget-card border-light shadow-sm">
+              <div class="card-header bg-transparent p-4 border-light-subtle">
+                <h5 class="card-title widget-card-title m-0">My Subscription</h5>
+              </div>
+              <div class="card-body p-4">
+                <p><strong>Status:</strong> Active</p>
+                <p><strong>Renewal Date:</strong> March 15, 2025</p>
+                <p><strong>Renewal Options:</strong> Renew subscription</p>
+                <a href="#" class="btn btn-success">Read More</a>
+              </div>
+            </div>
+          </div>
+      
+        </div>
+      </section>
+      
+      {% endblock %}
+  </main>
+  
 
-      <!-- More sections as needed -->
+  <!-- Aside -->
+  <aside class="bsb-sidebar-1 offcanvas offcanvas-start" tabindex="-1" id="bsbSidebar1" aria-labelledby="bsbSidebarLabel1">
+
+    <div class="offcanvas-body pt-0">
+      <hr class="sidebar-divider mb-3">
+      <ul class="navbar-nav">
+        <li class="nav-item mt-3">
+          <h6 class="py-1 text-secondary text-uppercase fs-7">Member Dashboard</h6>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link p-3" data-bs-toggle="collapse" href="#pageExamples" role="button" aria-expanded="false" aria-controls="pageExamples">
+            <div class="nav-link-icon text-primary">
+              <i class="bi bi-folder"></i>
+            </div>
+            <span class="nav-link-text fw-bold">Profile Management</span>
+          </a>
+          <div class="collapse" id="pageExamples">
+            <ul class="nav flex-column ms-4">        
+              <li class="nav-item">
+                <a class="nav-link link-secondary" aria-current="page" href="{{ url_for('member_profile') }}">
+                  <div class="nav-link-icon text-primary-emphasis">
+                    <i class="bi bi-arrow-right-short"></i>
+                  </div>
+                  <span class="nav-link-text">Your Profile</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link p-3" data-bs-toggle="collapse" href="#authExamples" role="button" aria-expanded="false" aria-controls="authExamples">
+            <div class="nav-link-icon text-primary">
+              <i class="bi bi-book"></i>
+            </div>
+            <span class="nav-link-text fw-bold">Workshop/Lessons Management</span>
+          </a>
+          <div class="collapse" id="authExamples">
+            <ul class="nav flex-column ms-4">
+              <li class="nav-item">
+                <a class="nav-link link-secondary" aria-current="page" href="#">
+                  <div class="nav-link-icon text-primary-emphasis">
+                    <i class="bi bi-arrow-right-short"></i>
+                  </div>
+                  <span class="nav-link-text">Workshops</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link link-secondary" aria-current="page" href="#">
+                  <div class="nav-link-icon text-primary-emphasis">
+                    <i class="bi bi-arrow-right-short"></i>
+                  </div>
+                  <span class="nav-link-text">Lessons</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+  </aside>
+
+  <!-- Footer -->
+  <footer class="footer py-3 border-top border-light-subtle">
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <div class="py-3">
+            Built by <a href="#" class="link-secondary text-decoration-none">Group AS - Schwifty</a> with <span class="text-accent">&#9829;</span>
+          </div>
+        </div>
     </div>
   </div>
+  </footer>
+
+  <!-- Javascript Files: Vendors -->
+  <script src="https://unpkg.com/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsvectormap"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsvectormap/dist/maps/world-merc.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/bootstrap5@6.1.9/index.global.min.js"></script>
+
+  <!-- Javascript Files: Controllers -->
+  <script src="/static/assets/controller/console-bsb.js"></script>
+  <script src="/static/assets/controller/chart-1.js"></script>
+  <script src="/static/assets/controller/chart-3.js"></script>
+  <script src="/static/assets/controller/chart-4.js"></script>
+  <script src="/static/assets/controller/calendar-1.js"></script>
+
+  <!-- BSB Body End -->
 </body>
 
-{%endblock%}
+</html>

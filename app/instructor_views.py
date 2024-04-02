@@ -292,7 +292,7 @@ def instr_view_news():
            
             
 ## Instructor News - Read More ##
-@app.route('/instr_news_details/<int:news_id>')
+@app.route('/member_news_details/<int:news_id>')
 def instr_news_details(news_id):
     cursor = utils.getCursor()
     
@@ -302,7 +302,9 @@ def instr_news_details(news_id):
 
     # Check if the article was found
     if article:
-        return render_template('instructor/instr_news_details.html', article=article)
+        return render_template('member/member_news_details.html', article=article)
     else:
         # If no article found with the provided id, you can redirect to a 404 page or back to the news list
         return "Article not found", 404
+    
+

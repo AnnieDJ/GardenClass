@@ -27,18 +27,7 @@
 </head>
 
 <body>
-<<<<<<< Updated upstream
-  <!-- The sidebar -->
-  <div class="sidebar">
-    <a href=" ">Dashboard</a>
-    <a href="#workshops">Workshops</a>
-    <a href="{{ url_for('member_view_instr') }}">Individual Lessons</a>
-    <a href="{{ url_for('get_courses')}}">Booking</a>
-    <a href="{{url_for('member_pay_subscription')}}">Payment</a>
-    <a href="{{url_for('member_view_news')}}">News</a>
-  </div>
-=======
->>>>>>> Stashed changes
+
 
   <!-- Header -->
   <header id="header" class="bg-white border-bottom border-light-subtle sticky-top bsb-tpl-header-sticky">
@@ -236,7 +225,7 @@
               <div class="card-body p-4">
                 <p><strong>View Booking:</strong> Book lesson</p>
                 <p><strong>Cancel Booking:</strong> cancel workshop</p>
-                <a href="#" class="btn btn-success">Read More</a>
+                <a href="{{ url_for('get_courses')}}" class="btn btn-success">Read More</a>
               </div>
             </div>
           </div>
@@ -315,6 +304,22 @@
                     <i class="bi bi-arrow-right-short"></i>
                   </div>
                   <span class="nav-link-text">Lessons</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link link-secondary" aria-current="page" href="{{ url_for('get_courses')}}">
+                  <div class="nav-link-icon text-primary-emphasis">
+                    <i class="bi bi-arrow-right-short"></i>
+                  </div>
+                  <span class="nav-link-text">My Bookings</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link link-secondary" aria-current="page" href="{{url_for('member_pay_subscription')}}">
+                  <div class="nav-link-icon text-primary-emphasis">
+                    <i class="bi bi-arrow-right-short"></i>
+                  </div>
+                  <span class="nav-link-text">Make a Payment</span>
                 </a>
               </li>
             </ul>

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'member/member_dashboard.html' %}
 
 {% block content %}
 
@@ -6,6 +6,7 @@
 <div class="alert alert-info">{{ msg }}</div>
 {% endif %}
 
+<section>
 <div class="container">
     <h2>Pay Subscription</h2>
     <form method="POST" class="needs-validation" novalidate>
@@ -23,5 +24,5 @@
         <button type="submit" class="btn btn-success btn-lg{% if disable %} disabled{% endif %}">Pay Now</button>
     </form>
 </div>
-
+</section>
 {% endblock %}

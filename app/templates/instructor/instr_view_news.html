@@ -10,7 +10,7 @@
   <h1>Instructor's Greenboard</h1>
 
   <!-- Search form -->
-  <form action="{{ url_for('instr_view_news') }}" method="get">
+  <form action="{{ url_for('member_view_news') }}" method="get">
     <input type="text" name="title" placeholder="Search by title..." />
     <input type="date" name="date" />
     <button type="submit">Search</button>
@@ -36,7 +36,8 @@
         <td>{{ article.date_published.strftime('%d %B, %Y') }}</td>
         <td>{{ article.first_name }} {{ article.last_name }}</td>
         <td>
-          <a href="{{ url_for('instr_news_details', news_id=article.news_id) }}"
+          <a
+            href="{{ url_for('member_news_details.html', news_id=article.news_id) }}"
             >Read more...</a
           >
         </td>

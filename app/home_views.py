@@ -224,10 +224,17 @@ def change_password():
     else:
         # All checks have passed, update the password
         hashed_new_password = utils.hashing.hash_value(new_password, salt='schwifty')
-        cursor.execute('UPDATE user SET password = %s WHERE user_id = %s', (hashed_new_password, user_id))
-        utils.connection.commit()
-        flash('Password updated successfully!', 'success')
+        # Update the user's password in the database based on role
+    if session.get('role') == 'Member':
+        cursor.execute('UPDATE user SET password = %s WHERE related_member_id = %s AND role = %s', (hashed_new_password, user_id, 'Member'))
+    elif session.get('role') == 'Manager':
+        cursor.execute('UPDATE user SET password = %s WHERE related_manager_id = %s AND role = %s', (hashed_new_password, user_id, 'Manager'))
+    elif session.get('role') == 'Instructor':
+        cursor.execute('UPDATE user SET password = %s WHERE related_instructor_id = %s AND role = %s', (hashed_new_password, user_id, 'Instructor'))
 
+    utils.connection.commit()
+    flash('Password updated successfully!')
+    
     # Redirect user to the appropriate profile page
     redirect_route = {
         'Member': 'member_profile',

@@ -31,7 +31,19 @@
                 <div class="card-header text-bg-primary">Welcome</div>
                 <div class="card-body">
                   <div class="text-center mb-3">
-                    <img src="https://i.pinimg.com/564x/92/5c/52/925c52543aa8096c66214311fa598fbc.jpg" class="img-fluid rounded-circle" alt="Profile Photo">
+                      {% if account[0][10] is not none %}
+                      {% if account[0][10].endswith('.jpg') %}
+                          <img class="card-img-top" src="data:image/jpg;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
+                      {% elif account[0][10].endswith('.jpeg') %}
+                          <img class="card-img-top" src="data:image/jpeg;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
+                      {% elif account[0][10].endswith('.png') %}
+                          <img class="card-img-top" src="data:image/png;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
+                      {% elif account[0][10].endswith('.gif') %}
+                          <img class="card-img-top" src="data:image/gif;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
+                      {% endif %}
+                  {% else %}
+                      <img src="https://i.pinimg.com/564x/92/5c/52/925c52543aa8096c66214311fa598fbc.jpg" class="img-fluid rounded-circle" alt="Profile Photo">
+                {% endif %}
                   </div>
                   <h5 class="text-center mb-1">{{ account[0][3] }} {{ account[0][4] }}</h5>
                   <p class="text-center text-secondary mb-4">Rākau Manager</p>
@@ -132,7 +144,19 @@
                       <div class="row gy-2">
                         <label class="col-12 form-label m-0">Profile Image</label>
                         <div class="col-12">
-                          <img src="https://i.pinimg.com/564x/92/5c/52/925c52543aa8096c66214311fa598fbc.jpg" width="200" height="200" class="img-fluid" alt="Profile Photo">
+                            {% if account[0][10] is not none %}
+                            {% if account[0][10].endswith('.jpg') %}
+                                <img class="card-img-top" src="data:image/jpg;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
+                            {% elif account[0][10].endswith('.jpeg') %}
+                                <img class="card-img-top" src="data:image/jpeg;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
+                            {% elif account[0][10].endswith('.png') %}
+                                <img class="card-img-top" src="data:image/png;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
+                            {% elif account[0][10].endswith('.gif') %}
+                                <img class="card-img-top" src="data:image/gif;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
+                            {% endif %}
+                        {% else %}
+                            <img src="https://i.pinimg.com/564x/92/5c/52/925c52543aa8096c66214311fa598fbc.jpg" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%; display: block; margin: 0 auto 20px auto;">
+                      {% endif %}
                         </div>
                         <div class="col-12">
                             <input type="file" class="form-control-file" id="instructor_image" name="instructor_image" hidden>

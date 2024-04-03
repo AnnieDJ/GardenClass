@@ -14,23 +14,35 @@ def inject_instructor_details():
     if 'loggedin' in session and session['loggedin']:
         cursor = utils.getCursor()
         user_name = session.get('username')
-        
-        # Assuming you have a relationship between the user and the instructor,
+
         # Fetch the instructor details based on the session's username
         cursor.execute("""
-        SELECT i.first_name, i.last_name, i.email
+        SELECT i.first_name, i.last_name, i.email, i.instructor_image
         FROM instructor i
         JOIN user u ON i.instructor_id = u.related_instructor_id
         WHERE u.user_name = %s
         """, (user_name,))
         instructor_info = cursor.fetchone()
         cursor.close()
-        
+
         if instructor_info:
             full_name = f"{instructor_info['first_name']} {instructor_info['last_name']}"
             email = instructor_info['email']
-            return {'instructor_name': full_name, 'instructor_email': email}
+            # Check if an image is present; if not, use the placeholder URL
+            if instructor_info['instructor_image']:
+                image_encode = base64.b64encode(instructor_info['instructor_image']).decode('utf-8')
+                image_src = f"data:image/jpeg;base64,{image_encode}"
+            else:
+                image_src = "https://i.pinimg.com/564x/92/5c/52/925c52543aa8096c66214311fa598fbc.jpg"
+
+            return {
+                'instructor_name': full_name,
+                'instructor_email': email,
+                'instructor_image_src': image_src
+            }
     return {}
+
+
 
 
 ## Instructor Dashboard ##

@@ -207,6 +207,9 @@ def change_password():
     cursor.execute(role_specific_query, (user_id, session.get('role')))
     result = cursor.fetchone()
 
+    # Initialize hashed_new_password variable
+    hashed_new_password = None
+
     if result is None:
         flash('No record found associated with this user ID', 'danger')
     elif not utils.hashing.check_value(result['password'], current_password, salt='schwifty'):
@@ -224,17 +227,18 @@ def change_password():
     else:
         # All checks have passed, update the password
         hashed_new_password = utils.hashing.hash_value(new_password, salt='schwifty')
-        # Update the user's password in the database based on role
-    if session.get('role') == 'Member':
-        cursor.execute('UPDATE user SET password = %s WHERE related_member_id = %s AND role = %s', (hashed_new_password, user_id, 'Member'))
-    elif session.get('role') == 'Manager':
-        cursor.execute('UPDATE user SET password = %s WHERE related_manager_id = %s AND role = %s', (hashed_new_password, user_id, 'Manager'))
-    elif session.get('role') == 'Instructor':
-        cursor.execute('UPDATE user SET password = %s WHERE related_instructor_id = %s AND role = %s', (hashed_new_password, user_id, 'Instructor'))
 
-    utils.connection.commit()
-    flash('Password updated successfully!')
-    
+    # Update the user's password in the database based on role
+    if hashed_new_password:
+        if session.get('role') == 'Member':
+            cursor.execute('UPDATE user SET password = %s WHERE related_member_id = %s AND role = %s', (hashed_new_password, user_id, 'Member'))
+        elif session.get('role') == 'Manager':
+            cursor.execute('UPDATE user SET password = %s WHERE related_manager_id = %s AND role = %s', (hashed_new_password, user_id, 'Manager'))
+        elif session.get('role') == 'Instructor':
+            cursor.execute('UPDATE user SET password = %s WHERE related_instructor_id = %s AND role = %s', (hashed_new_password, user_id, 'Instructor'))
+        utils.connection.commit()
+        flash('Password updated successfully!')
+
     # Redirect user to the appropriate profile page
     redirect_route = {
         'Member': 'member_profile',

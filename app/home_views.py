@@ -180,24 +180,10 @@ def payment():
     return render_template('/register/payment.html')
 
 
-@app.route('/password', methods=['GET', 'POST'])
-def password():
-    if 'loggedin' in session and session['loggedin']:
-        msg = request.args.get('msg', '') 
-        cursor = utils.getCursor()
-        cursor.execute('SELECT * FROM user WHERE user_id = %s', (session['id'],))
-        user_data = cursor.fetchone()
-        return render_template('password.html', user_data=user_data, msg=msg,role=session['role'])
-    return redirect(url_for('login'))
-
-
 @app.route('/change_password', methods=['POST'])
 def change_password():
     if 'loggedin' not in session or not session['loggedin']:
         return redirect(url_for('login'))
-
-    # This message will accumulate any error messages or a success message
-    msg = ''
 
     # Retrieve form data
     current_password = request.form.get('currentpassword')
@@ -208,47 +194,39 @@ def change_password():
     user_id = session['id']
 
     # Select the current password from the database based on role
-    if session.get('role') == 'Member':
-        cursor.execute('SELECT password FROM user WHERE related_member_id = %s AND role = %s', (user_id, 'Member'))
-    elif session.get('role') == 'Manager':
-        cursor.execute('SELECT password FROM user WHERE related_manager_id = %s AND role = %s', (user_id, 'Manager'))
-    elif session.get('role') == 'Instructor':
-        cursor.execute('SELECT password FROM user WHERE related_instructor_id = %s AND role = %s', (user_id, 'Instructor'))
-    
+    role_specific_query = {
+        'Member': 'SELECT password FROM user WHERE related_member_id = %s AND role = %s',
+        'Manager': 'SELECT password FROM user WHERE related_manager_id = %s AND role = %s',
+        'Instructor': 'SELECT password FROM user WHERE related_instructor_id = %s AND role = %s'
+    }.get(session.get('role'))
+
+    if not role_specific_query:
+        flash("User role is not recognized.", "danger")
+        return redirect(url_for('login'))
+
+    cursor.execute(role_specific_query, (user_id, session.get('role')))
     result = cursor.fetchone()
-   
+
     if result is None:
-        msg = 'No record found associated with this user ID'
+        flash('No record found associated with this user ID', 'danger')
     elif not utils.hashing.check_value(result['password'], current_password, salt='schwifty'):
-        msg = 'Current password is incorrect'
+        flash('Current password is incorrect', 'danger')
     elif new_password != confirm_password:
-        msg = 'New password and confirm password do not match'
+        flash('New password and confirm password do not match', 'danger')
     elif len(new_password) < 8:
-        msg = 'New password must be at least 8 characters long'
+        flash('New password must be at least 8 characters long', 'danger')
     elif not re.search(r'\d', new_password):
-        msg = 'New password must contain at least one digit'
+        flash('New password must contain at least one digit', 'danger')
     elif not re.search(r'[A-Za-z]', new_password):
-        msg = 'New password must contain at least one letter'
+        flash('New password must contain at least one letter', 'danger')
     elif not re.search(r'[^A-Za-z0-9]', new_password):
-        msg = 'New password must contain at least one special character'
-
-    if msg:
-        # If there was an error, render the password change form again with the message
-        return render_template('password.html', msg=msg, role=session['role'])
-
-    # If we reach this point, all checks have passed and we can update the password
-    hashed_new_password = utils.hashing.hash_value(new_password, salt='schwifty')
-    
-    # Update the user's password in the database based on role
-    if session.get('role') == 'Member':
-        cursor.execute('UPDATE user SET password = %s WHERE related_member_id = %s AND role = %s', (hashed_new_password, user_id, 'Member'))
-    elif session.get('role') == 'Manager':
-        cursor.execute('UPDATE user SET password = %s WHERE related_manager_id = %s AND role = %s', (hashed_new_password, user_id, 'Manager'))
-    elif session.get('role') == 'Instructor':
-        cursor.execute('UPDATE user SET password = %s WHERE related_instructor_id = %s AND role = %s', (hashed_new_password, user_id, 'Instructor'))
-    
-    utils.connection.commit()
-    flash('Password updated successfully!')
+        flash('New password must contain at least one special character', 'danger')
+    else:
+        # All checks have passed, update the password
+        hashed_new_password = utils.hashing.hash_value(new_password, salt='schwifty')
+        cursor.execute('UPDATE user SET password = %s WHERE user_id = %s', (hashed_new_password, user_id))
+        utils.connection.commit()
+        flash('Password updated successfully!', 'success')
 
     # Redirect user to the appropriate profile page
     redirect_route = {

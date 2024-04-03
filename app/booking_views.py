@@ -1,14 +1,18 @@
 from app import app
 from app import utils
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify,redirect,url_for
 import json
 import datetime
+from flask import session,request
 
 
 #Showing the calendar
 @app.route('/courses')
 def get_courses():
-    return  render_template('/booking/booking_lessons.html')
+    if 'loggedin' in session and session['loggedin']:
+        return  render_template('/booking/booking_lessons.html',role=session['role'])
+    else:
+        return redirect(url_for('login'))
 
 #getting courses and make a booking
 @app.route('/get_course_info')

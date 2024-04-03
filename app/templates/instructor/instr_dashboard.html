@@ -94,7 +94,7 @@
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle bsb-dropdown-toggle-caret-disable" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="https://i.pinimg.com/564x/92/5c/52/925c52543aa8096c66214311fa598fbc.jpg" width="35" height="35" class="img-fluid rounded-circle" alt="Profile Photo">
+                <img src="{{ instructor_image_src }}" alt="{{ instructor_name }}" width="35" height="35" class="img-fluid rounded-circle" alt="Profile Photo">
               </a>
               <ul class="dropdown-menu dropdown-menu-md-end bsb-dropdown-animation bsb-fadeIn">
                 <li>
@@ -107,8 +107,8 @@
                   <a href="{{ url_for('instructor_profile') }}" class="dropdown-item" aria-current="true">
                     <div class="row g-0 align-items-center">
                       <div class="col-3">
-                        <img src="https://i.pinimg.com/564x/92/5c/52/925c52543aa8096c66214311fa598fbc.jpg" width="55" height="55" class="img-fluid rounded-circle" alt="Profile Photo">
-                      </div>
+                        <img src="{{ instructor_image_src }}" alt="{{ instructor_name }}" class="img-fluid rounded-circle">
+                    </div>
                       <div class="col-9">
                         <div class="ps-3">
                           <div class="text-secondary mt-1 fs-7">Instructor Account</div>

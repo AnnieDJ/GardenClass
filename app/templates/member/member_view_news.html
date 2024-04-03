@@ -1,6 +1,7 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'member/member_dashboard.html' %} {% block content %}
+<section>
 <div class="news-container">
-  <h1>Harvest Hub (Member's News)</h1>
+  <h1>Harvest Hub</h1>
 
   <!-- Search form -->
   <form action="{{ url_for('member_view_news') }}" method="get">
@@ -41,4 +42,5 @@
   <p>No news to display.</p>
   {% endif %}
 </div>
+</section>
 {% endblock %}

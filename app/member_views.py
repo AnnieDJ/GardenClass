@@ -225,7 +225,6 @@ def book_lesson():
         cursor.close()
 
 
-## Member view news ##
 @app.route('/member_view_news')
 def member_view_news():
     if 'loggedin' in session and session['loggedin']:
@@ -235,7 +234,7 @@ def member_view_news():
         date = request.args.get('date')
         
         sql_query = """
-        SELECT n.news_id, n.title, n.content, n.details, n.date_published, 
+        SELECT n.news_id, n.title, n.content, n.date_published, 
                m.first_name, m.last_name
         FROM news n
         JOIN manager m ON n.author_id = m.manager_id
@@ -245,29 +244,29 @@ def member_view_news():
         query_params = []
         
         if title:
-            sql_query += " AND title LIKE %s"
+            sql_query += " AND n.title LIKE %s"
             query_params.append(f"%{title}%")
         if date:
-            sql_query += " AND DATE(date_published) = %s"
+            sql_query += " AND DATE(n.date_published) = %s"
             query_params.append(date)
         
-        sql_query += " ORDER BY date_published DESC"
+        sql_query += " ORDER BY n.date_published DESC"
         
         cursor.execute(sql_query, query_params)
         news_articles = cursor.fetchall()
         return render_template('member/member_view_news.html', news_articles=news_articles)
         
     else: 
-        return redirect(url_for('member/member_dashboard'))
-            
-            
-## Member News - Read More ##
+        return redirect(url_for('login'))  # make sure to redirect to the correct login route
+
+
+
 @app.route('/member_news_details/<int:news_id>')
 def member_news_details(news_id):
     cursor = utils.getCursor()
     
     # Fetch the specific news article by id
-    cursor.execute("SELECT title, content, date_published, details FROM news WHERE news_id = %s", (news_id,))
+    cursor.execute("SELECT title, content, date_published FROM news WHERE news_id = %s", (news_id,))
     article = cursor.fetchone()
 
     # Check if the article was found

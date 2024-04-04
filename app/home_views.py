@@ -13,7 +13,7 @@ def get_all_instructors():
     cursor = utils.getCursor()
     
     # Fetch all instructor details
-    cursor.execute("SELECT user_name, first_name, last_name FROM garden_club.instructor")
+    cursor.execute("SELECT user_name, first_name, last_name FROM instructor")
     instructors = cursor.fetchall()
     cursor.close()
     

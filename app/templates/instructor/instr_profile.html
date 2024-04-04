@@ -52,13 +52,13 @@
                   <div class="text-center mb-3">
                       {% if account[0][10] is not none %}
                       {% if account[0][10].endswith('.jpg') %}
-                          <img class="card-img-top" src="data:image/jpg;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
+                          <img class="card-img-top" src="data:image/jpg;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}" style="width: 150px; height: 150px; border-radius: 50%; display: block; margin: 0 auto 20px auto;">
                       {% elif account[0][10].endswith('.jpeg') %}
-                          <img class="card-img-top" src="data:image/jpeg;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
+                          <img class="card-img-top" src="data:image/jpeg;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}" style="width: 150px; height: 150px; border-radius: 50%; display: block; margin: 0 auto 20px auto;">
                       {% elif account[0][10].endswith('.png') %}
-                          <img class="card-img-top" src="data:image/png;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
+                          <img class="card-img-top" src="data:image/png;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}" style="width: 150px; height: 150px; border-radius: 50%; display: block; margin: 0 auto 20px auto;">
                       {% elif account[0][10].endswith('.gif') %}
-                          <img class="card-img-top" src="data:image/gif;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
+                          <img class="card-img-top" src="data:image/gif;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}" style="width: 150px; height: 150px; border-radius: 50%; display: block; margin: 0 auto 20px auto;">
                       {% endif %}
                   {% else %}
                       <img src="https://i.pinimg.com/564x/92/5c/52/925c52543aa8096c66214311fa598fbc.jpg" width="200" height="200" class="img-fluid rounded-circle" alt="Profile Photo">
@@ -165,16 +165,16 @@
                         <div class="col-12">
                             {% if account[0][10] is not none %}
                             {% if account[0][10].endswith('.jpg') %}
-                                <img class="card-img-top" src="data:image/jpg;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
+                                <img class="card-img-top" src="data:image/jpg;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}" style="width: 200px; height: 200px; border-radius: 0; display: block;  margin: 0 20px 20px 0;">
                             {% elif account[0][10].endswith('.jpeg') %}
-                                <img class="card-img-top" src="data:image/jpeg;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
+                                <img class="card-img-top" src="data:image/jpeg;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}" style="width: 200px; height: 200px; border-radius: 0; display: block;  margin: 0 20px 20px 0;">
                             {% elif account[0][10].endswith('.png') %}
-                                <img class="card-img-top" src="data:image/png;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
+                                <img class="card-img-top" src="data:image/png;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}" style="width: 200px; height: 200px; border-radius: 0; display: block; margin: 0 20px 20px 0;">
                             {% elif account[0][10].endswith('.gif') %}
-                                <img class="card-img-top" src="data:image/gif;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}">
+                                <img class="card-img-top" src="data:image/gif;base64,{{ account[0][11] }}" alt="{{ account[0][1] }}" style="width: 200px; height: 200px; border-radius: 0; display: block;  margin: 0 20px 20px 0;">
                             {% endif %}
                         {% else %}
-                            <img src="https://i.pinimg.com/564x/92/5c/52/925c52543aa8096c66214311fa598fbc.jpg" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%; display: block; margin: 0 auto 20px auto;">
+                            <img src="https://i.pinimg.com/564x/92/5c/52/925c52543aa8096c66214311fa598fbc.jpg" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 0; display: block;  margin: 0 20px 20px 0;">
                       {% endif %}
                         </div>
                         <div class="col-12">

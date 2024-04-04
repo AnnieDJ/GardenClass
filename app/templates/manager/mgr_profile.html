@@ -166,13 +166,13 @@
                                     </div>
                                     <div class="col-12 col-md-6">
                                       <label for="inputTitle" class="form-label">Title</label>
-                                      <select class="form-control" placeholder="title" value="{{ manager_profile[0][2] }}"  required>
+                                      <select class="form-control" name="title" required>
                                         <option value="Mr" {% if manager_profile[0][2] == 'Mr' %} selected {% endif %}>Mr</option>
                                         <option value="Mrs" {% if manager_profile[0][2] == 'Mrs' %} selected {% endif %}>Mrs</option>
                                         <option value="Miss" {% if manager_profile[0][2] == 'Miss' %} selected {% endif %}>Miss</option>
                                         <option value="Dr." {% if manager_profile[0][2]== 'Dr.' %} selected {% endif %}>Dr.</option>
                                         <option value="Prof." {% if manager_profile[0][2] == 'Prof.' %} selected {% endif %}>Prof.</option>
-                                      </select>
+                                    </select>
                                     </div>
                                     <div class="col-12 col-md-6">
                                     </div>

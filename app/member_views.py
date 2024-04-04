@@ -1,7 +1,9 @@
 from app import app
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for,flash
 from flask import session,request
+from datetime import datetime, timedelta
 from app import utils
+import re
 
 
 @app.context_processor
@@ -66,10 +68,32 @@ def member_edit_profile():
             email = request.form.get('email')
             address = request.form.get('address')
             date_of_birth = request.form.get('date_of_birth')
-        
+
+                # Redirect user to the appropriate profile page
+            redirect_route = {
+                'Member': 'member_profile',
+                'Manager': 'manager_profile',
+                'Instructor': 'instructor_profile'
+            }.get(session.get('role'), 'login')  # Fallback to 'login' if role is not found
+
+            # Perform data validation
+            if len(phone_number) != 10 or not phone_number.isdigit():
+                flash('Phone number must be 10 digits', 'danger')
+                return redirect(url_for(redirect_route))
+            
+            birth_date = datetime.strptime(date_of_birth, '%Y-%m-%d')
+            age = (datetime.now() - birth_date) // timedelta(days=365.25)
+            if age < 16:
+                flash('You must be at least 16 years old', 'danger')
+                return redirect(url_for(redirect_route))
+            
+            if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+                flash('Invalid email address', 'danger')
+                return redirect(url_for(redirect_route))
+
             cursor.execute("UPDATE member SET title = %s, first_name = %s,  last_name = %s, phone_number = %s, email = %s,address = %s, \
                            date_of_birth = %s WHERE user_name = %s", (title, first_name, last_name,phone_number, email, address,date_of_birth,session['username'],))       
-          
+            flash('Profile updated successfully!')
             return redirect(url_for('member_profile'))
         else:
             cursor.execute("SELECT * FROM member WHERE user_name = %s", (session['username'],))
@@ -79,6 +103,7 @@ def member_edit_profile():
         
     else:
         return redirect(url_for('login'))
+
 
 
 

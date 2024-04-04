@@ -7,6 +7,7 @@ from app import utils
 from werkzeug.utils import secure_filename
 import base64
 from flask import jsonify
+import re
 
 
 @app.context_processor
@@ -197,6 +198,20 @@ def editinstrprofile():
             instructor_profile = request.form.get('instructor_profile')
             instructor_image = request.files.get('instructor_image')
 
+            redirect_route = {
+                'Member': 'member_profile',
+                'Manager': 'manager_profile',
+                'Instructor': 'instructor_profile'
+            }.get(session.get('role'), 'login') 
+
+            if len(phone_number) != 10 or not phone_number.isdigit():
+                flash('Phone number must be 10 digits', 'danger')
+                return redirect(url_for(redirect_route))
+            
+            if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+                flash('Invalid email address', 'danger')
+                return redirect(url_for(redirect_route))
+            
             if instructor_image:
                 if utils.allowed_file(instructor_image.filename):
                     filename = secure_filename(instructor_image.filename)
@@ -205,15 +220,15 @@ def editinstrprofile():
                     cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s, address = %s, instructor_profile = %s, instructor_image_name = %s, instructor_image = %s WHERE user_name = %s",
                                     (title, first_name, last_name, position, phone_number, email, address, instructor_profile, filename, image_data, session['username'],))
                     flash('Profile updated successfully with image')
+                    return redirect(url_for('instructor_profile')) 
                 else:
-                    flash('Invalid file type, please upload a valid image file')
+                    flash('Invalid file type, please upload a valid image file','danger')
+                    return redirect(url_for('instructor_profile')) 
             else:
-                
 
                cursor.execute("UPDATE instructor SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s, address = %s, instructor_profile = %s WHERE user_name = %s",
                             (title, first_name, last_name, position, phone_number, email, address, instructor_profile, session['username'],))
-            flash('Profile updated successfully without image')
-
+            flash('Profile updated successfully!')
             return redirect(url_for('instructor_profile'))
 
         else:

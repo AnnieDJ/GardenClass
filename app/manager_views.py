@@ -4,6 +4,7 @@ from flask import session,request,jsonify,flash
 from app import utils
 from werkzeug.utils import secure_filename
 import base64
+import re
 
 @app.context_processor
 def inject_user_details():
@@ -80,7 +81,6 @@ def manager_profile():
 
 
 
-
 ## Manager edit own profile ##
 @app.route('/manager/editmanagerprofile', methods=['GET', 'POST'])
 def editmanagerprofile():
@@ -96,26 +96,40 @@ def editmanagerprofile():
             email = request.form.get('email')
             gardering_experience = request.form.get('gardening_experience')
             manager_image = request.files['manager_image']
+
+            redirect_route = {
+                'Member': 'member_profile',
+                'Manager': 'manager_profile',
+                'Instructor': 'instructor_profile'
+            }.get(session.get('role'), 'login') 
+
+            if len(phone_number) != 10 or not phone_number.isdigit():
+                flash('Phone number must be 10 digits', 'danger')
+                return redirect(url_for(redirect_route))
+            
+            if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+                flash('Invalid email address', 'danger')
+                return redirect(url_for(redirect_route))
             
             if manager_image:
                 
                 if utils.allowed_file(manager_image.filename):
                     filename = secure_filename(manager_image.filename)
                     image_data = manager_image.read()
-                    
                     cursor.execute("UPDATE manager SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s, gardering_experience = %s, manager_image_name = %s, profile_image = %s  \
                         WHERE user_name = %s", (title, first_name, last_name, position, phone_number, email, gardering_experience, filename,image_data, session['username'],))
-                    
+                    flash('Profile updated successfully with image')
+                    return redirect(url_for('manager_profile'))     
                 else:
-                    flash('Invalid file type, please upload a valid image file')
-                    
-                return redirect(url_for('manager_profile'))
+                    flash('Invalid file type, please upload a valid image file','danger')
+                    return redirect(url_for('manager_profile')) 
                     
             else:
                 cursor.execute("UPDATE manager SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s, gardering_experience = %s \
                    WHERE user_name = %s", (title, first_name, last_name, position, phone_number, email, gardering_experience, session['username'],))
 
-                return redirect(url_for('manager_profile'))
+            flash('Profile updated successfully!')
+            return redirect(url_for('manager_profile'))
         else:
             cursor.execute("SELECT * FROM manager WHERE user_name = %s", (session['username'],))
             manager_profile = cursor.fetchone()
@@ -124,6 +138,7 @@ def editmanagerprofile():
         
     else:
         return redirect(url_for('login'))
+    
 
 ## Manaer view instructors list ##
 @app.route('/manager/instructor_profile_list')

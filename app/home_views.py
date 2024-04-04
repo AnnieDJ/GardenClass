@@ -5,10 +5,37 @@ from app import utils
 import re
 from datetime import datetime
 
+
+
+
+## View All Instuctor Images on HomePage##
+def get_all_instructors():
+    cursor = utils.getCursor()
+    
+    # Fetch all instructor details
+    cursor.execute("SELECT user_name, first_name, last_name FROM garden_club.instructor")
+    instructors = cursor.fetchall()
+    cursor.close()
+    
+    # Append the path to the instructor's image URL
+    for instructor in instructors:
+        first_name = instructor['user_name'].split('_')[0].lower()
+        image_filename = f"instr_{first_name}.jpg"
+        instructor['image_src'] = url_for('static', filename=f'img/instructors/{image_filename}')
+        
+    return instructors
+
+
+
+## Home Page ##
 @app.route('/')
 @app.route('/home')
 def home():
-    return render_template('index.html')
+    instructor_data = get_all_instructors()
+    return render_template('index.html', instructors=instructor_data)
+
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # Check if the message exists in the session
@@ -247,6 +274,8 @@ def change_password():
     }.get(session.get('role'), 'login')  # Fallback to 'login' if role is not found
     
     return redirect(url_for(redirect_route))
+
+
 
 @app.route('/logout')
 def logout():

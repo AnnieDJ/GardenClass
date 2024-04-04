@@ -4,6 +4,7 @@ from flask import session,request,jsonify,flash
 from app import utils
 from werkzeug.utils import secure_filename
 import base64
+import re
 
 @app.context_processor
 def inject_user_details():
@@ -308,12 +309,16 @@ def check_email():
         cursor = utils.getCursor()   
         cursor.execute('SELECT email FROM instructor;')
         email_list = cursor.fetchall()
-        
-       # return any(email == row[0] for row in email_list)
-        if any(email == row[0] for row in email_list):
-          return jsonify({'valid': False})
+
+        if email_list:  
+           if any(email == row['email'] for row in email_list):
+               
+              return jsonify({'valid': False})
+           else:
+              return jsonify({'valid': True})
         else:
-         return jsonify({'valid': True})
+          return jsonify({'valid': True})  
+
     
 @app.route('/instr_search')
 def instr_search():
@@ -607,3 +612,51 @@ def expired_sub_search():
             return render_template("manager/mgr_expired_subscriptions.html", subscription=matched_profiles, role=session['role'])
     else:
          return redirect(url_for('login'))
+     
+@app.route('/manager/add_instructor', methods=['GET', 'POST'])
+def add_instructor():
+    if 'loggedin' in session and session['loggedin']:
+        
+         msg = ''
+         cursor = utils.getCursor()
+         
+         if request.method == 'POST':
+              user_name = request.form['user_name']
+            
+              cursor.execute('SELECT * FROM instructor WHERE user_name = %s', (user_name,))
+              account = cursor.fetchone()
+            
+              if account is not None:
+                  msg = 'Account already exists!'
+              elif not re.match(r'[^@]+@[^@]+\.[^@]+', request.form['email']):
+                  msg = 'Invalid email address!'
+              elif not re.match(r'^\d{9,12}$', request.form['phone_number']):
+                   msg = 'Invalid phone number!'
+              else:
+                   title = request.form['title']
+                   first_name = request.form['first_name']
+                   last_name = request.form['last_name']
+                   position = request.form['position']
+                   phone_number = request.form['phone_number']
+                   email = request.form['email']
+                   address = request.form['address']
+                   instr_profile = request.form['instructor_profile']
+                   instructor_image = request.files['instructor_image']
+                   password = request.form['password']
+            
+                   hashed_password = utils.hashing.hash_value(password , salt='schwifty')
+            
+                   if utils.allowed_file(instructor_image.filename):
+                         filename = secure_filename(instructor_image.filename)
+                         image_data = instructor_image.read()
+                         cursor.execute("INSERT INTO instructor (user_name, title, first_name,last_name, position,phone_number,email,address,instructor_profile,instructor_image_name,instructor_image) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",(user_name, title, first_name, last_name,position,phone_number,email,address,instr_profile,filename,image_data))
+                         user_id =cursor.lastrowid
+                         cursor.execute("INSERT INTO user (user_name,password, role, related_instructor_id) VALUES (%s, %s, %s, %s)",(user_name,hashed_password,'Instructor',user_id))
+                         return redirect(url_for('instructor_profile_list'))
+                   else:
+                        flash("This is not a valid Image!")
+                        return redirect(url_for('add_instructor'))
+    
+         return render_template('/manager/add_instr_profile.html', msg = msg, role=session['role'])
+    else:
+        return redirect(url_for('login'))

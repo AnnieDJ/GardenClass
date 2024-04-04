@@ -625,18 +625,14 @@ def add_instructor():
             
               cursor.execute('SELECT * FROM instructor WHERE user_name = %s', (user_name,))
               account = cursor.fetchone()
-              print("account ---> %s", account)
+            
               if account is not None:
                   msg = 'Account already exists!'
-                  print(msg)
               elif not re.match(r'[^@]+@[^@]+\.[^@]+', request.form['email']):
                   msg = 'Invalid email address!'
-                  print(msg)
               elif not re.match(r'^\d{9,12}$', request.form['phone_number']):
                    msg = 'Invalid phone number!'
-                   print(msg)
               else:
-                   print("This is else")
                    title = request.form['title']
                    first_name = request.form['first_name']
                    last_name = request.form['last_name']

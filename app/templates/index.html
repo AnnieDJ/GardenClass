@@ -239,8 +239,7 @@
       <!--==================== QUESTIONS ====================-->
       <section class="questions section" id="faqs">
         <h2 class="section__title-center questions__title container">
-          Some common questions <br />
-          were often asked
+          Some common questions were often asked
         </h2>
 
         <div class="questions__container container grid">
@@ -384,7 +383,7 @@
               </div>
 
               <div class="contact__information">
-                <h3 class="contact__subtitle">Write us by mail</h3>
+                <h3 class="contact__subtitle">Write us by email</h3>
                 <span class="contact__description">
                   <i class="ri-mail-line contact__icon"></i>
                   rakau@email.com
@@ -438,18 +437,27 @@
             to stay update
           </h3>
 
-          <div class="footer__subscribe">
+          <form
+            action="{{ url_for('subscribe') }}"
+            method="post"
+            class="footer__subscribe"
+          >
             <input
               type="email"
+              name="email"
               placeholder="Enter your email"
               class="footer__input"
+              required
             />
 
-            <button class="button button--flex footer__button">
+            <button type="submit" class="button button--flex footer__button">
               Subscribe
               <i class="ri-arrow-right-up-line button__icon"></i>
             </button>
-          </div>
+          </form>
+          {% if message %}
+          <div class="alert">{{ message }}</div>
+          {% endif %}
         </div>
 
         <div class="footer__content">

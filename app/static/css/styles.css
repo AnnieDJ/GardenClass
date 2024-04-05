@@ -750,6 +750,7 @@ the website, in dark theme
   display: flex;
   justify-content: space-between;
   border-radius: 0.5rem;
+  position: relative;
 }
 
 .footer__input {

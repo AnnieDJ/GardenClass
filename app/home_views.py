@@ -27,12 +27,40 @@ def get_all_instructors():
 
 
 
+
+## Subscribe ## 
+@app.route('/subscribe', methods=['POST'])
+def subscribe():
+    email = request.form['email']
+    cursor = utils.getCursor()
+    msg = ""
+
+    cursor.execute("INSERT INTO subscriptions (email) VALUES (%s)", (email,))
+    utils.connection.commit()
+
+    # cursor.rowcount returns the number of rows affected by the last execute() operation
+    if cursor.rowcount > 0:
+        msg = "Subscribed successfully!"
+    else:
+        # This else part will not typically execute for an SQL error, only if no rows are affected
+        msg = "Subscription failed. No changes made."
+
+    cursor.close()
+    return redirect(url_for('home', msg=msg))
+
+
+
+
 ## Home Page ##
 @app.route('/')
 @app.route('/home')
 def home():
+    
+    ## Showing the subscribe msg ##
+    msg = request.args.get('msg', '')
+    # Showing instructor images on HomePage ##
     instructor_data = get_all_instructors()
-    return render_template('index.html', instructors=instructor_data)
+    return render_template('index.html', instructors=instructor_data, message=msg)
 
 
 
@@ -94,6 +122,8 @@ def login():
     
     return render_template('login.html', msg=msg)
 
+
+## Register ##
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     msg = session.pop('msg', None)
@@ -143,6 +173,9 @@ def register():
     # Show registration form with message (if any)
     return render_template('/register/register.html', msg=msg)
 
+
+
+## Bank Info ##
 @app.route('/bank_info', methods=['GET', 'POST'])
 def bank_info():
     msg = session.pop('msg', None)
@@ -172,6 +205,9 @@ def bank_info():
              
     return render_template('/register/bank_info.html', msg=msg)
 
+
+
+## Payment ##
 @app.route('/payment', methods=['GET', 'POST'])
 def payment():
     # Retrieve user information from session
@@ -207,6 +243,8 @@ def payment():
     return render_template('/register/payment.html')
 
 
+
+## Change Password ##
 @app.route('/change_password', methods=['POST'])
 def change_password():
     if 'loggedin' not in session or not session['loggedin']:
@@ -277,6 +315,7 @@ def change_password():
 
 
 
+## Logout ##
 @app.route('/logout')
 def logout():
     # Remove session data, this will log the user out

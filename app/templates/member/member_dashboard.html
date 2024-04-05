@@ -171,50 +171,56 @@
     <section class="container my-4">
         <div class="row gy-3 gy-md-4">
           
-          <!-- Lesson Schedules Card -->
-          <div class="col-12">
+          <!-- Dynamic Lesson Schedules Card -->
+          <div class="col-6">
             <div class="card widget-card border-light shadow-sm">
               <div class="card-header bg-transparent p-4 border-light-subtle">
-                <h5 class="card-title widget-card-title m-0">Lesson Schedules</h5>
+                <h5 class="card-title widget-card-title m-0">Upcoming Lesson</h5>
               </div>
               <div class="card-body p-4">
-                <h3 class="h6">Pruning Techniques</h3>
-                <p><strong>Date:</strong> March 25, 2024</p>
-                <p><strong>Time:</strong> 2:00 PM - 4:00 PM</p>
-                <p><strong>Location:</strong> Community Garden</p>
-                <p><strong>Instructor:</strong> Emily Johnson</p>
-                <p>
-                  <strong>Details:</strong> Learn different pruning techniques to
-                  maintain healthy plants.
-                </p>
-                <p><strong>Cost:</strong> $20</p>
-                <a href="#" class="btn btn-success">Read More</a>
+                {% for lesson in lessons %}
+                <div class="lesson-schedule">
+                  <h3 class="h6">{{ lesson.title }}</h3>
+                  <p><strong>Date:</strong> {{ lesson.date }}</p>
+                  <p><strong>Time:</strong> {{ lesson.start_time }} - {{ lesson.end_time }}</p>
+                  <p><strong>Location:</strong> {{ lesson.location_name }}</p>
+                  <p><strong>Instructor:</strong> {{ lesson.instructor_name }}</p>
+                  <p><strong>Details:</strong> {{ lesson.details }}</p>
+                  <p><strong>Cost:</strong> ${{ lesson.price }}</p>
+                </div>
+                {% else %}
+                <p>No upcoming lessons.</p>
+                {% endfor %}
+                <a href="{{ url_for('get_courses') }}" class="btn btn-success">View All</a>
               </div>
             </div>
           </div>
-      
-          <!-- Workshop Schedules Card -->
-          <div class="col-12">
+
+          <!-- Dynamic Workshop Schedules Card -->
+          <div class="col-6">
             <div class="card widget-card border-light shadow-sm">
               <div class="card-header bg-transparent p-4 border-light-subtle">
-                <h5 class="card-title widget-card-title m-0">Workshop Schedules</h5>
+                <h5 class="card-title widget-card-title m-0">Upcoming Workshop</h5>
               </div>
               <div class="card-body p-4">
-                <h3 class="h6">Introduction to Gardening</h3>
-                <p><strong>Type:</strong> Beginners</p>
-                <p><strong>Date:</strong> March 20, 2024</p>
-                <p><strong>Time:</strong> 10:00 AM - 12:00 PM</p>
-                <p><strong>Location:</strong> Community Center, Room A</p>
-                <p><strong>Instructor:</strong> John Smith</p>
-                <p>
-                  <strong>Details:</strong> Learn the basics of gardening, including
-                  soil preparation, planting, and watering.
-                </p>
-                <p><strong>Cost:</strong> $25</p>
-                <a href="#" class="btn btn-success">Read More</a>
+                {% for workshop in workshops %}
+                <div class="workshop-schedule">
+                  <h3 class="h6">{{ workshop.title }}</h3>
+                  <p><strong>Date:</strong> {{ workshop.date }}</p>
+                  <p><strong>Time:</strong> {{ workshop.start_time }} - {{ workshop.end_time }}</p>
+                  <p><strong>Location:</strong> {{ workshop.location_name }}</p>
+                  <p><strong>Instructor:</strong> {{ workshop.instructor_name }}</p>
+                  <p><strong>Details:</strong> {{ workshop.details }}</p>
+                  <p><strong>Cost:</strong> ${{ workshop.price }}</p>
+                </div>
+                {% else %}
+                <p>No upcoming workshops.</p>
+                {% endfor %}
+                <a href="{{ url_for('get_courses') }}" class="btn btn-success">View All</a>
               </div>
             </div>
           </div>
+
       
           <!-- Booking Management Card -->
           <div class="col-12 col-lg-6">

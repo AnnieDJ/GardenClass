@@ -33,7 +33,39 @@ def inject_member_details():
 @app.route('/member/dashboard')
 def member_dashboard():
     if 'loggedin' in session and session['loggedin']:
-        return render_template('/member/member_dashboard.html', username=session['username'], role=session['role'])
+        cursor = utils.getCursor()
+
+        # Fetch upcoming workshops and lessons
+        cursor.execute("""
+            SELECT w.workshop_id, w.title, w.date, w.start_time, w.end_time, w.price, l.name as location_name, 
+            CONCAT(i.first_name, ' ', i.last_name) as instructor_name
+            FROM workshops w
+            JOIN locations l ON w.location_id = l.location_id
+            JOIN instructor i ON w.instructor_id = i.instructor_id
+            WHERE w.date >= CURDATE()
+            ORDER BY w.date, w.start_time
+            LIMIT 1
+        """)
+        workshops = cursor.fetchall()
+
+        cursor.execute("""
+            SELECT les.lesson_id, les.title, les.date, les.start_time, les.end_time, les.price, loc.name as location_name,
+            CONCAT(inst.first_name, ' ', inst.last_name) as instructor_name
+            FROM lessons les
+            JOIN locations loc ON les.location_id = loc.location_id
+            JOIN instructor inst ON les.instructor_id = inst.instructor_id
+            WHERE les.date >= CURDATE()
+            ORDER BY les.date, les.start_time
+            LIMIT 1
+        """)
+        lessons = cursor.fetchall()
+
+        cursor.close()
+        
+        return render_template('member/member_dashboard.html', workshops=workshops, lessons=lessons)
+    else:
+        return redirect(url_for('login'))
+
 
 
 ## Member own profile ##

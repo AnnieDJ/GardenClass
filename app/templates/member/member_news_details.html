@@ -1,18 +1,70 @@
 {% extends 'member/member_dashboard.html' %}
-{% block content %}
-<div class="news-container">
-  <h1><div class="news-container">
-  <h1>Harvest Hub (Member's News's Details)</h1></h1>
 
-<div class="news-detail-container">
-    <h1>{{ article.title }}</h1>
-    <p><strong>Date Published:</strong> {{ article.date_published.strftime('%d %B, %Y') }}</p>
-    <div class="news-content">
-        {{ article.content | safe }}
+{% block content %}
+<style>
+    .news-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .news-container h1 {
+        font-size: 1.75rem;
+        color: #333;
+        margin-bottom: 1rem;
+    }
+
+    .news-detail-container {
+        border-top: 1px solid #eee;
+        padding-top: 20px;
+    }
+
+    .news-detail-container h1 {
+        font-size: 1.5rem;
+        color: #007b5e;
+        margin-bottom: 0.5rem;
+    }
+
+    .news-detail-container .news-content,
+    .news-detail-container .news-details {
+        margin-bottom: 1rem;
+        line-height: 1.6;
+        color: #555;
+    }
+
+    .news-detail-container a {
+        display: inline-block;
+        margin-top: 1.5rem;
+        padding: 10px 15px;
+        background-color: #007b5e;
+        color: #fff;
+        border-radius: 4px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .news-detail-container a:hover {
+        background-color: #005a4e;
+    }
+</style>
+
+<div class="news-container">
+    <h1>News Details</h1>
+    <div class="news-detail-container">
+        <h1>{{ article.title }}</h1>
+        <p><strong>Date Published:</strong> {{ article.date_published.strftime('%d %B, %Y') }}</p>
+        <div class="news-content">
+            {{ article.content | safe }}
+        </div>
+        {% if article.details %}
+        <div class="news-details">
+            {{ article.details | safe }}
+        </div>
+        {% endif %}
+        <a href="{{ url_for('member_view_news') }}">Back to News List</a>
     </div>
-    <div class="news-details">
-        {{ article.details | safe }}
-    </div>
-    <a href="{{ url_for('member_view_news') }}">Back to News List</a>
 </div>
 {% endblock %}

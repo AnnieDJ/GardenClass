@@ -3,6 +3,8 @@ from flask import render_template, redirect, url_for
 from flask import session,request
 from app import utils
 from datetime import datetime
+from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 
 
 @app.route('/payment/member_pay_one_one_one_lesson/<int:lesson_id>', methods=['GET', 'POST'])
@@ -121,13 +123,17 @@ def member_pay_workshop(workshop_id):
 def member_pay_subscription():
     if 'loggedin' in session and session['loggedin']:
         cursor = utils.getCursor()
+        cursor.execute('UPDATE subscriptions SET status = \'Expired\' WHERE user_id = %s AND CURRENT_DATE > end_date;',(session['id'],))
         cursor.execute('SELECT * FROM subscriptions WHERE CURDATE() BETWEEN start_date AND end_date AND user_id =%s;',(session['id'],))
         member_sub_item = cursor.fetchone()
+        
+        cursor.execute('SELECT * FROM subscriptions WHERE CURRENT_DATE > DATE_SUB(end_date, INTERVAL 10 DAY) AND CURRENT_DATE < end_date AND user_id = %s;',(session['id'],))
+        can_pay_sub = cursor.fetchone()
         msg = ''
         disable = False
         
-        if member_sub_item is None or member_sub_item['status'] == 'Expired':
-           if request.method == 'POST':
+        if request.method == 'POST':
+        
               pay_type = request.form.get('pay_type')
               
               if pay_type == 'Annual':
@@ -142,14 +148,28 @@ def member_pay_subscription():
                 
               payment_date = utils.current_date_time()
               
-              cursor.execute('INSERT INTO subscriptions (user_id, type, start_date, end_date, status) VALUES (%s, %s, %s, %s, %s);',(session['id'],pay_type,payment_date,expiry_date,'Active'))
-              cursor.execute('INSERT INTO payments (user_id,amount,payment_type,payment_date,status) VALUES (%s,%s,%s,%s,%s)',(session['id'],pay_amount,'Subscription',payment_date,'Completed'))
-              return redirect(url_for('member_dashboard'))
-           else:
-               return render_template('/payment/member_pay_sub.html', username=session['username'], role=session['role'],msg = msg, disable=disable) 
+              if member_sub_item is None or member_sub_item['status'] == 'Expired':
+                   cursor.execute('INSERT INTO subscriptions (user_id, type, start_date, end_date, status) VALUES (%s, %s, %s, %s, %s);',(session['id'],pay_type,payment_date,expiry_date,'Active'))
+                   cursor.execute('INSERT INTO payments (user_id,amount,payment_type,payment_date,status) VALUES (%s,%s,%s,%s,%s)',(session['id'],pay_amount,'Subscription',payment_date,'Completed'))
+                   return redirect(url_for('member_dashboard'))
+              elif can_pay_sub is not None:
+                  if pay_type == 'Annual':
+                     start_date = member_sub_item['end_date']
+                     expiry_date = member_sub_item['end_date'] + relativedelta(months=12)
+                  else:
+                     start_date = member_sub_item['end_date']
+                     expiry_date = member_sub_item['end_date'] + relativedelta(months=1)
+                     
+                  cursor.execute('UPDATE subscriptions SET end_date = %s, type = %s WHERE CURDATE() BETWEEN start_date AND end_date AND user_id =%s ;',(expiry_date,pay_type,session['id'],))
+                  cursor.execute('INSERT INTO payments (user_id,amount,payment_type,payment_date,status) VALUES (%s,%s,%s,%s,%s)',(session['id'],pay_amount,'Subscription',payment_date,'Completed'))
+                  return redirect(url_for('member_dashboard'))
+              else:
+                 msg ='There is no need to pay any amount.'
+                 disable = True
+                 return render_template('/payment/member_pay_sub.html', username=session['username'], role=session['role'],msg = msg, disable=disable)
         else:
-            msg ='There is no need to pay any amount.'
-            disable = True
-            return render_template('/payment/member_pay_sub.html', username=session['username'], role=session['role'],msg = msg, disable=disable)
+            return render_template('/payment/member_pay_sub.html', username=session['username'], role=session['role'],msg = msg, disable=disable) 
+        
+        
     else:
-      return redirect(url_for('login'))
+       return redirect(url_for('login'))

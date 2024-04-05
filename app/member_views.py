@@ -300,3 +300,19 @@ def member_news_details(news_id):
     else:
         # If no article found with the provided id, you can redirect to a 404 page or back to the news list
         return "Article not found", 404
+     
+@app.route('/member_own_subscription')
+def member_own_subscription():
+     if 'loggedin' in session and session['loggedin']:
+         cursor = utils.getCursor()
+         
+         cursor.execute('SELECT * FROM subscriptions WHERE user_id = %s AND CURDATE() BETWEEN start_date AND end_date',(session['id'],))
+         sub_info = cursor.fetchone()
+         
+         cursor.execute('SELECT * FROM payments WHERE user_id = %s',(session['id'],))
+         payment_history = cursor.fetchall()
+         
+         return render_template('/member/member_mge_subscription.html',sub_info = sub_info,payment_history = payment_history, role=session['role'])
+         
+     else: 
+         return redirect(url_for('login'))

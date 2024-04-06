@@ -1,186 +1,733 @@
-  
-	{% extends 'manager/mgr_dashboard.html' %}
+{% extends 'manager/mgr_dashboard.html' %}
 
-  {% block title %}Lessons Details{% endblock %}
-  
-  {% block content %}
-  
+{% block content %}
+<style>
+  .btn {
+    border: none;
+    color: white;
+    padding: 10px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .btn-success {
+    background-color: #4CAF50; /* Green for general actions */
+  }
+
+  .btn-primary {
+    background-color: #007bff; /* Blue for edit actions */
+  }
+
+  .btn-danger {
+    background-color: #f44336; /* Red for delete actions */
+  }
+
+  .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(0,0,0,.05); /* Zebra striping for table */
+  }
+
+  .alert-info {
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+    padding: 15px;
+    border-radius: 4px;
+  }
+</style>
 
 <!-- Breadcrumb -->
 <section class="py-3 py-md-4 py-xl-5 bg-light">
-  <div class="container">
-    <div class="row">
-      <div class="col-12">
-        <h1 class="h4">Lessons Management</h1>
-        <nav aria-label="breadcrumb">
-          <ol class="breadcrumb m-0 fs-7">
-            <li class="breadcrumb-item"><a class="link-primary text-decoration-none" href="{{ url_for('manager_dashboard') }}">Home</a></li>
-            <li class="breadcrumb-item">Lessons</li>
-            <li class="breadcrumb-item active" aria-current="page">View All</li>
-          </ol>
-        </nav>
-      </div>
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="h4">Lessons Management</h1>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb m-0 fs-7">
+          <li class="breadcrumb-item"><a class="link-primary text-decoration-none" href="{{ url_for('manager_dashboard') }}">Home</a></li>
+          <li class="breadcrumb-item">Lessons</li>
+          <li class="breadcrumb-item active" aria-current="page">View All</li>
+        </ol>
+      </nav>
     </div>
   </div>
+</div>
+</section>
+
+<section>
+<div class="container mt-5">
+  <div class="form-group row">
+    <script>
+      function filterCourses() {
+        var statusFilter = document.getElementById("statusFilter").value;
+        var dateFilter = document.getElementById("dateFilter").value;
+        var memberIDFilter = document.getElementById("memberIDFilter").value;
+        var instructorIDFilter =
+          document.getElementById("instructorIDFilter").value; // Fixed method name
+
+        // Get all table rows
+        var rows = document.querySelectorAll("#coursesTable tbody tr");
+
+        // Convert NodeList to an array to use array methods
+        rows = Array.from(rows);
+
+        rows.forEach(function (row) {
+          var status = row.querySelector(".status").textContent;
+          var date = row.querySelector(".date").textContent;
+          var memberID = row.querySelector(".member_id").textContent;
+          var instructorID = row.querySelector(".instructor_id").textContent;
+
+          // Check if row meets all filter criteria
+          var statusMatch = statusFilter === "" || status === statusFilter;
+          var dateMatch = dateFilter === "" || date === dateFilter;
+          var memberIDMatch =
+            memberIDFilter === "" || memberID === memberIDFilter;
+          var instructorIDMatch =
+            instructorIDFilter === "" || instructorID === instructorIDFilter; // Corrected variable name
+
+          if (
+            statusMatch &&
+            dateMatch &&
+            memberIDMatch &&
+            instructorIDMatch
+          ) {
+            // Corrected variable name
+            row.style.display = ""; // show
+          } else {
+            row.style.display = "none"; // hide
+          }
+        });
+      }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1/moment.min.js"></script>
+  </head>
 </section>
 
 
-<section>
-  <div class="container mt-5">
-    <div class="form-group row">
-  
-       
-      <script>
-        function filterCourses() {
-          var statusFilter = document.getElementById("statusFilter").value;
-          var dateFilter = document.getElementById("dateFilter").value;
-          var memberIDFilter = document.getElementById("memberIDFilter").value;
-          var instructorIDFilter =
-            document.getElementById("instructorIDFilter").value; // Fixed method name
-
-          // Get all table rows
-          var rows = document.querySelectorAll("#coursesTable tbody tr");
-
-          // Convert NodeList to an array to use array methods
-          rows = Array.from(rows);
-
-          rows.forEach(function (row) {
-            var status = row.querySelector(".status").textContent;
-            var date = row.querySelector(".date").textContent;
-            var memberID = row.querySelector(".member_id").textContent;
-            var instructorID = row.querySelector(".instructor_id").textContent;
-
-            // Check if row meets all filter criteria
-            var statusMatch = statusFilter === "" || status === statusFilter;
-            var dateMatch = dateFilter === "" || date === dateFilter;
-            var memberIDMatch =
-              memberIDFilter === "" || memberID === memberIDFilter;
-            var instructorIDMatch =
-              instructorIDFilter === "" || instructorID === instructorIDFilter; // Corrected variable name
-
-            if (
-              statusMatch &&
-              dateMatch &&
-              memberIDMatch &&
-              instructorIDMatch
-            ) {
-              // Corrected variable name
-              row.style.display = ""; // show
-            } else {
-              row.style.display = "none"; // hide
-            }
-          });
-        }
-      </script>
-    </head>
-    <body>
-
-      <div class="main-content">
-        <div class="filter-section">
-          <form action="{{ url_for('manager_lessons') }}" method="GET">
-            <label for="instructor_id">Instructor ID:</label>
-            <input type="text" name="instructor_id" id="instructor_id" />
-
-            <label for="member_id">Member ID:</label>
-            <input type="text" name="member_id" id="member_id" />
-
-            <label for="date">Date:</label>
-            <input type="date" name="date" id="date" />
-
-            <label for="location_id">Location ID:</label>
-            <input type="text" name="location_id" id="location_id" />
-
-            <input type="submit" value="Filter" />
-          </form>
-        </div>
-  
-            <div class="table-responsive">
-              <table class="table table-striped">
-                  <thead>
-                      <tr>
-                          <th>Instructor ID</th>
-                          <th>Member ID</th>
-                          <th>User name</th>
-                          <th>First name</th>
-                          <th>Last name</th>
-                          <th>Date</th>
-                          <th>Start Time</th>
-                          <th>End Time</th>
-                          <th>Location ID</th>
-                          <th>Price</th>
-                          <th>Status</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      {% for lesson in one_on_one_lessons_data %}
-                      <tr>
-                          <td>{{ lesson['instructor_id'] }}</td>
-                          <td>{{ lesson['member_id'] }}</td>
-                          <td>{{ lesson['user_name'] }}</td>
-                          <td>{{ lesson['first_name'] }}</td>
-                          <td>{{ lesson['last_name'] }}</td>
-                          <td>{{ lesson['date'] }}</td>
-                          <td>{{ lesson['start_time'] }}</td>
-                          <td>{{ lesson['end_time'] }}</td>
-                          <td>{{ lesson['location_id'] }}</td>
-                          <td>{{ lesson['price'] }}</td>
-                          <td>{{ lesson['status'] }}</td>
-                          <td>
-                              <button class="btn btn-primary">Edit</button>
-                              <button class="btn btn-danger">Cancel</button>
-                          </td>
-                      </tr>
-                      {% endfor %}
-                      <!-- Add Group Lessons in a similar manner if needed -->
-                  </tbody>
-              </table>
+<body>
+    <div class="modal fade" id="editLessonModal" tabindex="-1" role="dialog" aria-labelledby="editLessonModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editLessonModalLabel">Edit Lesson</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
-            <div class="table-responsive">
-              <table class="table table-striped">
+          <div class="modal-body">
+            <form id="editLessonForm">
+              <!-- Assuming you have already loaded the locations from your database -->
+              <div class="form-group">
+                <label for="editDate">Date</label>
+                <input type="date" class="form-control" id="editDate">
+              </div>
+              <div class="form-group">
+                <label for="editStartTime">Start Time</label>
+                <input type="time" class="form-control" id="editStartTime">
+              </div>
+              <div class="form-group">
+                <label for="editEndTime">End Time</label>
+                <input type="time" class="form-control" id="editEndTime">
+              </div>
+              <div class="form-group">
+                <label for="editLocationID">Location ID</label>
+                <select class="form-control" id="editLocationID">
+                  <!-- Options will be dynamically loaded -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="editStatus">Status</label>
+                <select class="form-control" id="editStatus">
+                  <option>Completed</option>
+                  <option>Canceled</option>
+                  <option>Scheduled</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="editPrice">Price</label>
+                <input type="number" class="form-control" id="editPrice" step="0.01">
+              </div>                
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="saveChangesBtn">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<section>
+  <div class="container mt-3">
+    <div class="row mb-4 align-items-end">
+      <!-- Inline filter form grouped with the Add Lesson button -->
+      <div class="col">
+        <form action="{{ url_for('manager_lessons') }}" method="GET" class="row row-cols-lg-auto g-3 align-items-center">
+          <div class="col-12">
+            <label for="instructor_id" class="visually-hidden">Instructor ID:</label>
+            <input type="text" name="instructor_id" id="instructor_id" class="form-control" placeholder="Instructor ID">
+          </div>
+          <div class="col-12">
+            <label for="member_id" class="visually-hidden">Member ID:</label>
+            <input type="text" name="member_id" id="member_id" class="form-control" placeholder="Member ID">
+          </div>
+          <div class="col-12">
+            <label for="date" class="visually-hidden">Date:</label>
+            <input type="date" name="date" id="date" class="form-control">
+          </div>
+          <div class="col-12">
+            <label for="location_id" class="visually-hidden">Location ID:</label>
+            <input type="text" name="location_id" id="location_id" class="form-control" placeholder="Location ID">
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary">Filter</button>
+          </div>
+        </form>
+      </div>
+      <div class="col-auto">
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addLessonModal">Add Lesson</button>
+      </div>
+    </div>
+
+      <!-- One-on-One Lessons Table --> 
+      <div class="row">
+        <div class="col-12">
+          <div class="card mb-4">
+            <div class="card-header">
+              One-on-One Lessons
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Instructor ID</th>
+                        <th>Member ID</th>
+                        <th>Username</th>
+                        <th>Member Name</th>
+                        <th>Date</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Location ID</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lesson in one_on_one_lessons_data %}
+                    <tr>
+                      <td class="lesson-id" style="display:none;">{{ lesson['lesson_id'] }}</td>
+                        <td>{{ lesson['instructor_id'] }}</td>
+                        <td>{{ lesson['member_id'] }}</td>
+                        <td>{{ lesson['user_name'] }}</td>
+                        <td>{{ lesson['first_name'] }} {{ lesson['last_name'] }}</td>
+                        <td class="lesson-date">{{ lesson['date'] }}</td>
+                        <td class="lesson-start-time">{{ lesson['start_time'] }}</td>
+                        <td class="lesson-end-time">{{ lesson['end_time'] }}</td>
+                        <td class="lesson-location-id">{{ lesson['location_id'] }}</td>
+                        <td class="lesson-price">{{ lesson['price'] }}</td>
+                        <td class="lesson-status">{{ lesson['status'] }}</td>
+                        <td>
+                          <button class="btn btn-primary edit-btn" data-lesson-id="{{ lesson['lesson_id'] }}" data-instructor-id="{{ lesson['instructor_id'] }}" data-member-id="{{ lesson['member_id'] }}">Edit</button>
+                          <button class="btn btn-danger cancel-one-on-one-btn" data-lesson-id="{{ lesson['lesson_id'] }}">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    <!-- Add Group Lessons in a similar manner if needed -->
+                </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+          
+        <!-- Edit Lesson Modal -->
+        <div class="modal fade" id="editGroupLessonModal" tabindex="-1" role="dialog" aria-labelledby="editGroupLessonModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="editGroupLessonModalLabel">Edit Lesson</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <!-- We'll populate this form with data when the edit button is clicked -->
+                <form id="editGroupLessonForm">
+                  <input type="hidden" id="editGroupLessonID" name="lessonID">
+        
+                  <div class="form-group">
+                    <label for="editGpLessonDate">Date</label>
+                    <input type="date" class="form-control" id="editGpLessonDate">
+                  </div>
+                  <div class="form-group">
+                    <label for="editGpLessonStartTime">Start Time</label>
+                    <input type="time" class="form-control" id="editGpLessonStartTime" >
+                  </div>
+
+                  <div class="form-group">
+                    <label for="editGpLessonEndTime">End Time</label>
+                    <input type="time" class="form-control" id="editGpLessonEndTime" >
+                  </div>
+                  <div class="form-group">
+                    <label for="editGpLessonLocation">Location</label>
+                    <select class="form-control" id="editGpLessonLocation" >
+                      <!-- Options will be populated via AJAX -->
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="editGpLessonPrice">Price</label>
+                    <input type="number" class="form-control" id="editGpLessonPrice" >
+                  </div>
+                  <div class="form-group">
+                    <label for="editGpLessonCapacity">Capacity</label>
+                    <input type="number" class="form-control" id="editGpLessonCapacity" min="1">
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                <button type="button" class="btn btn-primary" id="saveBtn">Save</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+
+        <div class="card mb-4">
+            <div class="card-header">
+              Group Lessons
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-striped">
                   <thead>
                     <tr>
                       <th>Instructor ID</th>
-                      <th>User name</th>
-                      <th>First name</th>
-                      <th>Last name</th>
-                      <th>Title</th>
+                      <th>Username</th>
+                      <th>Instructor Name</th>
+                      <th>Lesson</th>
                       <th>Date</th>
                       <th>Start Time</th>
                       <th>End Time</th>
                       <th>Location ID</th>
                       <th>Price</th>
                       <th>Capacity</th>
-                      
-                  </tr>
-              </thead>
-              <tbody>
-                  {% for lesson in group_lessons_data %}
-                  <tr>
-                      <td>{{ lesson['instructor_id'] }}</td>
-                      <td>{{ lesson['user_name'] }}</td>
-                      <td>{{ lesson['first_name'] }}</td>
-                      <td>{{ lesson['last_name'] }}</td>
-                      <td>{{ lesson['title'] }}</td>
-                      <td>{{ lesson['date'] }}</td>
-                      <td>{{ lesson['start_time'] }}</td>
-                      <td>{{ lesson['end_time'] }}</td>
-                      <td>{{ lesson['location_id'] }}</td>
-                      <td>{{ lesson['price'] }}</td>
-                      <td>{{ lesson['capacity'] }}</td>
-                      <td>
-                              <button class="btn btn-primary">Edit</button>
-                              <button class="btn btn-danger">Cancel</button>
+                    </tr>
+                  </thead>
+                  <tbody>
+                      {% for lesson in group_lessons_data %}
+                      <tr>
+                          <td class="group-lesson-id" style="display:none;">{{ lesson['lesson_id'] }}</td>
+                          <td>{{ lesson['instructor_id'] }}</td>
+                          <td>{{ lesson['user_name'] }}</td>
+                          <td>{{ lesson['first_name'] }} {{ lesson['last_name'] }}</td>
+                          <td>{{ lesson['title'] }}</td>
+                          <td class="group-lesson-date">{{ lesson['date'] }}</td>
+                          <td class="group-lesson-start-time">{{ lesson['start_time'] }}</td>
+                          <td class="group-lesson-end-time">{{ lesson['end_time'] }}</td>
+                          <td class="group-lesson-location-id">{{ lesson['location_id'] }}</td>
+                          <td class="group-lesson-price">{{ lesson['price'] }}</td>
+                          <td class="group-lesson-capacity">{{ lesson['capacity'] }}</td>
+                          <td>
+                            <div class="d-flex justify-content-between">
+                              <button class="btn btn-primary edit-group-btn" data-group-lesson-id="{{ lesson['lesson_id'] }}" data-instructor-id="{{ lesson['instructor_id'] }}">Edit</button>
+                              <button class="btn btn-danger cancel-group-btn" data-group-lesson-id="{{ lesson['lesson_id'] }}">Delete</button>
+                            </div>
                           </td>
-                      </tr>
-                      {% endfor %}
+                        </tr>
+                          {% endfor %}
                   </tbody>
-              </table>
+                </table>
+              </div>
             </div>
+          </div>
+        </div>
+    </section>
+          <!-- Add Lesson Modal -->
+          <div id="addLessonModal" class="modal fade">
+            <div class="modal-dialog">
+                <form id="addLessonForm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Add Lesson</h5>
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button> 
+                          </div>                         
+                        <div class="modal-body">
+                          <div class="form-group">
+                            <label for="addinstructorID">Instructor ID</label>
+                            <select class="form-control" id="addinstructorID" name="instructor_id">
+                              <!-- Options will be dynamically loaded -->
+                          </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="addDate">Date</label>
+                            <input type="date" class="form-control" id="addDate" name="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="addStartTime">Start Time</label>
+                            <input type="time" class="form-control" id="addStartTime" name="start_time" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="addEndTime">End Time</label>
+                            <input type="time" class="form-control" id="addEndTime" name="end_time" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="addLocationID">Location ID</label>
+                            <select class="form-control" id="addLocationID" name="location_id">
+                                <!-- Options will be dynamically loaded -->
+                            </select>
+                        </div>
+                        <div class="form-group" id="statusField" style="display:none;">
+                            <label for="addStatus">Status</label>
+                            <select class="form-control" id="addStatus" name="status">
+                                <option value="Completed">Completed</option>
+                                <option value="Cancelled">Cancelled</option>
+                                <option value="Scheduled">Scheduled</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="addPrice">Price</label>
+                            <input type="number" class="form-control" id="addPrice" name="price" step="0.01" required>
+                        </div>
+                        <!-- One-on-One Lesson Fields, shown based on lesson type -->
+                        <div id="memberIdField" style="display:none;">
+                            <label for="addMemberID">Member ID</label>
+                            <select class="form-control" id="addMemberID" name="member_id">
+                              <!-- Options will be dynamically loaded -->
+                          </select>
+                        </div>
+                        <!-- Group Lesson Fields, shown based on lesson type -->
+                        <div id="titleField" style="display:none;">
+                            <label for="addTitle">Title</label>
+                            <input type="text" class="form-control" id="addTitle" name="title">
+                        </div>
+                        <div id="capacityField" style="display:none;">
+                            <label for="addCapacity">Capacity</label>
+                            <input type="number" class="form-control" id="addCapacity" name="capacity">
+                        </div>
+                        <div class="form-group">
+                            <label for="lessonType">Lesson Type</label>
+                            <select class="form-control" id="lessonType" name="lesson_type" required>
+                                <option value="one_on_one">One-on-One Lesson</option>
+                                <option value="group">Group Lesson</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="submitAddLessonForm">Save changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>  <!-- Shared Fields -->  
+        </div>
+      </body>
+    </html>
+  </div>
 
-          <!-- Add your scripts if any -->
-        </body>
-      </html>
-    </div>
-  </section>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<!-- Include Bootstrap's JS library after jQuery -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+
+
+<!-- handle upper part popup--one-on-one-lessons-->
+<script>
+  $(document).ready(function() {
+    // This function is correctly set up to listen for clicks on the edit buttons.
+    $.get('/api/locations', function(data) {
+      data.forEach(function(location) {
+        var optionText = location.id + ' - ' + location.name; 
+        $('#editLocationID').append(new Option(optionText, location.id));
+      });
+    });
+
+    $('.edit-btn').on('click', function() {
+      //console.log('Edit button clicked');
+      var lessonID = $(this).attr('data-lesson-id'); // Ensure this is correctly fetching the ID.
+      var instructorId = $(this).attr('data-instructor-id');
+      var memberId = $(this).attr('data-member-id');
+
+      $('#editLessonModal').data('lesson-id', lessonID);  
+      $('#editLessonModal').data('instructor-id', instructorId);
+      $('#editLessonModal').data('member-id', memberId);
+      var lessonRow = $(this).closest('tr');
+      
+
+      // Extract initial values from the row. Ensure these class selectors match your table data.
+      var date = lessonRow.find('.lesson-date').text().trim();
+      var startTime = lessonRow.find('.lesson-start-time').text().trim();
+      console.log(startTime);
+      var endTime = lessonRow.find('.lesson-end-time').text().trim();
+      var locationID = lessonRow.find('.lesson-location-id').text().trim();
+      var price = lessonRow.find('.lesson-price').text().trim();
+      var status = lessonRow.find('.lesson-status').text().trim();
+      
+      // Populate the modal fields with these values.
+      $('#editLessonModal #editDate').val(date);
+      $('#editLessonModal #editStartTime').val(startTime);
+      $('#editLessonModal #editEndTime').val(endTime);
+      // You might need additional logic to select the right option based on the text for LocationID and Status
+      $('#editLessonModal #editLocationID').val(locationID); // Make sure options exist with these values
+      $('#editLessonModal #editPrice').val(price);
+      $('#editLessonModal #editStatus').val(status); // Ensure your option values match these statuses
+
+      $('#editLessonModal').modal('show'); // This should only be here, to show the modal after setting the values.
+    });
   
-    {% endblock %}
+    $('#saveChangesBtn').on('click', function() {
+      if ($('#editStartTime').val() === '' || $('#editLocationID').val() === '') {
+    alert('Please ensure all fields are filled correctly.');
+    return; // Prevent form submission
+    }
+      var lessonID = $('#editLessonModal').data('lesson-id'); 
+      var instructorId = $('#editLessonModal').data('instructor-id');
+      var memberId = $('#editLessonModal').data('member-id');
+
+      var formData = {
+        lessonID: lessonID,
+        instructorID: instructorId, 
+        memberID: memberId, 
+        date: $('#editDate').val(),
+        startTime: $('#editStartTime').val(),
+        endTime: $('#editEndTime').val(),
+        locationID: $('#editLocationID').val(),
+        price: $('#editPrice').val(), 
+        status: $('#editStatus').val(),
+        sourcePage: 'mgr_lessons'
+      };
+      
+      $.ajax({
+        type: 'POST',
+        url: '/update_lesson',
+        data: formData,
+        success: function(response) {
+          if(response.success) {
+            alert('update successfully!');
+           
+            $('#editLessonModal').modal('hide');
+            location.reload(); 
+          } else {
+           
+            alert('An error occurred!');
+          }
+        },
+        error:function(){
+            alert('server wrong,try later!')
+        }
+      });
+    });
+    
+  });
+
+
+<!-- handle down part popup--group-lessons-->
+  $(document).ready(function() {
+    // Load location options from /api/locations
+    $.get('/api/locations', function(data) {
+        data.forEach(function(location) {
+            var optionText = location.id + ' - ' + location.name;
+            $('#editGpLessonLocation').append(new Option(optionText, location.id));
+           
+        });
+    });
+
+    // Adjusted to handle clicks on buttons with class 'refresh-btn'
+    $('.edit-group-btn').on('click', function() {
+       
+        var lessonID = $(this).attr('data-group-lesson-id'); 
+        var instructorId = $(this).attr('data-instructor-id');
+
+        // Extract data from the table row and populate the modal fields
+        $('#editGroupLessonModal').data('lesson-id', lessonID);
+        $('#editGroupLessonModal').data('instructor-id', instructorId);
+        var lessonRow = $(this).closest('tr');
+        
+
+
+        var date = lessonRow.find('.group-lesson-date').text().trim();
+        var startTime = lessonRow.find('.group-lesson-start-time').text().trim();
+        var endTime = lessonRow.find('.group-lesson-end-time').text().trim();
+        var locationID = lessonRow.find('.group-lesson-location-id').text().trim();
+        var price = lessonRow.find('.group-lesson-price').text().trim();
+        var capacity = lessonRow.find('.group-lesson-capacity').text().trim();
+
+
+        //!!!!!!!must format start time,use moment js.
+        // Show the modal
+       
+        $('#editGroupLessonModal #editGpLessonDate').val(date);
+        $('#editGroupLessonModal #editGpLessonStartTime').val(moment(startTime, 'HH:mm:ss').format('HH:mm'));
+        $('#editGroupLessonModal #editGpLessonEndTime').val(moment(endTime, 'HH:mm:ss').format('HH:mm'));
+        $('#editGroupLessonModal #editGpLessonLocation').val(locationID); // Make sure options exist with these values
+        $('#editGroupLessonModal #editGpLessonPrice').val(price);
+        $('#editGroupLessonModal #editGpLessonCapacity').val(capacity); // Ensure your option values match these statuses
+
+        $('#editGroupLessonModal').modal('show'); // This should only be here, to show the modal after setting the values.
+    });
+  
+   
+
+    // Save changes button click handler
+    $('#saveBtn').on('click', function() {
+      var lessonID = $('#editGroupLessonModal').data('lesson-id'); 
+
+
+        // Gather data from the form fields
+        var formData = {
+            lessonID: lessonID,
+            date: $('#editGpLessonDate').val(),
+            startTime: $('#editGpLessonStartTime').val(),
+            endTime: $('#editGpLessonEndTime').val(),
+            locationID: $('#editGpLessonLocation').val(),
+            price: $('#editGpLessonPrice').val(),
+            capacity: $('#editGpLessonCapacity').val() // Assuming there's an input field for capacity
+        };
+
+        // Perform an AJAX POST request to /refresh_lesson
+        $.ajax({
+            type: 'POST',
+            url: '/refresh_lesson', // Endpoint for refreshing the lesson
+            data: formData,
+            success: function(response) {
+                if(response.success) {
+                    alert('Lesson updated successfully!');
+                    $('#editGroupLessonModal').modal('hide');
+                    location.reload(); // Refresh the page
+                } else {
+                    alert('An error occurred: ' + response.message);
+                }
+            },
+            error: function() {
+                alert('Error sending the request.');
+            }
+        });
+    });
+});
+
+  $(document).ready(function() {
+    // Fetch and populate form select fields
+    $.get('/add/locations', function(data) {
+        // Populate locations
+        data.locations.forEach(function(location) {
+            var optionText = location.id + ' - ' + location.name; // Combine id and name
+            $('#addLocationID').append(new Option(optionText, location.id));
+        });
+
+        // Populate instructors
+        data.instructors.forEach(function(instructor) {
+            var optionText = instructor.id + ' - ' + instructor.name ; // Combine id and name
+            $('#addinstructorID').append(new Option(optionText, instructor.id));
+        });
+
+        // Populate members
+        data.members.forEach(function(member) {
+            var optionText = member.id + ' - ' + member.name ; // Combine id and name
+            $('#addMemberID').append(new Option(optionText, member.id));
+        });
+    });
+
+    // Toggle visibility based on lesson type
+    function toggleFields() {
+        if ($('#lessonType').val() === 'group') {
+            $('#memberIdField, #statusField').hide();
+            $('#titleField, #capacityField').show();
+        } else {
+            $('#memberIdField, #statusField').show();
+            $('#titleField, #capacityField').hide();
+        }
+    }
+
+    // Call toggleFields initially and on lesson type change
+    toggleFields();
+    $('#lessonType').change(function() {
+        toggleFields();
+    });
+
+    // Handle form submission for adding a lesson
+    $('#submitAddLessonForm').click(function(e) {
+        e.preventDefault(); // Prevent the default form submission behavior
+        var formData = $('#addLessonForm').serialize(); // Prepare the form data for submission
+
+        // Perform an AJAX request to the add_lesson backend endpoint
+        $.ajax({
+            url: '/add_lesson', // Endpoint for adding a lesson
+            type: 'POST', // Method type
+            data: formData, // Data to be sent in the request
+            success: function(response) {
+                if (response.success) {
+                    alert('Lesson added successfully!');
+                    $('#addLessonModal').modal('hide'); // Close the modal
+                    location.reload(); // Reload the page to show the updated list of lessons
+                } else {
+                    alert('Error adding lesson: ' + response.message);
+                }
+            },
+            error: function() {
+                alert('Error communicating with the server.');
+            }
+        });
+    });
+});
+
+$(document).ready(function() {
+  $('.cancel-one-on-one-btn').on('click', function() {
+  // Retrieve the lesson ID stored in the data-lesson-id attribute
+  var lessonID = $(this).data('lesson-id');  // Ensure this matches your data attribute
+  if (confirm('Are you sure you want to cancel this one-on-one lesson?')) {
+    $.ajax({
+      type: 'POST',
+      url: `/delete_one_on_one_lesson/${lessonID}`,  // Ensure lessonID is correctly interpolated here
+      success: function(response) {
+        if (response.success) {
+          alert(response.message);
+          location.reload(); // Reload the page to reflect the deletion
+        } else {
+          alert('Failed to delete the lesson: ' + response.message);
+        }
+      },
+      error: function() {
+        alert('Error occurred while attempting to delete the lesson.');
+      }
+    });
+  }
+});
+
+  
+
+  // Handler for canceling group lessons
+  $('.cancel-group-btn').on('click', function() {
+    var lessonID = $(this).data('group-lesson-id'); 
+    console.log('deletebegin'+lessonID);
+    if(confirm('Are you sure you want to cancel this group lesson?')) {
+      $.ajax({
+        type: 'POST',
+        url: `/delete_group_lesson/${lessonID}`,
+        success: function(response) {
+          if (response.success) {
+            alert(response.message);
+            location.reload();
+          } else {
+            alert(response.message);
+            if (response.status === 401) { // Not logged in
+              window.location.href = '/login'; // Redirect to login
+            }
+          }
+        },
+        error: function() {
+          alert('Error canceling group lesson.');
+        }
+      });
+    }
+  });
+});
+</script>
+
+
+
+{% endblock %}

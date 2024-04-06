@@ -314,7 +314,6 @@
           <h6 class="py-1 text-secondary text-uppercase fs-7">Instructor Dashboard</h6>
         </li>
         <li class="nav-item">
-
           <a class="nav-link p-3" data-bs-toggle="collapse" href="#pageExamples" role="button" aria-expanded="false" aria-controls="pageExamples">
             <div class="nav-link-icon text-primary">
               <i class="bi bi-folder"></i>
@@ -342,7 +341,6 @@
           </div>
         </li>
         <li class="nav-item">
-          
           <a class="nav-link p-3" data-bs-toggle="collapse" href="#authExamples" role="button" aria-expanded="false" aria-controls="authExamples">
             <div class="nav-link-icon text-primary">
               <i class="bi bi-book"></i>
@@ -350,7 +348,6 @@
             <span class="nav-link-text fw-bold">Workshop/Lessons Management</span>
           </a>
           <div class="collapse" id="authExamples">
-          </div>
             <ul class="nav flex-column ms-4">
               <li class="nav-item">
                 <a class="nav-link link-secondary" aria-current="page" href="{{ url_for('instructor_workshops') }}">
@@ -368,16 +365,18 @@
                   <span class="nav-link-text">Lessons</span>
                 </a>
               </li>
-
-          <li class="nav-item">
+            </ul>
+          </div>
+        </li>
+        <li class="nav-item">
           <a class="nav-link p-3" data-bs-toggle="collapse" href="#authExamples" role="button" aria-expanded="false" aria-controls="authExamples">
             <div class="nav-link-icon text-primary">
-              <i class="bi bi-folder"></i>
+              <i class="bi-clipboard mb-3"></i>
             </div>
             <span class="nav-link-text fw-bold">Others</span>
           </a>
           <div class="collapse" id="authExamples">
-            <ul class="nav flex-column ms-4">        
+            <ul class="nav flex-column ms-4">
               <li class="nav-item">
                 <a class="nav-link link-secondary" aria-current="page" href="{{ url_for('member_view_news') }}">
                   <div class="nav-link-icon text-primary-emphasis">

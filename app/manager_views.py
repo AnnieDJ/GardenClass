@@ -5,6 +5,8 @@ from app import utils
 from werkzeug.utils import secure_filename
 import base64
 import re
+from datetime import datetime
+import mysql.connector
 
 @app.context_processor
 def inject_user_details():
@@ -448,6 +450,41 @@ def member_search():
          return redirect(url_for('login'))
 
 
+@app.route('/add/locations', methods=['GET'])
+def add_locations_details():
+    cursor = utils.getCursor()
+
+    # Fetch locations
+    cursor.execute("SELECT location_id, name FROM locations")
+    locations = cursor.fetchall()
+
+    # Fetch instructors
+    cursor.execute("SELECT instructor_id, first_name, last_name FROM instructor")
+    instructors = cursor.fetchall()
+
+    # Fetch members
+    cursor.execute("SELECT member_id, first_name, last_name FROM member")
+    members = cursor.fetchall()
+
+    cursor.close()
+
+    # Prepare data for JSON response
+    locations_list = [{'id': loc['location_id'], 'name': loc['name']} for loc in locations]
+    instructors_list = [{'id': instr['instructor_id'], 'name': f"{instr['first_name']} {instr['last_name']}"} for instr in instructors]
+    members_list = [{'id': memb['member_id'], 'name': f"{memb['first_name']} {memb['last_name']}"} for memb in members]
+
+    # Combine all data into one dictionary
+    combined_data = {
+        'locations': locations_list,
+        'instructors': instructors_list,
+        'members': members_list
+    }
+
+    return jsonify(combined_data)
+
+
+
+
 @app.route('/manager/mgr_lessons')
 def manager_lessons():
     if 'loggedin' in session and session['loggedin']:
@@ -519,6 +556,377 @@ def manager_lessons():
                                role=session['role'])
     else:
         return redirect(url_for('login'))
+    
+@app.route('/update_lesson', methods=['POST'])
+def update_lesson():
+    if 'loggedin' in session:
+        source_page = request.form.get('sourcePage') 
+        if source_page == 'mgr_lessons':
+            lesson_id = request.form.get('lessonID')
+            date = request.form.get('date')
+            start_time = request.form.get('startTime')
+            end_time = request.form.get('endTime')
+
+        
+            start_time_obj = datetime.strptime(start_time, "%H:%M" if len(start_time) <= 5 else "%H:%M:%S")
+            end_time_obj = datetime.strptime(end_time, "%H:%M" if len(end_time) <= 5 else "%H:%M:%S")
+        
+            start_time_formatted = start_time_obj.strftime("%H:%M:%S")
+            end_time_formatted = end_time_obj.strftime("%H:%M:%S")
+            location_id = request.form.get('locationID')
+            status = request.form.get('status')
+            price = request.form.get('price') 
+        
+
+        
+            cursor = utils.getCursor()
+
+        
+            update_query = """
+            UPDATE one_on_one_lessons
+            SET date = %s, start_time = %s, end_time = %s, location_id = %s, status = %s, price = %s
+            WHERE lesson_id = %s
+            """
+            update_values = (date, start_time_formatted, end_time_formatted, location_id, status, price, lesson_id)
+
+            try:
+            
+                cursor.execute(update_query, update_values)
+
+            
+                if cursor.rowcount > 0:
+                    return jsonify({'success': True})
+                else:
+                    return jsonify({'success': False, 'message': 'Failed to find the corresponding course information or update failed.'})
+            except Exception as e:
+                
+                print(f"An error occurred: {e}")
+                return jsonify({'success': False, 'message': 'Database update error.'})
+
+
+        else:
+            lesson_id = request.form.get('lessonID')
+            date = request.form.get('Date')
+            start_time = request.form.get('StartTime')
+            end_time = request.form.get('EndTime')
+
+        
+            start_time_obj = datetime.strptime(start_time, "%H:%M" if len(start_time) <= 5 else "%H:%M:%S")
+            end_time_obj = datetime.strptime(end_time, "%H:%M" if len(end_time) <= 5 else "%H:%M:%S")
+        
+            start_time_formatted = start_time_obj.strftime("%H:%M:%S")
+            end_time_formatted = end_time_obj.strftime("%H:%M:%S")
+            location_id = request.form.get('LocationID')
+            status = request.form.get('Status')
+            price = request.form.get('Price') 
+        
+
+        
+            cursor = utils.getCursor()
+
+        
+            update_query = """
+            UPDATE one_on_one_lessons
+            SET date = %s, start_time = %s, end_time = %s, location_id = %s, status = %s, price = %s
+            WHERE lesson_id = %s
+            """
+            update_values = (date, start_time_formatted, end_time_formatted, location_id, status, price, lesson_id)
+
+            try:
+            
+                cursor.execute(update_query, update_values)
+
+            
+                if cursor.rowcount > 0:
+                    return jsonify({'success': True})
+                else:
+                    return jsonify({'success': False, 'message': 'Failed to find the corresponding course information or update failed.'})
+            except Exception as e:
+                
+                print(f"An error occurred: {e}")
+                return jsonify({'success': False, 'message': 'Database update error.'})
+
+
+@app.route('/api/locations', methods=['GET'])
+def get_locations():
+    try:
+        cursor = utils.getCursor()
+        cursor.execute("SELECT location_id, name FROM locations")
+        locations = cursor.fetchall()
+        locations_list = [{'id': loc['location_id'], 'name': loc['name']} for loc in locations]
+        return jsonify(locations_list)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return jsonify({"error": "Could not fetch locations"}), 500
+
+
+@app.route('/edit', methods=['GET', "POST"])
+def edit():
+    nid = request.args.get('nid', type=int)
+
+    
+    if 'loggedin' in session and session['loggedin']:
+        cursor = utils.getCursor()
+        
+        if request.method == "GET":
+           
+            cursor.execute("SELECT * FROM one_on_one_lessons WHERE id = %s", (nid,))
+            info = cursor.fetchone()  
+            if info:
+                return render_template('edit_mgr_one_on_one_lessons.html', info=info)
+            else:
+                return "Record not found", 404
+
+        
+        name = request.form.get('name')
+        age = request.form.get('age')
+
+       
+        update_query = "UPDATE one_on_one_lessons SET name = %s, age = %s WHERE id = %s"
+        cursor.execute(update_query, (name, age, nid))
+        cursor.connection.commit()  
+
+        cursor.close()
+        return redirect(url_for('manager_lessons'))  
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/add_lesson', methods=['POST'])
+def add_lesson():
+    if 'loggedin' in session:
+        instructor_id = request.form.get('instructor_id')
+        member_id = request.form.get('member_id')  
+        date = request.form.get('date')
+        start_time = request.form.get('start_time')
+        end_time = request.form.get('end_time')
+        price = request.form.get('price')
+        status = request.form.get('status')
+        capacity = request.form.get('capacity', type=int)
+        location_id = request.form.get('location_id')
+        title = request.form.get('title')
+        lesson_type = request.form.get('lesson_type')
+
+        cursor = utils.getCursor()
+
+        try:
+            
+            cursor.execute("""
+                SELECT * FROM one_on_one_lessons
+                WHERE instructor_id = %s AND member_id = %s AND date = %s AND start_time = %s AND end_time = %s AND price = %s AND status = %s AND location_id = %s 
+            """, (instructor_id, member_id, date, start_time, end_time, price, status, location_id))
+            one_on_one_exists = cursor.fetchone()
+
+            cursor.execute("""
+                SELECT * FROM lessons
+                WHERE instructor_id = %s AND date = %s AND start_time = %s AND end_time = %s AND capacity = %s AND location_id = %s AND title = %s AND price = %s
+            """, (instructor_id, date, start_time, end_time, capacity, location_id, title, price))
+            lesson_exists = cursor.fetchone()
+
+            if one_on_one_exists or lesson_exists:
+                return jsonify({'success': False, 'message': 'A lesson with the same details already exists. Please enter different details.'})
+
+            
+            if lesson_type == 'group':
+                cursor.execute("SELECT capacity FROM locations WHERE location_id = %s", (location_id,))
+                location_capacity_result = cursor.fetchone()
+                if location_capacity_result:
+                    location_max_capacity = location_capacity_result['capacity']
+                    if not (0 < capacity <= location_max_capacity):
+                       
+                        return jsonify({
+                            'success': False,
+                            'message': f'Invalid capacity. Capacity must be greater than 0 and cannot exceed {location_max_capacity}.'
+                        })
+       
+                    cursor.execute("""
+                        INSERT INTO lessons (instructor_id, date, start_time, end_time, capacity, location_id, title, price)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                    """, (instructor_id, date, start_time, end_time, capacity, location_id, title, price))
+                else:
+                    
+                    return jsonify({
+                        'success': False,
+                        'message': 'Location not found or does not have a capacity set.'
+                    })
+
+            elif lesson_type == 'one_on_one':
+                cursor.execute("""
+                    INSERT INTO one_on_one_lessons (instructor_id, member_id, date, start_time, end_time, price, status, location_id)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                """, (instructor_id, member_id, date, start_time, end_time, price, status, location_id))
+
+            else:
+                return jsonify({'success': False, 'message': 'Invalid lesson type specified.'})
+
+            # Commit the transaction
+            return jsonify({'success': True, 'message': 'Lesson added successfully.'})
+        except mysql.connector.Error as err:
+            return jsonify({'success': False, 'message': str(err)})
+        finally:
+            cursor.close()  # Close the cursor to clean up resources
+    else:
+        return jsonify({'success': False, 'message': 'User is not logged in.'}), 401
+
+
+# Route to display the edit form
+@app.route('/refresh_lesson', methods=['POST'])
+def refresh_lesson():
+    if 'loggedin' in session:
+        if request.form.get('sourcePage') == "fromInstrutorLesson":
+            lesson_id = request.form.get('lessonID')
+            date = request.form.get('date')
+            start_time = request.form.get('startTime')
+            end_time = request.form.get('endTime')
+
+        
+            start_time_obj = datetime.strptime(start_time, "%H:%M" if len(start_time) <= 5 else "%H:%M:%S")
+            end_time_obj = datetime.strptime(end_time, "%H:%M" if len(end_time) <= 5 else "%H:%M:%S")
+            title = request.form.get('title') 
+            start_time_formatted = start_time_obj.strftime("%H:%M:%S")
+            end_time_formatted = end_time_obj.strftime("%H:%M:%S")
+            location_id = request.form.get('locationID')
+            capacity=request.form.get('capacity')
+            price = request.form.get('price') 
+        
+        
+        
+            cursor = utils.getCursor()
+
+        
+            update_query = """
+            UPDATE lessons
+            SET date = %s, start_time = %s, end_time = %s, location_id = %s, capacity = %s, price = %s
+            WHERE lesson_id = %s
+            """
+            update_values = (date, start_time_formatted, end_time_formatted, location_id, capacity, price, lesson_id)
+
+            try:
+            
+                cursor.execute(update_query, update_values)
+
+            
+                if cursor.rowcount > 0:
+                    return jsonify({'success': True})
+                else:
+                    return jsonify({'success': False, 'message': 'Failed to find the corresponding course information or update failed.'})
+            except Exception as e:
+                
+                print(f"An error occurred: {e}")
+                return jsonify({'success': False, 'message': 'Database update error.'})
+            finally:
+            
+                cursor.close()
+        else:
+            lesson_id = request.form.get('lessonID')
+            date = request.form.get('date')
+            start_time = request.form.get('startTime')
+            end_time = request.form.get('endTime')
+
+        
+            start_time_obj = datetime.strptime(start_time, "%H:%M" if len(start_time) <= 5 else "%H:%M:%S")
+            end_time_obj = datetime.strptime(end_time, "%H:%M" if len(end_time) <= 5 else "%H:%M:%S")
+            title = request.form.get('title') 
+            start_time_formatted = start_time_obj.strftime("%H:%M:%S")
+            end_time_formatted = end_time_obj.strftime("%H:%M:%S")
+            location_id = request.form.get('locationID')
+            capacity=request.form.get('capacity')
+            price = request.form.get('price') 
+        
+        
+        
+            cursor = utils.getCursor()
+
+        
+            update_query = """
+            UPDATE lessons
+            SET date = %s, start_time = %s, end_time = %s, location_id = %s, capacity = %s, price = %s
+            WHERE lesson_id = %s
+            """
+            update_values = (date, start_time_formatted, end_time_formatted, location_id, capacity, price, lesson_id)
+
+            try:
+            
+                cursor.execute(update_query, update_values)
+
+            
+                if cursor.rowcount > 0:
+                    return jsonify({'success': True})
+                else:
+                    return jsonify({'success': False, 'message': 'Failed to find the corresponding course information or update failed.'})
+            except Exception as e:
+                
+                print(f"An error occurred: {e}")
+                return jsonify({'success': False, 'message': 'Database update error.'})
+            finally:
+            
+                cursor.close()
+
+          #  return redirect(url_for('login'))
+
+
+
+
+@app.route('/edit_group_lessons', methods=['GET', "POST"])
+def edit_lessons():
+    nid = request.args.get('nid', type=int)
+
+    
+    if 'loggedin' in session and session['loggedin']:
+        cursor = utils.getCursor()
+        
+        if request.method == "GET":
+           
+            cursor.execute("SELECT * FROM lessons WHERE id = %s", (nid,))
+            info = cursor.fetchone()  
+            if info:
+                return render_template('edit_mgr_lessons.html', info=info)
+            else:
+                return "Record not found", 404
+
+        
+        name = request.form.get('name')
+        age = request.form.get('age')
+
+       
+        update_query = "UPDATE lessons SET name = %s, age = %s WHERE id = %s"
+        cursor.execute(update_query, (name, age, nid))
+        cursor.connection.commit()  
+
+        cursor.close()
+        return redirect(url_for('manager_lessons'))  
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/delete_one_on_one_lesson/<int:lesson_id>', methods=['POST'])
+def delete_one_on_one_lesson(lesson_id):
+    if 'loggedin' not in session:
+        return jsonify({'success': False, 'message': 'You must be logged in to perform this action.'}), 401
+    try:
+        cursor = utils.getCursor()
+        cursor.execute("DELETE FROM one_on_one_lessons WHERE lesson_id = %s", (lesson_id,))
+       
+        return jsonify({'success': True, 'message': 'One-on-one lesson deleted successfully.'})
+    except Exception as e:
+        
+        return jsonify({'success': False, 'message': f'Failed to delete one-on-one lesson. Error: {e}'})
+
+
+@app.route('/delete_group_lesson/<int:lesson_id>', methods=['POST'])
+def delete_group_lesson(lesson_id):
+    if 'loggedin' not in session:
+        return jsonify({'success': False, 'message': 'You must be logged in to perform this action.'}), 401
+    try:
+            cursor = utils.getCursor()
+            # Execute the SQL command to delete the lesson
+            cursor.execute("DELETE FROM lessons WHERE lesson_id = %s", (lesson_id,))
+            
+            return jsonify({'success': True, 'message': 'group lesson deleted successfully.'})
+    except Exception as e:
+        
+        return jsonify({'success': False, 'message': f'Failed to delete group lesson. Error: {e}'})
+
 
 @app.route('/manager/workshops')
 def manager_workshops():
@@ -557,6 +965,7 @@ def manager_workshops():
         return render_template('manager/mgr_workshops.html', workshops=workshops_data, role=session['role'])
     else:
         return redirect(url_for('login'))
+
 
 
 @app.route('/manager/expired_subscriptions', methods=['GET', 'POST'])

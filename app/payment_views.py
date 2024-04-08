@@ -58,9 +58,12 @@ def member_pay_lesson(lesson_id):
                         ON lessons.lesson_id = bookings.lesson_id\
                         WHERE lessons.lesson_id =%s;',(lesson_id,))
         lesson = cursor.fetchone()
+        #avoid error:Unread result found
+        cursor.fetchall()
         
         cursor.execute('SELECT * FROM bank_info WHERE member_id = %s;' , (session['id'],))
         bank_info = cursor.fetchone()
+        cursor.fetchall()
         
         if lesson is not None and lesson['booking_status'] == 'Booked':
             if request.method == 'POST':
@@ -95,11 +98,13 @@ def member_pay_workshop(workshop_id):
                         ON workshops.workshop_id = bookings.lesson_id\
                         WHERE workshops.workshop_id =%s;',(workshop_id,))
         workshop = cursor.fetchone()
+        cursor.fetchall()
         
         cursor.execute('SELECT * FROM bank_info WHERE member_id = %s;' , (session['id'],))
         bank_info = cursor.fetchone()
+        cursor.fetchall()
         
-        if workshop is not None and workshop['booking_status'] == 'Booked':
+        if workshop and workshop['booking_status'] == 'Booked':
             if request.method == 'POST':
                 bank_name = request.form.get('bank_name')
                 bank_card = request.form.get('bank_card')

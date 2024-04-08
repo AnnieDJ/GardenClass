@@ -1,7 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset='utf-8' />
+{% extends 'member/member_dashboard.html' %}
+{% block content %}
 <title>Booking Calendar</title>
 <link href='/docs/dist/demo-to-codepen.css' rel='stylesheet' />
 <style>
@@ -49,6 +47,16 @@
       border-radius: 5px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   }
+
+  .fc-event.lesson {
+    background-color: green;
+    color: white;
+}
+
+.fc-event.workshop {
+    background-color: red;
+    color: white;
+}
 </style>
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
 <script src='/docs/dist/demo-to-codepen.js'></script>
@@ -60,6 +68,7 @@
             timeZone: 'UTC',
             initialView: 'dayGridMonth',
             events: '/get_course_info',
+            eventColor: 'backgroundColor', // Use backgroundColor property to set event color
             editable: true,
             selectable: true,
             headerToolbar: {
@@ -74,14 +83,22 @@
                 var eventTitle = info.event.title;
                 var eventStart = info.event.start;
                 var eventEnd = info.event.end;
+                var eventCourseId = info.event.extendedProps.course_id;
+                var eventType = info.event.extendedProps.type;
+                var eventAddress = info.event.extendedProps.location;
+                var eventInstructor = info.event.extendedProps.instructor;
                 
                 var modalContent = `
                     <div class="modal-content">
                         <h4>${eventTitle}</h4>
                         <p>Start: ${eventStart}</p>
                         <p>End: ${eventEnd}</p>
+                        <p>Course Id: ${eventCourseId}</p>
+                        <p>Type: ${eventType}</p>
+                        <p>Location: ${eventAddress}</p>
+                        <p>Instructor: ${eventInstructor}</p>
+                        <a href="/booking_course/${eventType}/${eventCourseId}" class="btn btn-success">Book Now</a>
                         <button onclick="closeModal()">Close</button>
-                        <a href="{{url_for('workshoplist')}}" class="btn btn-success">Book Now</a>
                     </div>
                 `;
                 
@@ -100,8 +117,7 @@
         modal.parentNode.removeChild(modal);
     }
 </script>
-</head>
-<body>
-  <div id='calendar'></div>
-</body>
-</html>
+
+<div id='calendar'></div>
+
+{% endblock %}

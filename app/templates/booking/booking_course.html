@@ -1,0 +1,31 @@
+{% extends 'member/member_dashboard.html' %}
+{% block content %}
+<div class="container mt-5">
+
+{% if msg %}
+<div class="alert alert-info">{{ msg }}</div>
+{% endif %}
+
+    <h3>Booking Information</h3>
+    {% if course  %}
+    <p>Title: {{ course.title }}</p>
+    <p>Date: {{ course.date }}</p>
+    <p>Time: {{ course.start_time }} - {{course.end_time}}</p>
+    <p>Location: {{ course.location }}: {{course.address}}</p>
+    <p>Instructor: {{ course.instr_first }} {{course.instr_last}}</p>
+    {%if booking_number is none %}
+    <p>Capacity: 0 / {{ course.capacity }}</p>
+    {%else %}
+    <p>Capacity: {{booking_number['num']}} / {{ course.capacity }}</p>
+    {% endif %}
+
+    <form method="post">
+        <button type="submit" name="action" value="confirm" class="btn btn-success"{% if disabled %} disabled{% endif %}>Confirm</button>
+        <button type="submit" name="action" value="cancel" class="btn btn-danger">Back</button>
+    </form>
+
+    {% else %}
+    <p>No Booking Information found.</p>
+    {% endif %}
+</div>
+{% endblock %}

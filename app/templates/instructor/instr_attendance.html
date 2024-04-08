@@ -1,0 +1,103 @@
+{% extends 'instructor/instr_dashboard.html' %} {% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Attendance Records</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/bootstrap.min.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container mt-4">
+      <h1>Attendance Records</h1>
+
+      <!-- Add this section above your table -->
+      <div class="mb-3">
+        <form action="{{ url_for('attendance_records') }}" method="get">
+          <div class="row">
+            <div class="col">
+              <label for="dateFilter" class="form-label">Filter by date:</label>
+              <input
+                type="date"
+                class="form-control"
+                id="dateFilter"
+                name="date"
+              />
+            </div>
+            <div class="col">
+              <label for="typeFilter" class="form-label"
+                >Filter by class type:</label
+              >
+              <select class="form-select" id="typeFilter" name="type">
+                <option value="">All Types</option>
+                <option value="Workshop">Workshop</option>
+                <option value="Lesson">Lesson</option>
+              </select>
+            </div>
+            <div class="col">
+              <label for="statusFilter" class="form-label"
+                >Filter by booking status:</label
+              >
+              <select class="form-select" id="statusFilter" name="status">
+                <option value="">All Statuses</option>
+                <option value="Booked">Booked</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-success mt-2">
+            Apply Filters
+          </button>
+        </form>
+      </div>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Class Date</th>
+            <th>Class Time</th>
+            <th>Lesson/Workshop Title</th>
+            <th>Booking ID</th>
+            <th>Booking Status</th>
+            <th>Member's Name</th>
+            <th>Class Type</th>
+            <th>Instructor's Name</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for record in records %}
+          <tr>
+            <td>{{ record.class_date }}</td>
+            <td>{{ record.class_start_time }}</td>
+            <td>{{ record.title }}</td>
+            <td>{{ record.booking_id }}</td>
+            <td>{{ record.booking_type }}</td>
+            <td>
+              {{ record.member_first_name }} {{ record.member_last_name }}
+            </td>
+            <td>{{ record.status }}</td>
+            <td>
+              {{ record.instructor_first_name }} {{ record.instructor_last_name
+              }}
+            </td>
+            <td>
+            <form action="{{ url_for('record_attendance') }}" method="post">
+              <input type="hidden" name="booking_id" value="{{ record.booking_id }}">
+              <button type="sumbit" class="btn btn-primary">Present</button>
+            </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+  </body>
+</html>
+
+{% endblock %}

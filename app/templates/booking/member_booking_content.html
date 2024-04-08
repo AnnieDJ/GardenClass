@@ -1,0 +1,40 @@
+{% extends 'member/member_dashboard.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h3>My Bookings</h3>
+    {% if my_bookings %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Booking ID</th>
+                <th>Lessons/Workshop</th>
+                <th>Booking Type</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in my_bookings %}
+            <tr>
+                <td>{{ booking.booking_id }}</td>
+                <td>{{ booking.title }}</td>
+                <td>{{ booking.booking_type }}</td>
+                <td>{{ booking.status }}</td>
+                <td>
+                    {% if booking.status == 'Booked' %}
+                    <form action="{{ url_for('cancel_booking', booking_id=booking.booking_id) }}" method="post">
+                        <button type="submit" class="btn btn-danger">Cancel</button>
+                    </form>
+                    {% else %}
+                    <button type="submit" class="btn btn-danger" disabled>Cancel</button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No bookings found.</p>
+    {% endif %}
+</div>
+{% endblock %}

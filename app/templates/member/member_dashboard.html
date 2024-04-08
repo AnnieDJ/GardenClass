@@ -297,23 +297,15 @@
           <div class="collapse" id="authExamples">
             <ul class="nav flex-column ms-4">
               <li class="nav-item">
-                <a class="nav-link link-secondary" aria-current="page" href="#">
-                  <div class="nav-link-icon text-primary-emphasis">
-                    <i class="bi bi-arrow-right-short"></i>
-                  </div>
-                  <span class="nav-link-text">Workshops</span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link link-secondary" aria-current="page" href="#">
-                  <div class="nav-link-icon text-primary-emphasis">
-                    <i class="bi bi-arrow-right-short"></i>
-                  </div>
-                  <span class="nav-link-text">Lessons</span>
-                </a>
-              </li>
-              <li class="nav-item">
                 <a class="nav-link link-secondary" aria-current="page" href="{{ url_for('get_courses')}}">
+                  <div class="nav-link-icon text-primary-emphasis">
+                    <i class="bi bi-arrow-right-short"></i>
+                  </div>
+                  <span class="nav-link-text">Workshops And Lessons</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link link-secondary" aria-current="page" href="{{ url_for('view_mybookings')}}">
                   <div class="nav-link-icon text-primary-emphasis">
                     <i class="bi bi-arrow-right-short"></i>
                   </div>

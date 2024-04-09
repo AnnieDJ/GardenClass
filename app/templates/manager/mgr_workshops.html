@@ -116,7 +116,9 @@
         {% for workshop in workshops %}
         <div class="col-md-4 mb-4">
             <div class="card">
-              <img src="{{ url_for('static', filename=workshop.workshop_image) }}" class="card-img-top" alt="Workshop Image" style="height: 200px; width: 100%; object-fit: cover;">
+              {% if workshop.workshop_image %}
+                   <img src="{{ url_for('static', filename=workshop.workshop_image) }}" alt="Workshop Image" class="workshop-image" />
+              {% endif %}
                 <div class="card-body">
                     <h5 class="card-title">{{ workshop.title }}</h5>
                     <p class="card-text"><strong>Instructor:</strong> {{ workshop.first_name }} {{ workshop.last_name }}</p>
@@ -224,7 +226,7 @@ function fetchInstructors(selectedId) {
 function fetchLocations(selectedId) {
   $.get('/api/workshopslocations', function(data) {
     var locationSelect = $('#editWorkshopModal #locationId');
-
+        locationSelect.empty();
     data.forEach(function(location) {
       var isSelected = location.id === selectedId; // Select the correct location
       locationSelect.append(new Option(location.name, location.id, isSelected, isSelected));
@@ -235,14 +237,15 @@ function fetchLocations(selectedId) {
 // Click event for edit workshop button
 $(document).on('click', '.edit-workshop-btn', function() {
   var workshopId = $(this).data('workshop-id');
-  var title = $(this).data('title');
-  var date = $(this).data('date');
-  var startTime = $(this).data('start-time');
-  var endTime = $(this).data('end-time');
-  var capacity = $(this).data('capacity');
-  var price = $(this).data('price');
-  var instructorId = $(this).data('instructor-id');
-  var locationId = $(this).data('location-id');
+  var title = $(this).closest('.card-body').find('.card-title').text();
+  var date = $(this).closest('.card-body').find('p:nth-child(3)').text().replace('Date:', '').trim();
+  var startTime = $(this).closest('.card-body').find('p:nth-child(4)').text().replace('Start Time:', '').trim();
+  var endTime = $(this).closest('.card-body').find('p:nth-child(5)').text().replace('End Time:', '').trim();
+  var capacity = $(this).closest('.card-body').find('p:nth-child(6)').text().replace('Capacity:', '').trim();
+  var priceWithDollarSign  = $(this).closest('.card-body').find('p:nth-child(7)').text().replace('Price:', '').trim();
+  var price = parseFloat(priceWithDollarSign.replace('$', '')); 
+  var instructorId = $(this).closest('.card-body').find('.instructor-id').data('instructor-id');
+  var locationId = $(this).closest('.card-body').find('.location-id').data('location-id');
 
   // Set form field values
   $('#editWorkshopModal #editWorkshopID').val(workshopId);

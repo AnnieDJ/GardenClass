@@ -41,9 +41,9 @@
     <!-- Search and Add Button -->
     <div class="row mb-4">
       <div class="col-sm-12 col-md-6">
-        <form action="/location_search" method="GET">
+        <form action="/news_search" method="GET">
           <div class="input-group">
-            <input type="text" class="form-control" id="search" name="search" placeholder="Enter name, address or capacity">
+            <input type="text" class="form-control" id="search" name="search" placeholder="Enter title, content or publish date">
             <div class="input-group-append">
               <button type="submit" class="btn btn-success">Search</button>
             </div>
@@ -51,11 +51,11 @@
         </form>
       </div>
       <div class="col-sm-12 col-md-6 text-right">
-        <a href="{{ url_for('add_location') }}" class="btn btn-primary">Add Location</a>
+        <a href="{{ url_for('add_news') }}" class="btn btn-primary">Add News</a>
       </div>
     </div>
     
-    <!-- Locations Table -->
+    <!-- News Table -->
     <div class="row">
       <div class="col-12">
         <div class="card widget-card border-light shadow-sm">
@@ -106,7 +106,7 @@
 <script>
   function confirmDelete(url) {
     if (confirm("Are you sure you want to delete this item?")) {
-      window.location.href = url;
+      window.news.href = url;
     }
   }
 </script>

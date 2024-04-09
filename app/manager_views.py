@@ -866,7 +866,6 @@ def refresh_lesson():
 
 
 
-
 @app.route('/edit_group_lessons', methods=['GET', "POST"])
 def edit_lessons():
     nid = request.args.get('nid', type=int)
@@ -966,7 +965,118 @@ def manager_workshops():
     else:
         return redirect(url_for('login'))
 
+@app.route('/update_workshop', methods=['POST'])
+def update_workshops():
+    if 'loggedin' in session:
+        # Extract data from form submission
+        workshop_id = request.form.get('workshop_id')
+        
+        location_id = request.form.get('location_id')
+        
+        price = request.form.get('price')
+        capacity = request.form.get('capacity')
+        date = request.form.get('date')
+        start_time = request.form.get('start_time')
+        end_time = request.form.get('end_time')
+		
+        start_time_obj = datetime.strptime(start_time, "%H:%M" if len(start_time) <= 5 else "%H:%M:%S")
+        end_time_obj = datetime.strptime(end_time, "%H:%M" if len(end_time) <= 5 else "%H:%M:%S")
+      
+        start_time_formatted = start_time_obj.strftime("%H:%M:%S")
+        end_time_formatted = end_time_obj.strftime("%H:%M:%S")
+        workshop_image = request.form.get('workshop_image')
+        cursor = utils.getCursor()
 
+        update_query = """
+        UPDATE workshops
+        SET date = %s, start_time = %s, end_time = %s, location_id = %s, capacity = %s, price = %s, workshop_image = %s
+        WHERE workshop_id = %s
+        """
+        update_values = (date, start_time_formatted, end_time_formatted, location_id, capacity, price, workshop_image,workshop_id)
+
+        try:
+            cursor.execute(update_query, update_values)
+
+           
+            if cursor.rowcount > 0:
+                return jsonify({'success': True})
+            else:
+                return jsonify({'success': False, 'message': 'Failed to find the corresponding course information or update failed.'})
+        except Exception as e:
+            
+            print(f"An error occurred: {e}")
+            return jsonify({'success': False, 'message': 'Database update error.'})
+
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/api/instructors', methods=['GET'])
+def get_instructors():
+    cursor = utils.getCursor()
+    cursor.execute("SELECT instructor_id, first_name, last_name FROM instructor")  
+    instructors = cursor.fetchall()
+    cursor.close()
+    
+    instructors_list = [
+        {'id': ins['instructor_id'], 'name': f"{ins['first_name']} {ins['last_name']}"}
+        for ins in instructors
+    ]
+    return jsonify(instructors_list)
+    
+@app.route('/api/workshopslocations', methods=['GET'])
+def get_workshopslocations():
+    cursor = utils.getCursor()  
+    cursor.execute("SELECT location_id, name FROM locations")  
+    locations = cursor.fetchall()
+    cursor.close()
+
+  
+    locations_list = [{'id': loc['location_id'], 'name': loc['name']} for loc in locations]
+    
+    return jsonify(locations_list)
+
+
+
+@app.route('/manager/delete_workshop/<int:workshop_id>', methods=['POST'])
+def delete_workshop(workshop_id):
+    if 'loggedin' in session and session['role'] == 'Manager':
+        cursor = utils.getCursor()
+        cursor.execute("DELETE FROM workshops WHERE workshop_id = %s", (workshop_id,))
+        return redirect(url_for('manager_workshops'))
+    else:
+        return redirect(url_for('login'))
+    
+@app.route('/manager/add_workshop', methods=['POST'])
+def add_workshop():
+    if 'loggedin' in session and session['role'] == 'Manager':
+        try:
+            
+            title = request.form.get('title')
+            instructor_id = request.form.get('instructor_id')
+            location_id = request.form.get('location_id')
+            price = request.form.get('price')
+            capacity = request.form.get('capacity')
+            date = request.form.get('addDate')
+            start_time = request.form.get('starttime')
+            end_time = request.form.get('endtime')
+            workshop_image = 'workshops_images/workshop1.png'  
+
+            cursor = utils.getCursor()
+
+           
+            sql = "INSERT INTO workshops (title, instructor_id, location_id, price, capacity, date, start_time, end_time, workshop_image) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            val = (title, instructor_id, location_id, price, capacity, date, start_time, end_time, workshop_image)
+
+           
+            cursor.execute(sql, val)
+         
+
+            return jsonify({'success': True, 'message': 'Workshop added successfully.'})
+        except Exception as e:
+            return jsonify({'success': False, 'message': str(e)})
+    else:
+        return jsonify({'success': False, 'message': 'Unauthorized access.'})
+    
 
 @app.route('/manager/expired_subscriptions', methods=['GET', 'POST'])
 def expired_subscriptions():

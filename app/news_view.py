@@ -8,7 +8,7 @@ def view_news():
     if 'loggedin' in session and session['loggedin']:
         
         cursor = utils.getCursor()
-        cursor.execute('SELECT * FROM news;')
+        cursor.execute('SELECT n.title, n.content, n.date_published, CONCAT(m.first_name, ' ', m.last_name) AS author_name FROM news n JOIN manager m ON n.author_id = m.manager_id;')
         news_list = cursor.fetchall()
         cursor.close()
         

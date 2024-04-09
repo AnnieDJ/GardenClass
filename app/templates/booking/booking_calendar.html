@@ -59,7 +59,6 @@
 }
 </style>
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
-<script src='/docs/dist/demo-to-codepen.js'></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
@@ -87,7 +86,17 @@
                 var eventType = info.event.extendedProps.type;
                 var eventAddress = info.event.extendedProps.location;
                 var eventInstructor = info.event.extendedProps.instructor;
-                
+
+                var currentTime = new Date();
+                var isPastEvent = currentTime > eventEnd;
+
+                var bookButtonHtml;
+                if (isPastEvent) {
+                    bookButtonHtml = `<button disabled>Book Now</button>`;
+                } else {
+                    bookButtonHtml = `<a href="/booking_course/${eventType}/${eventCourseId}" class="btn btn-success">Book Now</a>`;
+                }
+               
                 var modalContent = `
                     <div class="modal-content">
                         <h4>${eventTitle}</h4>
@@ -97,7 +106,7 @@
                         <p>Type: ${eventType}</p>
                         <p>Location: ${eventAddress}</p>
                         <p>Instructor: ${eventInstructor}</p>
-                        <a href="/booking_course/${eventType}/${eventCourseId}" class="btn btn-success">Book Now</a>
+                        ${bookButtonHtml}                    
                         <button onclick="closeModal()">Close</button>
                     </div>
                 `;

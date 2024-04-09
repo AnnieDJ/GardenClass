@@ -1,65 +1,356 @@
 {% extends 'manager/mgr_dashboard.html' %} {% block content %}
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-<section>
-<div class="back-arrow">
-  <a
-  href="{{ url_for('manager_dashboard') }}"
-  title="Go back to Dashboard"
-  >&#x2190; Back</a>
-</div>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<div class="container">
-  <div class="content-wrapper">
-    <div class="filter-section">
-      <form action="{{ url_for('manager_workshops') }}" method="get">
-        <label for="instructor_id">Instructor ID:</label>
-        <input type="text" name="instructor_id" id="instructor_id" />
 
-        <label for="date">Date:</label>
-        <input type="date" name="date" id="date" />
 
-        <label for="location_id">Location ID:</label>
-        <input type="text" name="location_id" id="location_id" />
 
-        <input type="submit" value="Filter" />
-      </form>
-    </div>
-
-    <div class="workshops-list">
-      {% for workshop in workshops %}
-      <div class="workshop-item">
-        {% if workshop.workshop_image %}
-        <img src="{{ url_for('static', filename=workshop.workshop_image) }}" alt="Workshop Image" class="workshop-image" />
-        {% endif %}
-
-        <div>
-          <p><strong>Instructor ID: </strong>{{ workshop.instructor_id }}</p>
-          <p><strong>First Name: </strong>{{ workshop.first_name }}</p>
-          <p><strong>Last Name:</strong> {{ workshop.last_name }}</p>
-          <p><strong>Title:</strong> {{ workshop.title }}</p>
-          <p><strong>Date:</strong> {{ workshop.date }}</p>
-          <p><strong>Location ID:</strong> {{ workshop.location_id }}</p>
-          <p><strong>Start Time: </strong>{{ workshop.start_time }}</p>
-          <p><strong>End Time:</strong> {{ workshop.end_time }}</p>
-          <p><strong>Capacity: </strong>{{ workshop.capacity }}</p>
-          <p><strong>Price:</strong> {{ workshop.price }}</p>
-          <div class="lesson-actions">
-            <button class="btn edit-lesson">Edit</button>
-            <button class="btn cancel-lesson">Cancel</button>
-          </div>
-        </div>
+<!-- Breadcrumb -->
+<section class="py-3 py-md-4 py-xl-5 bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h1 class="h4">Workshop Management</h1>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb m-0 fs-7">
+            <li class="breadcrumb-item"><a class="link-primary text-decoration-none" href="{{ url_for('manager_dashboard') }}">Home</a></li>
+            <li class="breadcrumb-item">Workshops</li>
+            <li class="breadcrumb-item active" aria-current="page">View All</li>
+          </ol>
+        </nav>
       </div>
     </div>
-      {% else %}
-      <p>No workshops found.</p>
-      {% endfor %}
-    </div>
-    <div class="card-footer">
-      <button class="btn add-lesson">Add workshops</button>
+  </div>
+  </section>
+
+
+<div class="container py-4">
+<!-- Add Workshop Modal -->
+<section>
+<div class="modal fade" id="addWorkshopModal" tabindex="-1" role="dialog" aria-labelledby="addWorkshopModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addWorkshopModalLabel">Add Workshop</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="addWorkshopForm">
+          <!-- Assuming you have already loaded the locations from your database -->
+          <div class="form-group">
+            <label for="addInstructor">Instructor ID</label>
+            <select class="form-control" id="addInstructor" name="instructor_id">
+              <!-- Options will be dynamically loaded -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="addTitle">Title</label>
+            <input type="text" class="form-control" id="addTitle" name="title">
+          </div>
+          <div class="form-group">
+            <label for="addDate">Date</label>
+            <input type="date" name="addDate" id="addDate" />
+          </div>
+          <div class="form-group">
+            <label for="addLocation">Location ID</label>
+            <select class="form-control" id="addLocation" name="location_id">
+              <!-- Options will be dynamically loaded -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="addStartTime">Start Time</label>
+            <input type="time" class="form-control" id="addStartTime" name="starttime">
+          </div>
+          <div class="form-group">
+            <label for="addEndTime">End Time</label>
+            <input type="time" class="form-control" id="addEndTime" name="endtime">
+          </div>
+          <div class="form-group">
+            <label for="addCapacity">Capacity</label>
+            <input type="number" class="form-control" id="addCapacity" min="1" name="capacity">
+          </div>
+          <div class="form-group">
+            <label for="addPrice">Price</label>
+            <input type="number" class="form-control" id="addPrice" step="0.01" name="price">
+          </div>                
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="saveBtn">Save</button>
+      </div>
     </div>
   </div>
 </div>
+
+  <!-- Filter Section -->
+  <div class="bg-light p-3 mb-4 rounded">
+    <form action="{{ url_for('manager_workshops') }}" method="get" class="row align-items-end">
+      <div class="col-sm-3 mb-2 mb-sm-0">
+        <label for="instructor_id" class="form-label">Instructor ID:</label>
+        <input type="text" name="instructor_id" id="instructor_id" class="form-control" />
+      </div>
+      <div class="col-sm-3 mb-2 mb-sm-0">
+        <label for="date" class="form-label">Date:</label>
+        <input type="date" name="date" id="date" class="form-control" />
+      </div>
+      <div class="col-sm-3 mb-2 mb-sm-0">
+        <label for="location_id" class="form-label">Location ID:</label>
+        <input type="text" name="location_id" id="location_id" class="form-control" />
+      </div>
+      <div class="col-sm-auto">
+        <button type="submit" class="btn btn-primary me-2">Filter</button>
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addWorkshopModal">Add Workshop</button>
+      </div>
+    </form>
+  </div>
+  
+  
+
+<!-- Workshops List -->
+    <div class="row">
+        {% for workshop in workshops %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+              <img src="{{ url_for('static', filename=workshop.workshop_image) }}" class="card-img-top" alt="Workshop Image" style="height: 200px; width: 100%; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ workshop.title }}</h5>
+                    <p class="card-text"><strong>Instructor:</strong> {{ workshop.first_name }} {{ workshop.last_name }}</p>
+                    <p class="card-text"><strong>Date:</strong> {{ workshop.date }}</p>
+                    <p class="card-text"><strong>Start Time:</strong> {{ workshop.start_time }}</p>
+                    <p class="card-text"><strong>End Time:</strong> {{ workshop.end_time }}</p>
+                    <p class="card-text"><strong>Capacity:</strong> {{ workshop.capacity }}</p>
+                    <p class="card-text"><strong>Price:</strong> ${{ workshop.price }}</p>
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-warning edit-workshop-btn" data-bs-toggle="modal" data-bs-target="#editWorkshopModal" data-workshop-id="{{ workshop.workshop_id }}">Edit</button>
+                        <button class="btn btn-danger delete-btn" data-id="{{ workshop.workshop_id }}">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col">
+            <p>No workshops found.</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div> 
+  </div>
+</div>
+
+
+<!-- Edit Workshop Modal -->
+<div id="editWorkshopModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="editWorkshopModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="editWorkshopForm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editWorkshopModalLabel">Edit Workshop</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="editWorkshopID" name="workshop_id">
+          <div class="form-group mb-3">
+            <label for="editTitle">Workshop Title</label>
+            <input type="text" class="form-control" id="editTitle" name="title" required>
+          </div>
+          <div class="form-group mb-3">
+            <label for="editDate">Date</label>
+            <input type="date" class="form-control" id="editDate" name="date" required>
+          </div>
+          <div class="form-group mb-3">
+            <label for="editStartTime">Start Time</label>
+            <input type="time" class="form-control" id="editStartTime" name="start_time" required>
+          </div>
+          <div class="form-group mb-3">
+            <label for="editEndTime">End Time</label>
+            <input type="time" class="form-control" id="editEndTime" name="end_time" required>
+          </div>
+          <div class="form-group mb-3">
+            <label for="editCapacity">Capacity</label>
+            <input type="number" class="form-control" id="editCapacity" name="capacity" min="1" required>
+          </div>
+          <div class="form-group mb-3">
+            <label for="editPrice">Price</label>
+            <input type="number" class="form-control" id="editPrice" name="price" step="0.01" required>
+          </div>
+          <div class="form-group mb-3">
+            <label for="instructorId">Instructor ID</label>
+            <select class="form-control" id="instructorId" name="instructor_id">
+              <!-- Options will be dynamically loaded -->
+            </select>
+          </div>
+          <div class="form-group mb-3">
+            <label for="locationId">Location ID</label>
+            <select class="form-control" id="locationId" name="location_id">
+              <!-- Options will be dynamically loaded -->
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
 </section>
 
+
+
+<script>
+  
+  $(document).ready(function() {
+
+// Function to fetch and populate the instructor dropdown
+function fetchInstructors(selectedId) {
+  $.get('/api/instructors', function(data) {
+    var instructorSelect = $('#editWorkshopModal #instructorId');
+    instructorSelect.empty(); // Clear existing options
+    data.forEach(function(instructor) {
+      var isSelected = instructor.id === selectedId; // Select the correct instructor
+      instructorSelect.append(new Option(instructor.name, instructor.id, isSelected, isSelected));
+    });
+  });
+}
+
+// Function to fetch and populate the location dropdown
+function fetchLocations(selectedId) {
+  $.get('/api/workshopslocations', function(data) {
+    var locationSelect = $('#editWorkshopModal #locationId');
+
+    data.forEach(function(location) {
+      var isSelected = location.id === selectedId; // Select the correct location
+      locationSelect.append(new Option(location.name, location.id, isSelected, isSelected));
+    });
+  });
+}
+
+// Click event for edit workshop button
+$(document).on('click', '.edit-workshop-btn', function() {
+  var workshopId = $(this).data('workshop-id');
+  var title = $(this).data('title');
+  var date = $(this).data('date');
+  var startTime = $(this).data('start-time');
+  var endTime = $(this).data('end-time');
+  var capacity = $(this).data('capacity');
+  var price = $(this).data('price');
+  var instructorId = $(this).data('instructor-id');
+  var locationId = $(this).data('location-id');
+
+  // Set form field values
+  $('#editWorkshopModal #editWorkshopID').val(workshopId);
+  $('#editWorkshopModal #editTitle').val(title);
+  $('#editWorkshopModal #editDate').val(date);
+  $('#editWorkshopModal #editStartTime').val(startTime);
+  $('#editWorkshopModal #editEndTime').val(endTime);
+  $('#editWorkshopModal #editCapacity').val(capacity);
+  $('#editWorkshopModal #editPrice').val(price);
+
+  // Fetch and set instructor and location dropdowns
+  fetchInstructors(instructorId);
+  fetchLocations(locationId);
+
+  // Show the modal
+  $('#editWorkshopModal').modal('show');
+});
+
+// Handle the form submission for editing a workshop
+$('#editWorkshopForm').on('submit', function(e) {
+  e.preventDefault();
+
+  // Perform an AJAX POST request to update the workshop
+  $.ajax({
+    type: 'POST',
+    url: '/update_workshop',
+    data: $(this).serialize(),
+    success: function(response) {
+      if(response.success) {
+        alert('Workshop updated successfully!');
+        $('#editWorkshopModal').modal('hide');
+        location.reload();
+      } else {
+        alert('Error updating workshop: ' + response.message);
+      }
+    },
+    error: function() {
+      alert('Failed to update the workshop. Please try again.');
+    }
+  });
+});
+
+});
+
+
+
+
+
+
+
+
+
+
+    $('.delete-btn').click(function() {
+        var workshopId = $(this).data('id');  // Get the workshop ID from the button's data-id attribute
+
+        // Confirm with the user
+        if(confirm('Are you sure you want to delete this workshop?')) {
+            $.ajax({
+                url: '/manager/delete_workshop/' + workshopId, // The URL to your delete route
+                type: 'POST',
+                success: function(response) {
+                    // Handle a successful response (maybe reload part of your page or remove the row)
+                    alert('Workshop deleted successfully');
+                    location.reload(); // Reload the page to reflect changes
+                },
+                error: function(xhr, status, error) {
+                    // Handle errors
+                    alert('Error deleting workshop');
+                }
+            });
+        }
+    });
+
+
+<!-- handle createAddWrokShops popup -->
+$(document).ready(function() {
+  // Trigger the add workshop modal
+  $('#addWorkshopBtn').on('click', function() {
+    $('#addWorkshopModal').modal('show');
+  });
+
+  // Handle the submission of the add workshop form
+  $('#saveBtn').on('click', function(e) {
+    e.preventDefault();
+    var formData = $('#addWorkshopForm').serialize(); // Serialize the form data
+
+    // Send the form data to your backend for processing
+    $.ajax({
+      type: 'POST',
+      url: '/manager/add_workshop', // Change this to your backend endpoint
+      data: formData,
+      success: function(response) {
+        // Handle success
+        if(response.success) {
+          alert(response.message);
+          $('#addWorkshopModal').modal('hide');
+          location.reload(); // Reload the page to see the new workshop
+      } else {
+          alert('Failed to add workshop: ' + response.message);
+      }// Reload the page to show the new workshop
+      },
+      error: function(xhr, status, error) {
+        alert('Error: ' + error.message);
+      }
+    });
+  });
+});
+
+</script>
 {% endblock %}

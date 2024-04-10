@@ -1,0 +1,15 @@
+{% extends 'manager/mgr_dashboard.html' %}
+
+{% block content %}
+<form method="post" >
+    <div class="form-group">
+        <label for="status">Status:</label>
+        <select class="form-control" id="status" name="status" required>
+            <option value="Booked" {% if booking_item.status == 'Booked' %} selected {% endif %}>Booked</option>
+            <option value="Cancelled" {% if booking_item.status == 'Cancelled' %} selected {% endif %}>Cancelled</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success">Save Changes</button>
+</form>
+
+{% endblock %}

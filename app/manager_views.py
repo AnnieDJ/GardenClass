@@ -68,7 +68,7 @@ def manager_profile():
         manager_profile = cursor.fetchone()
 
         if manager_profile:
-            if manager_profile['manager_image_name'] is not None and manager_profile['manager_image_name'] != '':
+            if manager_profile['manager_image_name'] is not None and manager_profile['manager_image_name'] != '' and manager_profile['profile_image']:
                 image_encode = base64.b64encode(manager_profile['profile_image']).decode('utf-8')
                 encoded_manager_profile.append((manager_profile['manager_id'], manager_profile['user_name'], manager_profile['title'], manager_profile['first_name'], manager_profile['last_name'], manager_profile['position'], manager_profile['phone_number'], manager_profile['email'], manager_profile['manager_image_name'], image_encode, manager_profile['gardering_experience']))
             else:
@@ -154,7 +154,7 @@ def instructor_profile_list():
         instructor_profile = cursor.fetchall()
         
         for instructor in instructor_profile:
-            if instructor['instructor_image_name'] is not None and instructor['instructor_image_name'] != '':
+            if instructor['instructor_image_name'] is not None and instructor['instructor_image_name'] != '' and instructor['instructor_image']:
                image_encode = base64.b64encode(instructor['instructor_image']).decode('utf-8')
                encoded_instructor_profile.append((instructor['instructor_id'], instructor['user_name'],instructor['title'] ,instructor['first_name'], instructor['last_name'], instructor['position'],instructor['phone_number'],instructor['email'],instructor['address'],instructor['instructor_profile'],instructor['instructor_image_name'],image_encode))
             else:

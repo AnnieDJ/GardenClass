@@ -291,14 +291,6 @@ $('#editWorkshopForm').on('submit', function(e) {
 });
 
 
-
-
-
-
-
-
-
-
     $('.delete-btn').click(function() {
         var workshopId = $(this).data('id');  // Get the workshop ID from the button's data-id attribute
 
@@ -325,8 +317,37 @@ $('#editWorkshopForm').on('submit', function(e) {
 $(document).ready(function() {
   // Trigger the add workshop modal
   $('#addWorkshopBtn').on('click', function() {
+    // Show the add workshop modal
     $('#addWorkshopModal').modal('show');
+
+    // Fetch and populate the instructor dropdown
+    fetchInstructors();
+
+    // Fetch and populate the location dropdown
+    fetchLocations();
   });
+
+  // Function to fetch and populate the instructor dropdown
+  function fetchInstructors() {
+    $.get('/api/instructors', function(data) {
+      var instructorSelect = $('#addWorkshopModal #addInstructor'); // Select the instructor dropdown
+      instructorSelect.empty(); // Clear existing options
+      data.forEach(function(instructor) {
+        instructorSelect.append(new Option(instructor.name, instructor.id));
+      });
+    });
+  }
+
+  // Function to fetch and populate the location dropdown
+  function fetchLocations() {
+    $.get('/api/workshopslocations', function(data) {
+      var locationSelect = $('#addWorkshopModal #addLocation'); // Select the location dropdown
+      locationSelect.empty(); // Clear existing options
+      data.forEach(function(location) {
+        locationSelect.append(new Option(location.name, location.id));
+      });
+    });
+  }
 
   // Handle the submission of the add workshop form
   $('#saveBtn').on('click', function(e) {
@@ -344,9 +365,9 @@ $(document).ready(function() {
           alert(response.message);
           $('#addWorkshopModal').modal('hide');
           location.reload(); // Reload the page to see the new workshop
-      } else {
+        } else {
           alert('Failed to add workshop: ' + response.message);
-      }// Reload the page to show the new workshop
+        }
       },
       error: function(xhr, status, error) {
         alert('Error: ' + error.message);

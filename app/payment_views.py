@@ -95,7 +95,7 @@ def member_pay_workshop(workshop_id):
         cursor.execute('SELECT workshops.title,workshops.price,bookings.status as booking_status \
                         FROM workshops \
                         JOIN bookings\
-                        ON workshops.workshop_id = bookings.lesson_id\
+                        ON workshops.workshop_id = bookings.workshop_id\
                         WHERE workshops.workshop_id =%s;',(workshop_id,))
         workshop = cursor.fetchone()
         cursor.fetchall()

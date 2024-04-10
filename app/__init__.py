@@ -11,3 +11,4 @@ from app import home_views
 from app import payment_views
 from app import location_views
 from app import booking_views
+from app import news_views

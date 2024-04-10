@@ -1,0 +1,46 @@
+{% extends 'manager/mgr_dashboard.html' %}
+
+{% block title %}News Details{% endblock %}
+
+{% block content %}
+
+<!-- Breadcrumb -->
+<section class="py-3 py-md-4 py-xl-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="h4">News Management</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb m-0 fs-7">
+                        <li class="breadcrumb-item"><a class="link-primary text-decoration-none" href="{{ url_for('manager_dashboard') }}">Home</a></li>
+                        <li class="breadcrumb-item">News</li>
+                        <li class="breadcrumb-item active" aria-current="page">Edit</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Edit Form Section -->
+<section class="py-4">
+    <div class="container">
+        <form method="POST" class="mb-4">
+            <div class="mb-3">
+                <label for="title" class="form-label">Title *</label>
+                <input type="text" name="title" class="form-control" id="title" value="{{ news['title'] }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="content" class="form-label">Content *</label>
+                <input type="text" name="content" class="form-control" id="content" value="{{ news['content'] }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="date_published" class="form-label">Publishe Date *</label>
+                <input type="date" name="date_published" class="form-control" id="date_published" value="{{ news['date_published'] }}" required>
+            </div>
+            <button type="submit" class="btn btn-success">Update Now</button>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

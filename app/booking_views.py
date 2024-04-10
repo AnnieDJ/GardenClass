@@ -165,3 +165,58 @@ def cancel_booking(booking_id):
         return redirect(url_for('view_mybookings'))
     else:
         return redirect(url_for('login'))
+    
+@app.route('/view_booking',methods=['GET','POST'])
+def view_booking():
+    if 'loggedin' in session and session['loggedin']:
+        cursor = utils.getCursor()
+        cursor.execute('SELECT bookings.booking_id,workshops.title,workshops.date,workshops.start_time,workshops.end_time, workshops.price,workshops.capacity,locations.address,bookings.booking_type,member.user_name,member.first_name,member.last_name\
+                         FROM bookings\
+                         JOIN workshops ON bookings.workshop_id = workshops.workshop_id\
+                         JOIN locations ON workshops.location_id = locations.location_id\
+                         JOIN member ON member.member_id = bookings.user_id\
+                         UNION\
+                         SELECT bookings.booking_id,lessons.title,lessons.date,lessons.start_time,lessons.end_time, lessons.price,lessons.capacity,locations.address,bookings.booking_type,member.user_name,member.first_name,member.last_name\
+                         FROM bookings\
+                         JOIN lessons ON bookings.lesson_id = lessons.lesson_id\
+                         JOIN locations ON lessons.location_id = locations.location_id\
+                         JOIN member ON member.member_id = bookings.user_id\
+                         UNION\
+                         SELECT bookings.booking_id,one_on_one_lessons.lesson_name,one_on_one_lessons.date,one_on_one_lessons.start_time,one_on_one_lessons.end_time, one_on_one_lessons.price,1 AS capacity,locations.address,bookings.booking_type,member.user_name,member.first_name,member.last_name\
+                         FROM bookings\
+                         JOIN one_on_one_lessons ON bookings.one_on_one_id = one_on_one_lessons.lesson_id\
+                         JOIN locations ON one_on_one_lessons.location_id = locations.location_id\
+                         JOIN member ON member.member_id = bookings.user_id;')
+        booking_list = cursor.fetchall()
+        
+        return render_template('/booking/view_booking.html',booking_list=booking_list,role=session['role'])
+          
+    else:
+        return redirect(url_for('login'))
+    
+@app.route('/delete_booking/<int:booking_id>')
+def delete_booking(booking_id):
+    if 'loggedin' in session and session['loggedin']:
+        cursor = utils.getCursor()
+        cursor.execute('DELETE FROM bookings WHERE booking_id = %s',(booking_id,))
+        
+        return redirect(url_for('view_booking'))
+    else:
+        return redirect(url_for('login'))
+    
+@app.route('/edit_booking/<int:booking_id>',methods=['GET','POST'])
+def edit_booking(booking_id):
+    if 'loggedin' in session and session['loggedin']:
+        cursor = utils.getCursor()
+        cursor.execute('SELECT * FROM bookings WHERE booking_id = %s',(booking_id,))
+        booking_item = cursor.fetchone()
+        cursor.fetchall()
+        
+        if request.method == 'POST':
+           status = request.form.get('status')
+           cursor.execute('UPDATE bookings SET status= %s WHERE booking_id = %s',(status,booking_id,))
+           return redirect(url_for('view_booking'))
+       
+        return render_template('booking/edit_booking.html',booking_item=booking_item,role=session['role'])      
+    else:
+        return redirect(url_for('login'))

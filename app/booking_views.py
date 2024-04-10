@@ -82,7 +82,14 @@ def booking_course(course_type, course_id):
               msg = 'You have already booked this lesson'
               if request.method == 'POST' and request.form['action'] == 'cancel':
                  return redirect(url_for('get_courses'))
-              return render_template('/booking/booking_course.html',course=course,booking_number=booking_number,role=session['role'],disabled = disabled,msg = msg)  
+              return render_template('/booking/booking_course.html',course=course,booking_number=booking_number,role=session['role'],disabled = disabled,msg = msg) 
+          
+           if booking_number and booking_number['num'] >= course['capacity']:
+              disabled = True
+              msg = 'This lesson is full'
+              if request.method == 'POST' and request.form['action'] == 'cancel':
+                 return redirect(url_for('get_courses'))
+              return render_template('/booking/booking_course.html',course=course,booking_number=booking_number,role=session['role'],disabled = disabled,msg = msg)   
            
            if request.method == 'POST' and request.form['action'] == 'confirm':
               cursor.execute('INSERT INTO bookings (user_id,lesson_id,booking_type,status) VALUES(%s,%s,%s,%s)',(session['id'],course['course_id'],'Lesson','Booked',))
@@ -112,10 +119,17 @@ def booking_course(course_type, course_id):
            
            if exist_bookings:
               disabled = True
-              msg = 'You have already booked this lesson'
+              msg = 'You have already booked this workshop'
               if request.method == 'POST' and request.form['action'] == 'cancel':
                  return redirect(url_for('get_courses'))
               return render_template('/booking/booking_course.html',course=course,booking_number=booking_number,role=session['role'],disabled = disabled,msg = msg)  
+          
+           if booking_number and booking_number['num'] >= course['capacity']:
+              disabled = True
+              msg = 'This workshop is full'
+              if request.method == 'POST' and request.form['action'] == 'cancel':
+                 return redirect(url_for('get_courses'))
+              return render_template('/booking/booking_course.html',course=course,booking_number=booking_number,role=session['role'],disabled = disabled,msg = msg) 
            
            if request.method == 'POST' and request.form['action'] == 'confirm':
               cursor.execute('INSERT INTO bookings (user_id,workshop_id,booking_type,status) VALUES(%s,%s,%s,%s)',(session['id'],course['course_id'],'Workshop','Booked',))

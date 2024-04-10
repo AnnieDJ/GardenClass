@@ -335,9 +335,10 @@ def instr_news_details(news_id):
         return "Article not found", 404
     
 
+
 ## Attendance Records - Display all records ##
 @app.route('/instructor/attendance')
-def  attendance_records():
+def attendance_records():
     if 'loggedin' in session and session.get('loggedin'):   
         date_filter = request.args.get('date', None)
         type_filter = request.args.get('type', None)
@@ -395,9 +396,16 @@ def record_attendance():
             (booking_id,))
         
         utils.connection.commit()
-        
+        flash('Member marked as present') 
         # Redirect to the attendance records page or where appropriate
         return redirect(url_for('attendance_records'))
     else:
         # If the user isn't logged in, redirect to the login page
         return redirect(url_for('login'))
+    
+
+## Attendance Records - show marked as present ##
+@app.route('/attendance_present')
+def present_attendance():
+    records =[]
+    return render_template('/instructor/attendance.html', records=records)

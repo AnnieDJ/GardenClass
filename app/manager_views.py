@@ -68,7 +68,7 @@ def manager_profile():
         manager_profile = cursor.fetchone()
 
         if manager_profile:
-            if manager_profile['manager_image_name'] is not None and manager_profile['manager_image_name'] != '':
+            if manager_profile['manager_image_name'] is not None and manager_profile['manager_image_name'] != '' and manager_profile['profile_image']:
                 image_encode = base64.b64encode(manager_profile['profile_image']).decode('utf-8')
                 encoded_manager_profile.append((manager_profile['manager_id'], manager_profile['user_name'], manager_profile['title'], manager_profile['first_name'], manager_profile['last_name'], manager_profile['position'], manager_profile['phone_number'], manager_profile['email'], manager_profile['manager_image_name'], image_encode, manager_profile['gardering_experience']))
             else:
@@ -154,7 +154,7 @@ def instructor_profile_list():
         instructor_profile = cursor.fetchall()
         
         for instructor in instructor_profile:
-            if instructor['instructor_image_name'] is not None and instructor['instructor_image_name'] != '':
+            if instructor['instructor_image_name'] is not None and instructor['instructor_image_name'] != '' and instructor['instructor_image']:
                image_encode = base64.b64encode(instructor['instructor_image']).decode('utf-8')
                encoded_instructor_profile.append((instructor['instructor_id'], instructor['user_name'],instructor['title'] ,instructor['first_name'], instructor['last_name'], instructor['position'],instructor['phone_number'],instructor['email'],instructor['address'],instructor['instructor_profile'],instructor['instructor_image_name'],image_encode))
             else:
@@ -1193,3 +1193,96 @@ def add_instructor():
          return render_template('/manager/add_instr_profile.html', msg = msg, role=session['role'])
     else:
         return redirect(url_for('login'))
+  
+    
+## Manager - Attendance Records - Display all records ##
+@app.route('/manager/attendance')
+def  mgr_attendance_records():
+    if 'loggedin' in session and session.get('loggedin'):   
+        date_filter = request.args.get('date', None)
+        type_filter = request.args.get('type', None)
+        status_filter = request.args.get('status', None)
+    
+            
+        sql = """SELECT b.booking_id, m.first_name AS member_first_name, m.last_name AS member_last_name,b.booking_type, b.status,
+                    COALESCE(l.title, w.title) AS title,
+                    COALESCE(l.date, w.date) AS class_date,
+                    COALESCE(l.start_time, w.start_time) AS class_start_time,
+                    i.instructor_id, i.first_name AS instructor_first_name, i.last_name AS instructor_last_name
+                    FROM bookings AS b
+                    JOIN member AS m ON b.user_id = m.member_id
+                    LEFT JOIN lessons AS l ON b.lesson_id = l.lesson_id
+                    LEFT JOIN workshops AS w ON b.workshop_id = w.workshop_id
+                    LEFT JOIN instructor AS i ON l.instructor_id = i.instructor_id OR w.instructor_id = i.instructor_id
+                    WHERE 1 = 1"""
+            
+        filter_params = []    
+            
+        # Apply date filter
+        if date_filter:
+            sql += " AND COALESCE(l.date, w.date) = %s"
+            filter_params.append(date_filter)
+
+        # Apply class type filter
+        if type_filter:
+            sql += " AND b.booking_type = %s"
+            filter_params.append(type_filter)
+
+        # Apply booking status filter
+        if status_filter:
+            sql += " AND b.status = %s"
+            filter_params.append(status_filter)
+            
+        cursor = utils.getCursor()
+        cursor.execute(sql, filter_params)    
+        records = cursor.fetchall()
+        print(records)
+            
+        return render_template('manager/mgr_attendance.html', records=records)
+
+
+
+
+## Manager Attendance Records - is attended (Present) ##
+@app.route('/mgr_record_attendance', methods=['POST'])
+def mgr_record_attendance():
+    if 'loggedin' in session and session['loggedin']:
+        booking_id = request.form.get('booking_id')
+
+        # Update the database to record attendance
+        cursor = utils.getCursor()
+        cursor.execute(
+            'UPDATE bookings SET is_attended = TRUE WHERE booking_id = %s',
+            (booking_id,))
+        
+        utils.connection.commit()
+        
+        # Redirect to the attendance records page or where appropriate
+        return redirect(url_for('mgr_attendance_records'))
+    else:
+        # If the user isn't logged in, redirect to the login page
+        return redirect(url_for('login'))
+    
+    
+
+## Manager Attendance Records - edit ##
+@app.route('/edit_booking', methods=['POST'])
+def mgr_edit_booking():
+    if 'loggedin' in session and session['loggedin']:
+        booking_id = request.form.get('booking_id')
+
+        # Update the database to record attendance
+        cursor = utils.getCursor()
+        cursor.execute(
+            'UPDATE bookings SET is_attended = TRUE WHERE booking_id = %s',
+            (booking_id,))
+        
+        utils.connection.commit()
+        
+        # Redirect to the attendance records page or where appropriate
+        return redirect(url_for('mgr_attendance_records'))
+    else:
+        # If the user isn't logged in, redirect to the login page
+        return redirect(url_for('login'))
+    
+    

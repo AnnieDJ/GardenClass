@@ -1,10 +1,10 @@
-{% extends 'instructor/instr_dashboard.html' %} {% block content %}
+{% extends 'manager/mgr_dashboard.html' %} {% block content %}
 
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Attendance Records - Instructor</title>
+    <title>Attendance Records Manager</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/bootstrap.min.css') }}"
@@ -12,21 +12,11 @@
   </head>
   <body>
     <div class="container mt-4">
-      <h1>Attendance Records</h1>
-
-      <!-- Display message -->
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        {% for message in messages %}
-        <div class="alert alert-success">{{ message }}</div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
-
+      <h1>Attendance Records - Manager</h1>
 
       <!-- Add this section above your table -->
       <div class="mb-3">
-        <form action="{{ url_for('attendance_records') }}" method="get">
+        <form action="{{ url_for('mgr_attendance_records') }}" method="get">
           <div class="row">
             <div class="col">
               <label for="dateFilter" class="form-label">Filter by date:</label>
@@ -75,7 +65,7 @@
             <th>Member's Name</th>
             <th>Class Type</th>
             <th>Instructor's Name</th>
-            <th>Action</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -95,10 +85,41 @@
               }}
             </td>
             <td>
-            <form action="{{ url_for('record_attendance') }}" method="post">
-              <input type="hidden" name="booking_id" value="{{ record.booking_id }}">
-              <button type="sumbit" class="btn btn-primary">Present</button>
-            </form>
+              <form
+                action="{{ url_for('mgr_record_attendance') }}"
+                method="post"
+              >
+                <input
+                  type="hidden"
+                  name="booking_id"
+                  value="{{ record.booking_id }}"
+                />
+                <button type="sumbit" class="btn btn-primary w-100">
+                  Present
+                </button>
+              </form>
+
+              <form action="#" method="post">
+                <input
+                  type="hidden"
+                  name="booking_id"
+                  value="{{ record.booking_id }}"
+                />
+                <button type="sumbit" class="btn btn-success w-100">
+                  Edit
+                </button>
+              </form>
+
+              <form action="#" method="post">
+                <input
+                  type="hidden"
+                  name="booking_id"
+                  value="{{ record.booking_id }}"
+                />
+                <button type="sumbit" class="btn btn-danger w-100">
+                  Cancel
+                </button>
+              </form>
             </td>
           </tr>
           {% endfor %}

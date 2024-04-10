@@ -1193,9 +1193,7 @@ def add_instructor():
          return render_template('/manager/add_instr_profile.html', msg = msg, role=session['role'])
     else:
         return redirect(url_for('login'))
-    
-    
-    
+  
     
 ## Manager - Attendance Records - Display all records ##
 @app.route('/manager/attendance')

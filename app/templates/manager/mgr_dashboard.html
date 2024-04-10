@@ -277,7 +277,7 @@
                     </tbody>
                   </table>
                   <div class="col-12">
-                    <a href="#" class="btn btn-success my-2">Read More</a>
+                    <a href="{{ url_for('view_news') }}" class="btn btn-success my-2">Read More</a>
                   </div>
                 </div>
               </div>
@@ -420,6 +420,14 @@
                   <i class="bi bi-arrow-right-short"></i>
                 </div>
                 <span class="nav-link-text">Locations</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link link-secondary" aria-current="page" href="{{ url_for('view_news') }}">
+                <div class="nav-link-icon text-primary-emphasis">
+                  <i class="bi bi-arrow-right-short"></i>
+                </div>
+                <span class="nav-link-text">News</span>
               </a>
             </li>
           </ul>

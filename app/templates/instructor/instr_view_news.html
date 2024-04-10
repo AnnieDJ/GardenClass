@@ -1,16 +1,83 @@
 {% extends 'instructor/instr_dashboard.html' %} {% block content %}
+<style>
+  .news-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    font-family: 'Arial', sans-serif;
+  }
 
-<div class="back-arrow">
-  <a href="{{ url_for('instructor_dashboard') }}" title="Go back to Dashboard"
-    >&#x2190; Back</a
-  >
-</div>
+  .news-container h1 {
+    font-size: 2rem;
+    color: #4a724a;
+    margin-bottom: 1rem;
+  }
 
-<div class="news-container">
-  <h1>Instructor's Greenboard</h1>
+  .news-container form {
+    margin-bottom: 1.5rem;
+  }
+
+  .news-container form input[type="text"],
+  .news-container form input[type="date"] {
+    padding: 0.5rem;
+    margin-right: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .news-container form button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #4a724a;
+    color: white;
+    cursor: pointer;
+  }
+
+  .news-container form button:hover {
+    background-color: #3a5a3a;
+  }
+
+  .news-articles {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+  }
+
+  .news-articles th,
+  .news-articles td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+  }
+
+  .news-articles th {
+    background-color: #f4f4f4;
+    color: #333;
+  }
+
+  .news-articles tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  .news-articles td a {
+    color: #007b5e;
+    text-decoration: none;
+  }
+
+  .news-articles td a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<section>
+  <div class="news-container">
+    <h1>Harvest Hub</h1>
 
   <!-- Search form -->
-  <form action="{{ url_for('member_view_news') }}" method="get">
+  <form action="{{ url_for('instr_view_news') }}" method="get">
     <input type="text" name="title" placeholder="Search by title..." />
     <input type="date" name="date" />
     <button type="submit">Search</button>
@@ -37,7 +104,7 @@
         <td>{{ article.first_name }} {{ article.last_name }}</td>
         <td>
           <a
-            href="{{ url_for('member_news_details.html', news_id=article.news_id) }}"
+            href="{{ url_for('instr_news_details', news_id=article.news_id) }}"
             >Read more...</a
           >
         </td>

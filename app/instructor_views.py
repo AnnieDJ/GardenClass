@@ -292,22 +292,22 @@ def instr_view_news():
         date = request.args.get('date')
         
         sql_query = """
-        SELECT n.news_id, n.title, n.content, n.details, n.date_published, 
+        SELECT n.news_id, n.title, n.content, n.date_published, 
                m.first_name, m.last_name
-        FROM instr_news n
+        FROM news n
         JOIN manager m ON n.author_id = m.manager_id
         WHERE 1=1
         """
         query_params = []
         
         if title:
-            sql_query += " AND title LIKE %s"
+            sql_query += " AND n.title LIKE %s"
             query_params.append(f"%{title}%")
         if date:
-            sql_query += " AND DATE(date_published) = %s"
+            sql_query += " AND DATE(n.date_published) = %s"
             query_params.append(date)
         
-        sql_query += " ORDER BY date_published DESC"
+        sql_query += " ORDER BY n.date_published DESC"
         
         cursor.execute(sql_query, query_params)
         news_articles = cursor.fetchall()
@@ -319,17 +319,17 @@ def instr_view_news():
            
             
 ## Instructor News - Read More ##
-@app.route('/member_news_details/<int:news_id>')
+@app.route('/instr_news_details/<int:news_id>')
 def instr_news_details(news_id):
     cursor = utils.getCursor()
     
     # Fetch the specific news article by id
-    cursor.execute("SELECT title, content, date_published, details FROM news WHERE news_id = %s", (news_id,))
+    cursor.execute("SELECT title, content, date_published FROM news WHERE news_id = %s", (news_id,))
     article = cursor.fetchone()
 
     # Check if the article was found
     if article:
-        return render_template('member/member_news_details.html', article=article)
+        return render_template('instructor/instr_news_details.html', article=article)
     else:
         # If no article found with the provided id, you can redirect to a 404 page or back to the news list
         return "Article not found", 404

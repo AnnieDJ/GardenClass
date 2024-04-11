@@ -1,6 +1,6 @@
 from app import app
 from app import utils
-from flask import Flask, render_template, jsonify,redirect,url_for
+from flask import Flask, render_template, jsonify,redirect,url_for,flash
 import json
 import datetime
 from flask import session,request
@@ -182,7 +182,7 @@ def view_booking():
                          JOIN locations ON lessons.location_id = locations.location_id\
                          JOIN member ON member.member_id = bookings.user_id\
                          UNION\
-                         SELECT bookings.booking_id,one_on_one_lessons.lesson_name,one_on_one_lessons.date,one_on_one_lessons.start_time,one_on_one_lessons.end_time, one_on_one_lessons.price,1 AS capacity,locations.address,bookings.booking_type,member.user_name,member.first_name,member.last_name\
+                         SELECT bookings.booking_id,one_on_one_lessons.lesson_name as title,one_on_one_lessons.date,one_on_one_lessons.start_time,one_on_one_lessons.end_time, one_on_one_lessons.price,1 AS capacity,locations.address,bookings.booking_type,member.user_name,member.first_name,member.last_name\
                          FROM bookings\
                          JOIN one_on_one_lessons ON bookings.one_on_one_id = one_on_one_lessons.lesson_id\
                          JOIN locations ON one_on_one_lessons.location_id = locations.location_id\
@@ -220,3 +220,189 @@ def edit_booking(booking_id):
         return render_template('booking/edit_booking.html',booking_item=booking_item,role=session['role'])      
     else:
         return redirect(url_for('login'))
+
+@app.route('/bookings_search')
+def bookings_search():
+    if 'loggedin' in session and session['loggedin']:
+        query = request.args.get('search', '')
+      
+        cursor = utils.getCursor()
+        cursor.execute('SELECT bookings.booking_id,workshops.title,workshops.date,workshops.start_time,workshops.end_time, workshops.price,workshops.capacity,locations.address,bookings.booking_type,member.user_name,member.first_name,member.last_name\
+                         FROM bookings\
+                         JOIN workshops ON bookings.workshop_id = workshops.workshop_id\
+                         JOIN locations ON workshops.location_id = locations.location_id\
+                         JOIN member ON member.member_id = bookings.user_id\
+                         UNION\
+                         SELECT bookings.booking_id,lessons.title,lessons.date,lessons.start_time,lessons.end_time, lessons.price,lessons.capacity,locations.address,bookings.booking_type,member.user_name,member.first_name,member.last_name\
+                         FROM bookings\
+                         JOIN lessons ON bookings.lesson_id = lessons.lesson_id\
+                         JOIN locations ON lessons.location_id = locations.location_id\
+                         JOIN member ON member.member_id = bookings.user_id\
+                         UNION\
+                         SELECT bookings.booking_id,one_on_one_lessons.lesson_name as title,one_on_one_lessons.date,one_on_one_lessons.start_time,one_on_one_lessons.end_time, one_on_one_lessons.price,1 AS capacity,locations.address,bookings.booking_type,member.user_name,member.first_name,member.last_name\
+                         FROM bookings\
+                         JOIN one_on_one_lessons ON bookings.one_on_one_id = one_on_one_lessons.lesson_id\
+                         JOIN locations ON one_on_one_lessons.location_id = locations.location_id\
+                         JOIN member ON member.member_id = bookings.user_id;')
+        bookings = cursor.fetchall()
+        
+        if query is None or query == '':
+            return redirect(url_for('view_booking'))
+        
+        matched_profiles = []
+            
+        for booking in bookings:
+            if query.lower() in booking['title'].lower():
+               cursor.execute("SELECT bookings.booking_id,workshops.title,workshops.date,workshops.start_time,workshops.end_time, workshops.price,workshops.capacity,locations.address,bookings.booking_type, member.user_name,member.first_name,member.last_name\
+                               FROM bookings\
+                               JOIN workshops ON bookings.workshop_id = workshops.workshop_id\
+                               JOIN locations ON workshops.location_id = locations.location_id\
+                               JOIN member ON member.member_id = bookings.user_id  WHERE workshops.title LIKE CONCAT('%', %s, '%')\
+                               UNION\
+                               SELECT bookings.booking_id,lessons.title,lessons.date,lessons.start_time,lessons.end_time, lessons.price,lessons.capacity,locations.address,bookings.booking_type, member.user_name,member.first_name,member.last_name\
+                               FROM bookings\
+                               JOIN lessons ON bookings.lesson_id = lessons.lesson_id\
+                               JOIN locations ON lessons.location_id = locations.location_id\
+                               JOIN member ON member.member_id = bookings.user_id  WHERE lessons.title LIKE CONCAT('%', %s, '%')\
+                               UNION\
+                               SELECT bookings.booking_id,one_on_one_lessons.lesson_name AS title,one_on_one_lessons.date,one_on_one_lessons.start_time,one_on_one_lessons.end_time, one_on_one_lessons.price,1 AS capacity,locations.address,bookings.booking_type, member.user_name,member.first_name,member.last_name\
+                               FROM bookings\
+                               JOIN one_on_one_lessons ON bookings.one_on_one_id = one_on_one_lessons.lesson_id\
+                               JOIN locations ON one_on_one_lessons.location_id = locations.location_id\
+                               JOIN member ON member.member_id = bookings.user_id  WHERE one_on_one_lessons.lesson_name LIKE CONCAT('%', %s, '%');",(booking['title'],booking['title'],booking['title'],))
+               booking_list = cursor.fetchall()
+               matched_profiles.extend(booking_list)
+            
+            elif query.lower() in booking['booking_type'].lower():
+               cursor.execute("SELECT bookings.booking_id,workshops.title,workshops.date,workshops.start_time,workshops.end_time, workshops.price,workshops.capacity,locations.address,bookings.booking_type, member.user_name,member.first_name,member.last_name\
+                               FROM bookings\
+                               JOIN workshops ON bookings.workshop_id = workshops.workshop_id\
+                               JOIN locations ON workshops.location_id = locations.location_id\
+                               JOIN member ON member.member_id = bookings.user_id  WHERE bookings.booking_type LIKE CONCAT('%', %s, '%')\
+                               UNION\
+                               SELECT bookings.booking_id,lessons.title,lessons.date,lessons.start_time,lessons.end_time, lessons.price,lessons.capacity,locations.address,bookings.booking_type, member.user_name,member.first_name,member.last_name\
+                               FROM bookings\
+                               JOIN lessons ON bookings.lesson_id = lessons.lesson_id\
+                               JOIN locations ON lessons.location_id = locations.location_id\
+                               JOIN member ON member.member_id = bookings.user_id  WHERE bookings.booking_type LIKE CONCAT('%', %s, '%')\
+                               UNION\
+                               SELECT bookings.booking_id,one_on_one_lessons.lesson_name AS title,one_on_one_lessons.date,one_on_one_lessons.start_time,one_on_one_lessons.end_time, one_on_one_lessons.price,1 AS capacity,locations.address,bookings.booking_type, member.user_name,member.first_name,member.last_name\
+                               FROM bookings\
+                               JOIN one_on_one_lessons ON bookings.one_on_one_id = one_on_one_lessons.lesson_id\
+                               JOIN locations ON one_on_one_lessons.location_id = locations.location_id\
+                               JOIN member ON member.member_id = bookings.user_id  WHERE bookings.booking_type LIKE CONCAT('%', %s, '%');",(booking['booking_type'],booking['booking_type'],booking['booking_type'],))
+               booking_list = cursor.fetchall()
+               matched_profiles.extend(booking_list)
+               
+            elif query.lower() in booking['address'].lower():
+               cursor.execute("SELECT bookings.booking_id,workshops.title,workshops.date,workshops.start_time,workshops.end_time, workshops.price,workshops.capacity,locations.address,bookings.booking_type, member.user_name,member.first_name,member.last_name\
+                               FROM bookings\
+                               JOIN workshops ON bookings.workshop_id = workshops.workshop_id\
+                               JOIN locations ON workshops.location_id = locations.location_id\
+                               JOIN member ON member.member_id = bookings.user_id  WHERE locations.address LIKE CONCAT('%', %s, '%')\
+                               UNION\
+                               SELECT bookings.booking_id,lessons.title,lessons.date,lessons.start_time,lessons.end_time, lessons.price,lessons.capacity,locations.address,bookings.booking_type, member.user_name,member.first_name,member.last_name\
+                               FROM bookings\
+                               JOIN lessons ON bookings.lesson_id = lessons.lesson_id\
+                               JOIN locations ON lessons.location_id = locations.location_id\
+                               JOIN member ON member.member_id = bookings.user_id  WHERE locations.address LIKE CONCAT('%', %s, '%')\
+                               UNION\
+                               SELECT bookings.booking_id,one_on_one_lessons.lesson_name AS title,one_on_one_lessons.date,one_on_one_lessons.start_time,one_on_one_lessons.end_time, one_on_one_lessons.price,1 AS capacity,locations.address,bookings.booking_type, member.user_name,member.first_name,member.last_name\
+                               FROM bookings\
+                               JOIN one_on_one_lessons ON bookings.one_on_one_id = one_on_one_lessons.lesson_id\
+                               JOIN locations ON one_on_one_lessons.location_id = locations.location_id\
+                               JOIN member ON member.member_id = bookings.user_id  WHERE locations.address LIKE CONCAT('%', %s, '%');",(booking['address'],booking['address'],booking['address'],))
+               booking_list = cursor.fetchall()
+               matched_profiles.extend(booking_list)
+            
+            elif query.lower() in str(booking['capacity']):
+               cursor.execute("SELECT bookings.booking_id,workshops.title,workshops.date,workshops.start_time,workshops.end_time, workshops.price,workshops.capacity,locations.address,bookings.booking_type, member.user_name,member.first_name,member.last_name\
+                               FROM bookings\
+                               JOIN workshops ON bookings.workshop_id = workshops.workshop_id\
+                               JOIN locations ON workshops.location_id = locations.location_id\
+                               JOIN member ON member.member_id = bookings.user_id  WHERE workshops.capacity LIKE CONCAT('%', %s, '%')\
+                               UNION\
+                               SELECT bookings.booking_id,lessons.title,lessons.date,lessons.start_time,lessons.end_time, lessons.price,lessons.capacity,locations.address,bookings.booking_type, member.user_name,member.first_name,member.last_name\
+                               FROM bookings\
+                               JOIN lessons ON bookings.lesson_id = lessons.lesson_id\
+                               JOIN locations ON lessons.location_id = locations.location_id\
+                               JOIN member ON member.member_id = bookings.user_id  WHERE lessons.capacity LIKE CONCAT('%', %s, '%')\
+                               UNION\
+                               SELECT bookings.booking_id,one_on_one_lessons.lesson_name AS title,one_on_one_lessons.date,one_on_one_lessons.start_time,one_on_one_lessons.end_time, one_on_one_lessons.price,1 AS capacity,locations.address,bookings.booking_type, member.user_name,member.first_name,member.last_name\
+                               FROM bookings\
+                               JOIN one_on_one_lessons ON bookings.one_on_one_id = one_on_one_lessons.lesson_id\
+                               JOIN locations ON one_on_one_lessons.location_id = locations.location_id\
+                               JOIN member ON member.member_id = bookings.user_id  WHERE capacity LIKE CONCAT('%', %s, '%');",(str(booking['capacity']),str(booking['capacity']),str(booking['capacity']),))
+               booking_list = cursor.fetchall()
+               matched_profiles.extend(booking_list)
+               
+            elif query.lower() in booking['date'].strftime('%Y-%m-%d').lower():
+               cursor.execute("SELECT bookings.booking_id,workshops.title,workshops.date,workshops.start_time,workshops.end_time, workshops.price,workshops.capacity,locations.address,bookings.booking_type, member.user_name,member.first_name,member.last_name\
+                               FROM bookings\
+                               JOIN workshops ON bookings.workshop_id = workshops.workshop_id\
+                               JOIN locations ON workshops.location_id = locations.location_id\
+                               JOIN member ON member.member_id = bookings.user_id  WHERE workshops.date LIKE CONCAT('%', %s, '%')\
+                               UNION\
+                               SELECT bookings.booking_id,lessons.title,lessons.date,lessons.start_time,lessons.end_time, lessons.price,lessons.capacity,locations.address,bookings.booking_type, member.user_name,member.first_name,member.last_name\
+                               FROM bookings\
+                               JOIN lessons ON bookings.lesson_id = lessons.lesson_id\
+                               JOIN locations ON lessons.location_id = locations.location_id\
+                               JOIN member ON member.member_id = bookings.user_id  WHERE lessons.date LIKE CONCAT('%', %s, '%')\
+                               UNION\
+                               SELECT bookings.booking_id,one_on_one_lessons.lesson_name AS title,one_on_one_lessons.date,one_on_one_lessons.start_time,one_on_one_lessons.end_time, one_on_one_lessons.price,1 AS capacity,locations.address,bookings.booking_type, member.user_name,member.first_name,member.last_name\
+                               FROM bookings\
+                               JOIN one_on_one_lessons ON bookings.one_on_one_id = one_on_one_lessons.lesson_id\
+                               JOIN locations ON one_on_one_lessons.location_id = locations.location_id\
+                               JOIN member ON member.member_id = bookings.user_id  WHERE one_on_one_lessons.date LIKE CONCAT('%', %s, '%');",(booking['date'].strftime('%Y-%m-%d'),booking['date'].strftime('%Y-%m-%d'),booking['date'].strftime('%Y-%m-%d'),))
+               booking_list = cursor.fetchall()
+               matched_profiles.extend(booking_list)
+               
+            elif query.lower() in str(booking['price']):
+               cursor.execute("SELECT bookings.booking_id,workshops.title,workshops.date,workshops.start_time,workshops.end_time, workshops.price,workshops.capacity,locations.address,bookings.booking_type, member.user_name,member.first_name,member.last_name\
+                               FROM bookings\
+                               JOIN workshops ON bookings.workshop_id = workshops.workshop_id\
+                               JOIN locations ON workshops.location_id = locations.location_id\
+                               JOIN member ON member.member_id = bookings.user_id  WHERE workshops.price LIKE CONCAT('%', %s, '%')\
+                               UNION\
+                               SELECT bookings.booking_id,lessons.title,lessons.date,lessons.start_time,lessons.end_time, lessons.price,lessons.capacity,locations.address,bookings.booking_type, member.user_name,member.first_name,member.last_name\
+                               FROM bookings\
+                               JOIN lessons ON bookings.lesson_id = lessons.lesson_id\
+                               JOIN locations ON lessons.location_id = locations.location_id\
+                               JOIN member ON member.member_id = bookings.user_id  WHERE lessons.price LIKE CONCAT('%', %s, '%')\
+                               UNION\
+                               SELECT bookings.booking_id,one_on_one_lessons.lesson_name AS title,one_on_one_lessons.date,one_on_one_lessons.start_time,one_on_one_lessons.end_time, one_on_one_lessons.price,1 AS capacity,locations.address,bookings.booking_type, member.user_name,member.first_name,member.last_name\
+                               FROM bookings\
+                               JOIN one_on_one_lessons ON bookings.one_on_one_id = one_on_one_lessons.lesson_id\
+                               JOIN locations ON one_on_one_lessons.location_id = locations.location_id\
+                               JOIN member ON member.member_id = bookings.user_id  WHERE one_on_one_lessons.price LIKE CONCAT('%', %s, '%');",(str(booking['price']),str(booking['price']),str(booking['price']),))
+               booking_list = cursor.fetchall()
+               matched_profiles.extend(booking_list)
+            
+            elif query.lower() in booking['user_name'].lower():
+               cursor.execute("SELECT bookings.booking_id,workshops.title,workshops.date,workshops.start_time,workshops.end_time, workshops.price,workshops.capacity,locations.address,bookings.booking_type, member.user_name,member.first_name,member.last_name\
+                               FROM bookings\
+                               JOIN workshops ON bookings.workshop_id = workshops.workshop_id\
+                               JOIN locations ON workshops.location_id = locations.location_id\
+                               JOIN member ON member.member_id = bookings.user_id  WHERE member.user_name LIKE CONCAT('%', %s, '%')\
+                               UNION\
+                               SELECT bookings.booking_id,lessons.title,lessons.date,lessons.start_time,lessons.end_time, lessons.price,lessons.capacity,locations.address,bookings.booking_type, member.user_name,member.first_name,member.last_name\
+                               FROM bookings\
+                               JOIN lessons ON bookings.lesson_id = lessons.lesson_id\
+                               JOIN locations ON lessons.location_id = locations.location_id\
+                               JOIN member ON member.member_id = bookings.user_id  WHERE member.user_name LIKE CONCAT('%', %s, '%')\
+                               UNION\
+                               SELECT bookings.booking_id,one_on_one_lessons.lesson_name AS title,one_on_one_lessons.date,one_on_one_lessons.start_time,one_on_one_lessons.end_time, one_on_one_lessons.price,1 AS capacity,locations.address,bookings.booking_type, member.user_name,member.first_name,member.last_name\
+                               FROM bookings\
+                               JOIN one_on_one_lessons ON bookings.one_on_one_id = one_on_one_lessons.lesson_id\
+                               JOIN locations ON one_on_one_lessons.location_id = locations.location_id\
+                               JOIN member ON member.member_id = bookings.user_id  WHERE member.user_name LIKE CONCAT('%', %s, '%');",(booking['user_name'],booking['user_name'],booking['user_name'],))
+               booking_list = cursor.fetchall()
+               matched_profiles.extend(booking_list)
+        
+        if not matched_profiles:
+            flash('No matching bookings found.', 'info')
+            return redirect(url_for('view_booking'))
+        else:
+            return render_template("booking/view_booking.html", booking_list=matched_profiles, role=session['role'])
+    else:
+         return redirect(url_for('login'))

@@ -17,6 +17,12 @@
     <link rel="stylesheet" href="static/css/styles.css" />
 
     <title>Rākau Gardening Society</title>
+
+    <!-- calendar -->
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+
+
   </head>
   <body>
     <!--==================== HEADER ====================-->
@@ -162,45 +168,17 @@
         </div>
       </section>
 
-      <!--==================== STEPS ====================-->
-      <!--
-      <section class="steps section container">
-        <div class="steps__bg">
-          <h2 class="section__title-center steps__title">
-            Steps to start your <br />
-            plants off right
-          </h2>
 
-          <div class="steps__container grid">
-            <div class="steps__card">
-              <div class="steps__card-number">01</div>
-              <h3 class="steps__card-title">Choose Plant</h3>
-              <p class="steps__card-description">
-                We have several varieties plants you can choose from.
-              </p>
-            </div>
+    <!--==================== CALENDAR ====================-->
+    <section class="calendar section container" id="calendar-section">
+      <h2 class="section__title-center">
+        Our Courses Calendar
+      </h2>
 
-            <div class="steps__card">
-              <div class="steps__card-number">02</div>
-              <h3 class="steps__card-title">Place an order</h3>
-              <p class="steps__card-description">
-                Once your order is set, we move to the next step which is the
-                shipping.
-              </p>
-            </div>
+      <div id='calendar'></div>
+    </section>
 
-            <div class="steps__card">
-              <div class="steps__card-number">03</div>
-              <h3 class="steps__card-title">Get plants delivered</h3>
-              <p class="steps__card-description">
-                Our delivery process is easy, you receive the plant direct to
-                your door.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-    -->
+
 
       <!--==================== PRODUCT (INSTRUCTORS) ====================-->
       <section class="product section container" id="products">
@@ -457,5 +435,28 @@
 
     <!--=============== MAIN JS ===============-->
     <script src="static/js/main.js"></script>
+
+
+    <script>  
+    document.addEventListener('DOMContentLoaded', function() {
+      var calendarEl = document.getElementById('calendar');
+
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+          timeZone: 'UTC',
+          initialView: 'dayGridMonth',
+          events: '/get_course_info', // get courses info
+          headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        }
+        
+      });
+
+      calendar.render();
+    });
+</script>
+
+
   </body>
 </html>

@@ -1243,7 +1243,7 @@ def  mgr_attendance_records():
 
 
 
-## Manager Attendance Records - is attended (Present) ##
+## Manager Attendance Records as Present) ##
 @app.route('/mgr_record_attendance', methods=['POST'])
 def mgr_record_attendance():
     if 'loggedin' in session and session['loggedin']:
@@ -1256,7 +1256,7 @@ def mgr_record_attendance():
             (booking_id,))
         
         utils.connection.commit()
-        
+        flash('Member marked as present') 
         # Redirect to the attendance records page or where appropriate
         return redirect(url_for('mgr_attendance_records'))
     else:
@@ -1264,25 +1264,20 @@ def mgr_record_attendance():
         return redirect(url_for('login'))
     
     
-
-## Manager Attendance Records - edit ##
-@app.route('/edit_booking', methods=['POST'])
-def mgr_edit_booking():
+    
+## Manager Attendance Records - Undo Present ##
+@app.route('/undo_attendance/<int:booking_id>', methods=['POST'])
+def mgr_undo_attendance(booking_id):
     if 'loggedin' in session and session['loggedin']:
-        booking_id = request.form.get('booking_id')
-
-        # Update the database to record attendance
+        # Update the database to record attendance as not present
         cursor = utils.getCursor()
         cursor.execute(
-            'UPDATE bookings SET is_attended = TRUE WHERE booking_id = %s',
-            (booking_id,))
+            'UPDATE bookings SET is_attended = FALSE WHERE booking_id = %s',
+            (booking_id,)
+        )
         
         utils.connection.commit()
-        
-        # Redirect to the attendance records page or where appropriate
+        flash('Member marked as not present') 
         return redirect(url_for('mgr_attendance_records'))
     else:
-        # If the user isn't logged in, redirect to the login page
         return redirect(url_for('login'))
-    
-    

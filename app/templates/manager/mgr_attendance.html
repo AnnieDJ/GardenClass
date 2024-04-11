@@ -14,6 +14,12 @@
     <div class="container mt-4">
       <h1>Attendance Records - Manager</h1>
 
+      <!-- Display message -->
+      {% with messages = get_flashed_messages() %} {% if messages %} {% for
+      message in messages %}
+      <div class="alert alert-success">{{ message }}</div>
+      {% endfor %} {% endif %} {% endwith %}
+
       <!-- Add this section above your table -->
       <div class="mb-3">
         <form action="{{ url_for('mgr_attendance_records') }}" method="get">
@@ -85,6 +91,16 @@
               }}
             </td>
             <td>
+              {% if record.is_attended %}
+              <form
+                action="{{ url_for('mgr_undo_attendance', booking_id=record.booking_id) }}"
+                method="post"
+              >
+                <button type="submit" class="btn btn-warning w-100">
+                  Undo
+                </button>
+              </form>
+              {% else %}
               <form
                 action="{{ url_for('mgr_record_attendance') }}"
                 method="post"
@@ -94,32 +110,11 @@
                   name="booking_id"
                   value="{{ record.booking_id }}"
                 />
-                <button type="sumbit" class="btn btn-primary w-100">
+                <button type="submit" class="btn btn-primary w-100">
                   Present
                 </button>
               </form>
-
-              <form action="#" method="post">
-                <input
-                  type="hidden"
-                  name="booking_id"
-                  value="{{ record.booking_id }}"
-                />
-                <button type="sumbit" class="btn btn-success w-100">
-                  Edit
-                </button>
-              </form>
-
-              <form action="#" method="post">
-                <input
-                  type="hidden"
-                  name="booking_id"
-                  value="{{ record.booking_id }}"
-                />
-                <button type="sumbit" class="btn btn-danger w-100">
-                  Cancel
-                </button>
-              </form>
+              {% endif %}
             </td>
           </tr>
           {% endfor %}

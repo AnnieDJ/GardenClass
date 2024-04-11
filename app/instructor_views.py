@@ -151,6 +151,154 @@ def instructor_lessons():
         # Make sure the username and role are set in the session as well
         
 
+## Instructor Edit Lesson ##
+@app.route('/instructor/update_lesson/<int:lesson_id>', methods=['POST'])
+def update_instructor_lesson(lesson_id):
+    if 'loggedin' in session and session['loggedin'] and session['role'] == 'instructor':
+
+        date = request.form.get('date')
+        start_time = request.form.get('start_time')
+        end_time = request.form.get('end_time')
+        location_id = request.form.get('location_id')
+        price = request.form.get('price')
+        status = request.form.get('status')
+        
+
+        cursor = utils.getCursor()
+        update_query = """
+        UPDATE one_on_one_lessons
+        SET date = %s, start_time = %s, end_time = %s, location_id = %s, status = %s, price = %s
+        WHERE lesson_id = %s
+        """
+        cursor.execute(update_query, (date, start_time, end_time, location_id, status, price, lesson_id))
+        cursor.connection.commit()
+        
+
+        if cursor.rowcount > 0:
+            return jsonify({'success': True})
+        else:
+            return jsonify({'success': False, 'message': 'No lesson updated.'})
+    else:
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 401
+
+
+
+@app.route('/instructor/update_group_lesson/<int:lesson_id>', methods=['POST'])
+def update_group_lesson(lesson_id):
+    if 'loggedin' in session and session['role'] == 'instructor':
+
+        title = request.form.get('title')
+        date = request.form.get('date')
+        start_time = request.form.get('start_time')
+        end_time = request.form.get('end_time')
+        location_id = request.form.get('location_id')
+        capacity = request.form.get('capacity')
+        price = request.form.get('price')
+        status = request.form.get('status')
+
+        # Update database
+        cursor = utils.getCursor()
+        update_query = """
+        UPDATE lessons
+        SET title = %s, date = %s, start_time = %s, end_time = %s, location_id = %s, capacity = %s, price = %s, status = %s
+        WHERE lesson_id = %s
+        """
+        cursor.execute(update_query, (title, date, start_time, end_time, location_id, capacity, price, status, lesson_id))
+        cursor.connection.commit()
+        
+        if cursor.rowcount > 0:
+            return jsonify({'success': True})
+        else:
+            return jsonify({'success': False, 'message': 'No group lesson updated.'})
+    else:
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 401
+
+# API endpoint to get locations for dropdown
+@app.route('/api/locations', methods=['GET'])
+def api_locations():
+    if 'loggedin' in session and session['loggedin']:
+        cursor = utils.getCursor()
+        cursor.execute("SELECT location_id, name FROM locations")
+        locations = cursor.fetchall()
+        cursor.close()
+        return jsonify(locations)
+    else:
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 401
+    
+
+@app.route('/api/members', methods=['GET'])
+def api_members():
+    if 'loggedin' in session:
+        cursor = utils.getCursor()
+        cursor.execute("SELECT member_id, first_name, last_name FROM member")  # Adjust the query to match your schema
+        members = cursor.fetchall()
+        cursor.close()
+        return jsonify(members)
+    else:
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 401
+
+    
+@app.route('/instructor/add_lesson', methods=['POST'])
+def add_lessons():
+    # Check if the user is logged in
+    if 'loggedin' in session:
+        # Extract information from the form
+        instructor_id = request.form.get('instructor_id')
+        member_id = request.form.get('member_id')  # This will be used for one-on-one lessons
+        date = request.form.get('date')
+        start_time = request.form.get('start_time')
+        end_time = request.form.get('end_time')
+        price = request.form.get('price')
+        status = request.form.get('status', 'Scheduled')  # Default status for one-on-one
+        capacity = request.form.get('capacity', type=int)  # For group lessons
+        location_id = request.form.get('location_id')
+        title = request.form.get('title')  # For group lessons
+        lesson_type = request.form.get('lesson_type')  # 'group' or 'one_on_one'
+
+        cursor = utils.getCursor()
+
+        try:
+            if lesson_type == 'group':
+                # Check for existing group lesson
+                cursor.execute("""SELECT * FROM lessons WHERE instructor_id = %s AND date = %s 
+                                  AND start_time = %s AND end_time = %s AND location_id = %s 
+                                  AND title = %s""",
+                               (instructor_id, date, start_time, end_time, location_id, title))
+            else:
+                # Check for existing one-on-one lesson
+                cursor.execute("""SELECT * FROM one_on_one_lessons WHERE instructor_id = %s 
+                                  AND member_id = %s AND date = %s AND start_time = %s 
+                                  AND end_time = %s AND location_id = %s""",
+                               (instructor_id, member_id, date, start_time, end_time, location_id))
+
+            lesson_exists = cursor.fetchone()
+            if lesson_exists:
+                return jsonify({'success': False, 'message': 'A similar lesson already exists.'})
+
+            if lesson_type == 'group':
+                # Insert group lesson
+                cursor.execute("""INSERT INTO lessons (instructor_id, date, start_time, end_time, 
+                                  capacity, location_id, title, price) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
+                               (instructor_id, date, start_time, end_time, capacity, location_id, title, price))
+            else:
+                # Insert one-on-one lesson
+                cursor.execute("""INSERT INTO one_on_one_lessons (instructor_id, member_id, date, 
+                                  start_time, end_time, price, status, location_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
+                               (instructor_id, member_id, date, start_time, end_time, price, status, location_id))
+
+            # Your environment/setup needs to ensure data is committed here, if necessary
+            return jsonify({'success': True, 'message': 'Lesson added successfully.'})
+        except Exception as err:
+            # Handle error
+            return jsonify({'success': False, 'message': str(err)})
+        finally:
+            # Always ensure resources are cleaned up
+            cursor.close()
+    else:
+        # User is not logged in
+        return jsonify({'success': False, 'message': 'User is not logged in.'}), 401 
+
+
 ## Instuctor's Profile ##
 @app.route('/instructor/profile')
 def instructor_profile():

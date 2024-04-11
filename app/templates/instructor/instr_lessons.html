@@ -80,7 +80,7 @@
           </div>
           <div class="col-12">
             <label for="memberIDFilter" class="visually-hidden">Member ID:</label>
-            <input type="number" id="memberIDFilter" name="member_id" class="form-control" min="1">
+            <input type="number" id="memberIDFilter" name="member_id" class="form-control" min="1" placeholder="Member ID">
           </div>
           <div class="col-12">
             <button type="submit" class="btn btn-primary">Filter</button>
@@ -96,7 +96,7 @@
 
 
 
-    <!-- Edit Lesson Modal -->
+    <!-- Edit One-on-One Lesson Modal -->
   <div class="modal fade" id="editLessonModal" tabindex="-1" role="dialog" aria-labelledby="editLessonModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -186,7 +186,6 @@
                         <td>{{ lesson['end_time'] }}</td>
                         <td>{{ lesson['location_id'] }}</td>
                         <td>{{ lesson['price'] }}</td>
-                        <td>{{ lesson['status'] }}</td>
                         <td>
                           <button class="btn btn-primary edit-btn" data-lesson-id="{{ lesson['lesson_id'] }}"
                           data-member-id="{{ lesson['member_id'] }}" data-user-name="{{ lesson['user_name'] }}"
@@ -218,36 +217,44 @@
               <div class="modal-body">
                 <!-- We'll populate this form with data when the edit button is clicked -->
                 <form id="editGroupLessonForm">
-                  <input type="hidden" id="editGroupLessonID" name="lessonID">
-        
+                  <!-- The hidden input seems correctly set up if "lessonID" is the key expected by the backend -->
+                  <input type="hidden" id="editGroupLessonID" name="lesson_id">
+                
                   <div class="form-group">
                     <label for="editGpLessonDate">Date</label>
-                    <input type="date" class="form-control" id="editGpLessonDate">
+                    <!-- Added name="date" -->
+                    <input type="date" class="form-control" id="editGpLessonDate" name="date">
                   </div>
                   <div class="form-group">
                     <label for="editGpLessonStartTime">Start Time</label>
-                    <input type="time" class="form-control" id="editGpLessonStartTime" >
+                    <!-- Added name="start_time" -->
+                    <input type="time" class="form-control" id="editGpLessonStartTime" name="start_time">
                   </div>
-
+                
                   <div class="form-group">
                     <label for="editGpLessonEndTime">End Time</label>
-                    <input type="time" class="form-control" id="editGpLessonEndTime" >
+                    <!-- Added name="end_time" -->
+                    <input type="time" class="form-control" id="editGpLessonEndTime" name="end_time">
                   </div>
                   <div class="form-group">
                     <label for="editGpLessonLocation">Location</label>
-                    <select class="form-control" id="editGpLessonLocation" >
+                    <!-- Added name="location_id" -->
+                    <select class="form-control" id="editGpLessonLocation" name="location_id">
                       <!-- Options will be populated via AJAX -->
                     </select>
                   </div>
                   <div class="form-group">
                     <label for="editGpLessonPrice">Price</label>
-                    <input type="number" class="form-control" id="editGpLessonPrice" >
+                    <!-- Added name="price" -->
+                    <input type="number" class="form-control" id="editGpLessonPrice" name="price">
                   </div>
                   <div class="form-group">
                     <label for="editGpLessonCapacity">Capacity</label>
-                    <input type="number" class="form-control" id="editGpLessonCapacity" min="1">
+                    <!-- Added name="capacity" -->
+                    <input type="number" class="form-control" id="editGpLessonCapacity" name="capacity" min="1">
                   </div>
                 </form>
+                
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
@@ -362,14 +369,6 @@
                 <label for="groupLessonPrice" class="form-label">Price</label>
                 <input type="number" class="form-control" id="groupLessonPrice" name="price" step="0.01" required>
               </div>
-              <div class="mb-3">
-                <label for="groupLessonStatus" class="form-label">Status</label>
-                <select class="form-control" id="groupLessonStatus" name="status" required>
-                  <option value="Scheduled">Scheduled</option>
-                  <option value="Completed">Completed</option>
-                  <option value="Cancelled">Cancelled</option>
-                </select>
-              </div>
             </form>
           </div>
         </div>
@@ -418,7 +417,15 @@
                               <td class="group-lesson-price">{{ lesson['price'] }}</td>
                               <td class="group-lesson-capacity">{{ lesson['capacity'] }}</td>
                               <td>
-                                    <button class="btn btn-primary edit-group-btn" data-group-lesson-id="{{ lesson['lesson_id'] }}" data-instructor-id="{{ lesson['instructor_id'] }}">Edit</button>
+                                <button class="btn btn-primary edit-group-btn"
+                                        data-group-lesson-id="{{ lesson['lesson_id'] }}"
+                                        data-title="{{ lesson['title'] }}"
+                                        data-date="{{ lesson['date'] }}"
+                                        data-start-time="{{ lesson['start_time'] }}"
+                                        data-end-time="{{ lesson['end_time'] }}"
+                                        data-location-id="{{ lesson['location_id'] }}"
+                                        data-price="{{ lesson['price'] }}"
+                                        data-capacity="{{ lesson['capacity'] }}">Edit</button>                        
                                   <button class="btn btn-danger cancel-group-btn" data-group-lesson-id="{{ lesson['lesson_id'] }}">Delete</button>
                                   </td>
                             </tr>
@@ -439,163 +446,167 @@
   
   <script>
        $(document).ready(function() {
-        var locationsData; // Store locations data for reuse
-    
-        // Function to fetch and store locations data
-        function fetchLocations(callback) {
-            if (!locationsData) { // If locations have not been fetched yet
-                $.get('/api/locations', function(data) {
-                    console.log("Locations data:", data);
-                    locationsData = data; // Store the locations data
-                    callback(locationsData); // Execute the callback with the data
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                    console.log("Error fetching locations:", textStatus, errorThrown);
-                    alert('Failed to load locations: ' + textStatus);
-                });
-            } else {
-                callback(locationsData); // Use the stored locations data
-            }
-        }
-    
-        // Function to populate locations dropdown
-        function populateLocations(selectElement, selectedValue) {
-            selectElement.empty().append(new Option("Select Location", ""));
-            $.each(locationsData, function(index, location) {
-                var option = new Option(location.name, location.id);
-                selectElement.append(option);
-            });
-            if (selectedValue) {
-                selectElement.val(selectedValue); // Set selected value if provided
-            }
-        }
-    
-        // Initial fetch and populate locations for Add modals
-        fetchLocations(function(data) {
-            populateLocations($('#oneOnOneLocation'));
-            populateLocations($('#groupLessonLocation'));
-        });
-    
-        // Handle "Add Lesson" button click
-        $('#saveLessonButton').on('click', function() {
-            var formId = $('#lessonTabs .nav-link.active').attr('href') === '#oneOnOneTabContent' ? '#addOneOnOneLessonForm' : '#addGroupLessonForm';
-            var formData = $(formId).serialize();
-    
-            // Determine the correct endpoint based on lesson type
-            var endpoint = formId.includes('OneOnOne') ? '/add_one_on_one_lesson' : '/add_group_lesson';
-    
-            $.ajax({
-                url: endpoint,
-                type: 'POST',
-                data: formData,
-                success: function(response) {
-                    if(response.success) {
-                        $('#addLessonModal').modal('hide');
-                        alert('Lesson added successfully!');
-                        location.reload(); // Refresh to show the new lesson
-                    } else {
-                        alert('Error: ' + response.message);
-                    }
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    alert('Error adding lesson: ' + textStatus);
-                }
-            });
-        });
-    
-        // Open the edit modal for group lessons and populate it with the lesson's data
-        $('.edit-group-btn').on('click', function() {
-            var lessonID = $(this).attr('data-group-lesson-id');
-            var lessonRow = $(this).closest('tr');
-            
-            // Extract and set lesson details to modal
-            var modal = $('#editGroupLessonModal');
-            modal.data('lesson-id', lessonID)
-                .find('#editGpLessonDate').val(lessonRow.find('.group-lesson-date').text().trim()).end()
-                .find('#editGpLessonStartTime').val(moment(lessonRow.find('.group-lesson-start-time').text().trim(), 'HH:mm:ss').format('HH:mm')).end()
-                .find('#editGpLessonEndTime').val(moment(lessonRow.find('.group-lesson-end-time').text().trim(), 'HH:mm:ss').format('HH:mm')).end()
-                .find('#editGpLessonPrice').val(lessonRow.find('.group-lesson-price').text().trim()).end()
-                .find('#editGpLessonCapacity').val(lessonRow.find('.group-lesson-capacity').text().trim());
-            
-            // Populate locations specifically for the edit modal
-            fetchLocations(function() {
-                populateLocations(modal.find('#editGpLessonLocation'), lessonRow.find('.group-lesson-location-id').text().trim());
-            });
-    
-            modal.modal('show');
-        });
-    
-        // Handle "Edit" button clicks for individual lessons
-        $('.edit-btn').on('click', function() {
-            var lessonID = $(this).data('lesson-id');
-            var modal = $('#editLessonModal');
-            modal.find('#editLessonID').val(lessonID).end()
-                .find('#editDate').val($(this).data('date')).end()
-                .find('#editStartTime').val(moment($(this).data('start-time'), 'HH:mm:ss').format('HH:mm')).end()
-                .find('#editEndTime').val(moment($(this).data('end-time'), 'HH:mm:ss').format('HH:mm')).end()
-                .find('#editPrice').val($(this).data('price')).end()
-                .find('#editStatus').val($(this).data('status'));
-    
-            // Populate locations specifically for the edit modal
-            fetchLocations(function() {
-                populateLocations(modal.find('#editLocationID'), $(this).data('location-id'));
-            
-                $(document).on('click', '#saveGroupLesson', function() {
-                  var formData = $('#editGroupLessonForm').serialize();
-                  console.log('Saving group lesson with data:', formData); // Debugging line
-                  
-                  $.ajax({
-                    type: 'POST',
-                    url: '/instructor/update_group_lesson/' + lessonID, // Append the lesson ID to the URL
-                    data: formData,
-                    success: function(response) {
-                          if(response.success) {
-                              console.log('Group lesson updated successfully:', response); // Debugging line
-                              alert('Group lesson updated successfully!');
-                              $('#editGroupLessonModal').modal('hide');
-                              location.reload();
-                          } else {
-                              console.log('Failed to update group lesson:', response); // Debugging line
-                              alert('Failed to update group lesson: ' + response.message);
-                          }
-                      },
-                      error: function(jqXHR, textStatus, errorThrown) {
-                          console.log('Error updating group lesson:', textStatus, errorThrown); // Debugging line
-                          alert('Error updating group lesson: ' + textStatus);
-                      }
-             });
-           });
-              
-            });
-    
-            modal.modal('show');
-        });
-    
+    // Store locations data for reuse
+    var locationsData;
 
-
-        // Handle the "Save changes" button for lesson updates
-        $('#saveChangesBtn').on('click', function() {
-            var formData = $('#editLessonForm').serialize();
-            $.ajax({
-                type: 'POST',
-                url: '/update_lesson',
-                data: formData,
-                success: function(response) {
-                    if(response.success) {
-                        alert('Lesson updated successfully!');
-                        $('#editLessonModal').modal('hide');
-                        location.reload();
-                    } else {
-                        alert('Failed to update lesson: ' + response.message);
-                    }
-                },
-                error: function() {
-                    alert('Error updating lesson.');
-                }
+    // Function to fetch and store locations data
+    function fetchLocations(callback) {
+        if (!locationsData) {
+            $.get('/api/locations', function(data) {
+                console.log("Locations data:", data);
+                locationsData = data;
+                callback(locationsData);
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.log("Error fetching locations:", textStatus, errorThrown);
+                alert('Failed to load locations: ' + textStatus);
             });
+        } else {
+            callback(locationsData);
+        }
+    }
+
+    // Function to populate locations dropdown
+    function populateLocations(selectElement, selectedValue) {
+        selectElement.empty().append(new Option("Select Location", ""));
+        $.each(locationsData, function(index, location) {
+            var option = new Option(location.name, location.id);
+            selectElement.append(option);
         });
-    
-        // Cancel/delete lesson handlers for both one-on-one and group lessons...
+        if (selectedValue) {
+            selectElement.val(selectedValue);
+        }
+    }
+
+    // Fetch and populate locations for Add modals
+    fetchLocations(function(data) {
+        populateLocations($('#oneOnOneLocation'));
+        populateLocations($('#groupLessonLocation'));
     });
+
+    // Handle "Add Lesson" button click
+    $('#saveLessonButton').on('click', function() {
+        var formId = $('#lessonTabs .nav-link.active').attr('href') === '#oneOnOneTabContent' ? '#addOneOnOneLessonForm' : '#addGroupLessonForm';
+        var formData = $(formId).serialize();
+        var endpoint = formId.includes('OneOnOne') ? '/add_one_on_one_lesson' : '/add_group_lesson';
+
+        $.ajax({
+            url: endpoint,
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                if(response.success) {
+                    $('#addLessonModal').modal('hide');
+                    alert('Lesson added successfully!');
+                    location.reload();
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert('Error adding lesson: ' + textStatus);
+            }
+        });
+    });
+
+    // Handle click event on the Edit buttons for group lessons to open the edit modal
+    $('.edit-group-btn').on('click', function() {
+        var groupLessonID = $(this).data('group-lesson-id');
+        var modal = $('#editGroupLessonModal');
+
+        // Use the groupLessonID to retrieve and fill the form with the correct data
+        var title = $(this).data('title');
+        var date = $(this).data('date');
+        var startTime = $(this).data('start-time');
+        var endTime = $(this).data('end-time');
+        var locationId = $(this).data('location-id');
+        var price = $(this).data('price');
+        var capacity = $(this).data('capacity');
+
+        modal.find('#editGroupLessonID').val(groupLessonID);
+        modal.find('#editGpLessonTitle').val(title);
+        modal.find('#editGpLessonDate').val(date);
+        modal.find('#editGpLessonStartTime').val(startTime);
+        modal.find('#editGpLessonEndTime').val(endTime);
+        modal.find('#editGpLessonPrice').val(price);
+        modal.find('#editGpLessonCapacity').val(capacity);
+
+        modal.data('group-lesson-id', groupLessonID);
+
+        fetchLocations(function() {
+            populateLocations(modal.find('#editGpLessonLocation'), locationId);
+        });
+
+        modal.modal('show');
+    });
+
+    $('#saveGroupLesson').on('click', function() {
+        var groupLessonID = $('#editGroupLessonModal').data('group-lesson-id');
+        var formData = $('#editGroupLessonForm').serialize();
+
+        $.ajax({
+            type: 'POST',
+            url: '/instructor/update_group_lesson/' + groupLessonID,
+            data: formData,
+            success: function(response) {
+                if(response.success) {
+                    alert('Group lesson updated successfully!');
+                    $('#editGroupLessonModal').modal('hide');
+                    location.reload();
+                } else {
+                    alert('Failed to update group lesson: ' + response.message);
+                }
+            },
+            error: function() {
+                alert('Error updating group lesson.');
+            }
+        });
+    });
+
+
+    // Handle "Edit" button clicks for individual lessons
+    $('.edit-btn').on('click', function() {
+        var lessonID = $(this).data('lesson-id');
+        var modal = $('#editLessonModal');
+
+        modal.find('#editLessonID').val(lessonID).end()
+            .find('#editDate').val($(this).data('date')).end()
+            .find('#editStartTime').val(moment($(this).data('start-time'), 'HH:mm:ss').format('HH:mm')).end()
+            .find('#editEndTime').val(moment($(this).data('end-time'), 'HH:mm:ss').format('HH:mm')).end()
+            .find('#editPrice').val($(this).data('price')).end()
+            .find('#editStatus').val($(this).data('status'));
+
+        fetchLocations(function() {
+            populateLocations(modal.find('#editLocationID'), $(this).data('location-id'));
+        });
+
+        modal.modal('show');
+    });
+
+    // Handle the "Save changes" button for updating lessons
+    $('#saveChangesBtn').on('click', function() {
+        var formData = $('#editLessonForm').serialize();
+        $.ajax({
+            type: 'POST',
+            url: '/update_lesson',
+            data: formData,
+            success: function(response) {
+                if(response.success) {
+                    alert('Lesson updated successfully!');
+                    $('#editLessonModal').modal('hide');
+                    location.reload();
+                } else {
+                    alert('Failed to update lesson: ' + response.message);
+                }
+            },
+            error: function() {
+                alert('Error updating lesson.');
+            }
+        });
+    });
+
+    // Additional event handlers for canceling/deleting lessons can be added here...
+});
+
     </script>
     
     

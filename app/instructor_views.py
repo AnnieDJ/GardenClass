@@ -194,16 +194,15 @@ def update_group_lesson(lesson_id):
         location_id = request.form.get('location_id')
         capacity = request.form.get('capacity')
         price = request.form.get('price')
-        status = request.form.get('status')
 
         # Update database
         cursor = utils.getCursor()
         update_query = """
         UPDATE lessons
-        SET title = %s, date = %s, start_time = %s, end_time = %s, location_id = %s, capacity = %s, price = %s, status = %s
+        SET title = %s, date = %s, start_time = %s, end_time = %s, location_id = %s, capacity = %s, price = %s
         WHERE lesson_id = %s
         """
-        cursor.execute(update_query, (title, date, start_time, end_time, location_id, capacity, price, status, lesson_id))
+        cursor.execute(update_query, (title, date, start_time, end_time, location_id, capacity, price, lesson_id))
         cursor.connection.commit()
         
         if cursor.rowcount > 0:

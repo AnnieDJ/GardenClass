@@ -31,21 +31,23 @@
 
 
 <section>
-<div class="container mt-5">
-    <h3>Instructor Details</h3>
-    <div class="form-group row">
-    <form class="col-sm-10" action="/instr_search" method="GET">
-        <div class="input-group">
-            <input type="text" class="form-control" id="search" name="search" placeholder="Enter username, address, or position">
-            <div class="input-group-append">
-                <button type="submit" class="btn btn-success">Search</button>
+    <div class="container mt-5">
+        <h3>Instructor Details</h3>
+        <div class="form-group row">
+            <form class="col-sm-6" action="/instr_search" method="GET">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="search" name="search" placeholder="Enter username, address, or position">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-success">Search</button>
+                    </div>
+                </div>
+            </form>
+            <div class="col-sm-6 text-right">
+                <a href="{{ url_for('add_instructor') }}" class="btn btn-primary">Add Instructor</a>
             </div>
         </div>
-    </form>
-    <div class="col-sm-10 text-right">
-        <a href="{{ url_for('add_instructor') }}" class="btn btn-primary">Add Instructor</a>
-      </div>
-</div>
+    </div>
+    
 {% with messages = get_flashed_messages() %}
 {% if messages %}
     <div class="alert alert-info" role="alert">
@@ -106,7 +108,7 @@
                     
                     </td>
                     <td>
-                        <a href="{{ url_for('edit_instructor_profile', instructor_id=instructor[0]) }}" class="btn btn-primary">Edit</a>
+                        <a href="{{ url_for('edit_instructor_profile', instructor_id=instructor[0]) }}" class="btn btn-success">Edit</a>
                     <td>
                        
                         <button class="btn btn-danger" onclick="confirmDelete('{{ url_for('delete_instructor_profile', instructor_id=instructor[0]) }}')">Delete</button>

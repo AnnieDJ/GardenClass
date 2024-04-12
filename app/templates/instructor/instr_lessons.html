@@ -483,6 +483,29 @@
         populateLocations($('#groupLessonLocation'));
     });
 
+    $(document).ready(function() {
+      fetchMembers();
+  });
+
+    //Fetch member info
+    function fetchMembers() {
+      $.get('/api/members', function(data) {
+          
+          $('#oneOnOneMemberID').empty();
+          
+          data.forEach(function(member) {
+              $('#oneOnOneMemberID').append($('<option>', {
+                  value: member.member_id,
+                  text: member.first_name + ' ' + member.last_name
+              }));
+          });
+      }).fail(function(jqXHR, textStatus, errorThrown) {
+          console.log("Error fetching members:", textStatus, errorThrown);
+          alert('Failed to load members: ' + textStatus);
+      });
+  }
+  
+
     // Handle "Add Lesson" button click
     $('#saveLessonButton').on('click', function() {
         var formId = $('#lessonTabs .nav-link.active').attr('href') === '#oneOnOneTabContent' ? '#addOneOnOneLessonForm' : '#addGroupLessonForm';

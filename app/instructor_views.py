@@ -217,7 +217,7 @@ def update_group_lesson(lesson_id):
 def api_locations():
     if 'loggedin' in session and session['loggedin']:
         cursor = utils.getCursor()
-        cursor.execute("SELECT location_id, name FROM locations")
+        cursor.execute("SELECT location_id, name FROM locations;")
         locations = cursor.fetchall()
         cursor.close()
         return jsonify(locations)
@@ -229,7 +229,7 @@ def api_locations():
 def api_members():
     if 'loggedin' in session:
         cursor = utils.getCursor()
-        cursor.execute("SELECT member_id, first_name, last_name FROM member")  # Adjust the query to match your schema
+        cursor.execute("SELECT member_id, first_name, last_name FROM member;")  # Adjust the query to match your schema
         members = cursor.fetchall()
         cursor.close()
         return jsonify(members)

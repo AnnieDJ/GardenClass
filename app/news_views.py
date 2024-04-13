@@ -60,7 +60,6 @@ def add_news():
 
         if request.method == 'POST':
             user_id = session.get('id')
-            print(user_id)
             news_title = request.form.get('title')
             news_content = request.form.get('content')
             date_published = request.form.get('date_published')
@@ -68,8 +67,9 @@ def add_news():
             
             cursor.execute('INSERT INTO news (user_id,title, content, date_published, author_id) VALUES (%s,%s, %s, %s, %s)', (user_id,news_title, news_content, date_published, author_id))
             cursor.close()
-
+            flash('Add News successfully!', 'success')
             return redirect(url_for('view_news'))
+            
         else:
             return render_template('/news/add_news.html', role=session['role'])
     else:

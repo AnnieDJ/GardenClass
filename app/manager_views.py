@@ -1281,3 +1281,6 @@ def mgr_undo_attendance(booking_id):
         return redirect(url_for('mgr_attendance_records'))
     else:
         return redirect(url_for('login'))
+    
+
+## Manager Attendance view payment ##

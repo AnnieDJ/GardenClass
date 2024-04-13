@@ -39,7 +39,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="addWorkshopForm">
+        <form id="addWorkshopForm" enctype="multipart/form-data">
           <!-- Assuming you have already loaded the locations from your database -->
           <div class="form-group">
             <label for="addInstructor">Instructor ID</label>
@@ -76,8 +76,15 @@
           <div class="form-group">
             <label for="addPrice">Price</label>
             <input type="number" class="form-control" id="addPrice" step="0.01" name="price">
-          </div>                
+          </div>  
+
+          <div class="mb-3">
+            <label for="workshopImage" class="form-label">Upload Image</label>
+            <input class="form-control" type="file" id="workshopImage" name="image">
+        </div>
+
         </form>
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -352,13 +359,16 @@ $(document).ready(function() {
   // Handle the submission of the add workshop form
   $('#saveBtn').on('click', function(e) {
     e.preventDefault();
-    var formData = $('#addWorkshopForm').serialize(); // Serialize the form data
+    //var formData = $('#addWorkshopForm').serialize(); // Serialize the form data
+    var formData = new FormData($('#addWorkshopForm')[0]);
 
     // Send the form data to your backend for processing
     $.ajax({
       type: 'POST',
       url: '/manager/add_workshop', // Change this to your backend endpoint
       data: formData,
+      contentType: false,
+      processData: false,
       success: function(response) {
         // Handle success
         if(response.success) {

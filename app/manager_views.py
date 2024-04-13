@@ -7,6 +7,13 @@ import base64
 import re
 from datetime import datetime
 import mysql.connector
+import os
+from werkzeug.utils import secure_filename
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 @app.context_processor
 def inject_user_details():
@@ -1046,37 +1053,87 @@ def delete_workshop(workshop_id):
     else:
         return redirect(url_for('login'))
     
+# @app.route('/manager/add_workshop', methods=['POST'])
+# def add_workshop():
+#     if 'loggedin' in session and session['role'] == 'Manager':
+#         try:
+            
+#             title = request.form.get('title')
+#             instructor_id = request.form.get('instructor_id')
+#             location_id = request.form.get('location_id')
+#             price = request.form.get('price')
+#             capacity = request.form.get('capacity')
+#             date = request.form.get('addDate')
+#             start_time = request.form.get('starttime')
+#             end_time = request.form.get('endtime')
+#             workshop_image = 'workshops_images/workshop1.png'  
+
+#             cursor = utils.getCursor()
+
+           
+#             sql = "INSERT INTO workshops (title, instructor_id, location_id, price, capacity, date, start_time, end_time, workshop_image) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+#             val = (title, instructor_id, location_id, price, capacity, date, start_time, end_time, workshop_image)
+
+           
+#             cursor.execute(sql, val)
+         
+
+#             return jsonify({'success': True, 'message': 'Workshop added successfully.'})
+#         except Exception as e:
+#             return jsonify({'success': False, 'message': str(e)})
+#     else:
+#         return jsonify({'success': False, 'message': 'Unauthorized access.'})
+
+
+import os
+
 @app.route('/manager/add_workshop', methods=['POST'])
 def add_workshop():
     if 'loggedin' in session and session['role'] == 'Manager':
         try:
-            
-            title = request.form.get('title')
-            instructor_id = request.form.get('instructor_id')
-            location_id = request.form.get('location_id')
-            price = request.form.get('price')
-            capacity = request.form.get('capacity')
-            date = request.form.get('addDate')
-            start_time = request.form.get('starttime')
-            end_time = request.form.get('endtime')
-            workshop_image = 'workshops_images/workshop1.png'  
-
             cursor = utils.getCursor()
+            title = request.form['title']
+            instructor_id = request.form['instructor_id']
+            location_id = request.form['location_id']
+            price = request.form['price']
+            capacity = request.form['capacity']
+            date = request.form['addDate']
+            start_time = request.form['starttime']
+            end_time = request.form['endtime']
 
-           
-            sql = "INSERT INTO workshops (title, instructor_id, location_id, price, capacity, date, start_time, end_time, workshop_image) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
-            val = (title, instructor_id, location_id, price, capacity, date, start_time, end_time, workshop_image)
-
-           
+            # Insert into DB
+            sql = "INSERT INTO workshops (title, instructor_id, location_id, price, capacity, date, start_time, end_time) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+            val = (title, instructor_id, location_id, price, capacity, date, start_time, end_time)
             cursor.execute(sql, val)
-         
+            workshop_id = cursor.lastrowid
 
-            return jsonify({'success': True, 'message': 'Workshop added successfully.'})
+            # Handle file upload
+            file = request.files.get('image')
+            if file and allowed_file(file.filename):
+                filename = f"{workshop_id}.{file.filename.rsplit('.', 1)[1]}"
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+                # Create directory if it does not exist
+                os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+                file.save(file_path)
+
+                # Updating path to remove 'static/'
+                finalFilePath = file_path.replace("static/", "")
+                fixPath = finalFilePath.replace("\\", "/")
+
+                # Update workshop record with the new image path
+                update_sql = "UPDATE workshops SET workshop_image = %s WHERE workshop_id = %s"
+                cursor.execute(update_sql, (fixPath, workshop_id))
+            else:
+                finalFilePath = 'workshops_images/workshop23.png'
+
+            return jsonify({'success': True, 'message': 'Workshop added successfully.', 'id': workshop_id})
         except Exception as e:
             return jsonify({'success': False, 'message': str(e)})
     else:
         return jsonify({'success': False, 'message': 'Unauthorized access.'})
-    
+
 
 @app.route('/manager/expired_subscriptions', methods=['GET', 'POST'])
 def expired_subscriptions():

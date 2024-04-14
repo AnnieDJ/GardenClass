@@ -124,7 +124,7 @@
         <div class="col-md-4 mb-4">
             <div class="card">
               {% if workshop.workshop_image %}
-                   <img src="{{ url_for('static', filename=workshop.workshop_image) }}" alt="Workshop Image" class="workshop-image" />
+              <img src="{{ url_for('static', filename=workshop.workshop_image) }}" alt="Workshop Image" class="card-img-top" style="height: 200px; width: 100%; object-fit: cover;">
               {% endif %}
                 <div class="card-body">
                     <h5 class="card-title">{{ workshop.title }}</h5>

@@ -1408,4 +1408,129 @@ def mgr_view_payment_search():
             return render_template("manager/mgr_view_payment.html", payment_list=matched_profiles, role=session['role'])
     else:
          return redirect(url_for('login'))
+     
 
+#manager view member subscriptions
+@app.route('/mgr_view_member_sub',methods=['GET','POST'])
+def mgr_view_member_sub():
+    if 'loggedin' in session and session['loggedin']:
+        cursor = utils.getCursor()
+        cursor.execute("SELECT member.user_name,member.first_name,member.last_name,subscriptions.start_date,subscriptions.end_date,subscriptions.type,subscriptions.status,subscriptions.subscription_id \
+                        FROM subscriptions\
+                        JOIN member ON member.member_id = subscriptions.user_id;")
+        sub_list = cursor.fetchall()
+        
+        return render_template('/manager/mgr_member_subscription.html',sub_list=sub_list,role=session['role'])
+          
+    else:
+        return redirect(url_for('login'))
+    
+@app.route('/mgr_view_sub_search')
+def mgr_view_sub_search():
+    if 'loggedin' in session and session['loggedin']:
+        query = request.args.get('search', '')
+      
+        cursor = utils.getCursor()
+        cursor.execute("SELECT member.user_name,member.first_name,member.last_name,subscriptions.start_date,subscriptions.end_date,subscriptions.type,subscriptions.status ,subscriptions.subscription_id FROM subscriptions JOIN member ON member.member_id = subscriptions.user_id;")
+        subs = cursor.fetchall()
+
+        if query is None or query == '':
+            return redirect(url_for('mgr_view_member_sub'))
+        
+        matched_profiles = []
+            
+        for sub in subs:
+            start_date = str(sub['start_date'])
+            end_date = str(sub['end_date'])
+            
+            user_name = sub['user_name']
+            first_name = sub['first_name']
+            last_name = sub['last_name']
+            if query.lower() in user_name.lower():
+               cursor.execute("SELECT member.user_name,member.first_name,member.last_name,subscriptions.start_date,subscriptions.end_date,subscriptions.type,subscriptions.status,subscriptions.subscription_id FROM subscriptions JOIN member ON member.member_id = subscriptions.user_id WHERE member.user_name LIKE CONCAT('%', %s, '%');", (user_name,))
+               sub_list = cursor.fetchall()
+               matched_profiles.extend(sub_list)
+            
+
+            elif query.lower() in sub['first_name'].lower():
+               cursor.execute("SELECT member.user_name,member.first_name,member.last_name,subscriptions.start_date,subscriptions.end_date,subscriptions.type,subscriptions.status,subscriptions.subscription_id FROM subscriptions JOIN member ON member.member_id = subscriptions.user_id WHERE member.first_name LIKE CONCAT('%', %s, '%');",(first_name,))
+               sub_list = cursor.fetchall()
+               matched_profiles.extend(sub_list)
+             
+            elif query.lower() in sub['last_name'].lower():
+               cursor.execute("SELECT member.user_name,member.first_name,member.last_name,subscriptions.start_date,subscriptions.end_date,subscriptions.type,subscriptions.status,subscriptions.subscription_id FROM subscriptions JOIN member ON member.member_id = subscriptions.user_id WHERE member.last_name LIKE CONCAT('%', %s, '%');",(last_name,))
+               sub_list = cursor.fetchall()
+               matched_profiles.extend(sub_list) 
+               
+            elif query.lower() in sub['type'].lower():
+               cursor.execute("SELECT member.user_name,member.first_name,member.last_name,subscriptions.start_date,subscriptions.end_date,subscriptions.type,subscriptions.status,subscriptions.subscription_id FROM subscriptions JOIN member ON member.member_id = subscriptions.user_id WHERE subscriptions.type LIKE CONCAT('%', %s, '%');",(sub['type'],))
+               sub_list = cursor.fetchall()
+               matched_profiles.extend(sub_list)  
+               
+            elif query.lower() in sub['status'].lower():
+               cursor.execute("SELECT member.user_name,member.first_name,member.last_name,subscriptions.start_date,subscriptions.end_date,subscriptions.type,subscriptions.status,subscriptions.subscription_id FROM subscriptions JOIN member ON member.member_id = subscriptions.user_id WHERE subscriptions.status LIKE CONCAT('%', %s, '%');",(sub['status'],))
+               sub_list = cursor.fetchall()
+               matched_profiles.extend(sub_list)
+             
+            elif query.lower() in start_date.lower():
+               cursor.execute("SELECT member.user_name,member.first_name,member.last_name,subscriptions.start_date,subscriptions.end_date,subscriptions.type,subscriptions.status,subscriptions.subscription_id FROM subscriptions JOIN member ON member.member_id = subscriptions.user_id WHERE subscriptions.start_date LIKE CONCAT('%', %s, '%');",(start_date,))
+               sub_list = cursor.fetchall()
+               matched_profiles.extend(sub_list)  
+            
+            elif query.lower() in end_date.lower():
+               cursor.execute("SELECT member.user_name,member.first_name,member.last_name,subscriptions.start_date,subscriptions.end_date,subscriptions.type,subscriptions.status,subscriptions.subscription_id FROM subscriptions JOIN member ON member.member_id = subscriptions.user_id WHERE subscriptions.end_date LIKE CONCAT('%', %s, '%');",(end_date,))
+               sub_list = cursor.fetchall()
+               matched_profiles.extend(sub_list)
+                          
+
+        if not matched_profiles:
+            flash('No matching member subscriptions found.', 'info')
+            return redirect(url_for('mgr_view_member_sub'))
+        else:
+            return render_template("manager/mgr_member_subscription.html", sub_list=matched_profiles, role=session['role'])
+    else:
+         return redirect(url_for('login'))
+
+## Manager edit member subscription  ## 
+@app.route('/manager/edit_member_sub/<int:sub_id>', methods=['GET', 'POST'])
+def edit_member_sub(sub_id):
+    
+    if 'loggedin' in session and session['loggedin']:
+        
+        cursor = utils.getCursor()
+        if request.method == 'POST':
+            
+            start_date = request.form.get('start_date')
+            end_date = request.form.get('end_date')
+            type = request.form.get('type')
+            status = request.form.get('status')
+            
+            cursor.execute("UPDATE subscriptions SET start_date = %s, end_date = %s, type = %s, status = %s WHERE subscription_id = %s",(start_date, end_date, type, status,sub_id,))
+            
+            return redirect(url_for('mgr_view_member_sub'))
+        
+        else:
+            cursor.execute("SELECT member.user_name,member.first_name,member.last_name,subscriptions.start_date,subscriptions.end_date,subscriptions.type,subscriptions.status,subscriptions.subscription_id FROM subscriptions JOIN member ON member.member_id = subscriptions.user_id WHERE subscriptions.subscription_id = %s",(sub_id,))
+            sub = cursor.fetchone()
+            return render_template('manager/edit_member_subscription.html', sub=sub, role=session['role'])    
+            
+            
+        
+       
+    else:
+        return redirect(url_for('login'))
+    
+    
+  
+## Manager delete member subscription  ##    
+@app.route('/manager/delete_member_sub/<int:sub_id>')
+def delete_member_sub(sub_id):
+    
+    if 'loggedin' in session and session['loggedin']:
+        
+        cursor = utils.getCursor()
+        cursor.execute('DELETE FROM subscriptions WHERE subscription_id=%s',(sub_id,))
+        
+        return redirect(url_for('mgr_view_member_sub'))
+    else:
+        return redirect(url_for('login'))

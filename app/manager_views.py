@@ -1283,4 +1283,72 @@ def mgr_undo_attendance(booking_id):
         return redirect(url_for('login'))
     
 
-## Manager Attendance view payment ##
+## Manager View Payment ##
+@app.route('/mgr_view_payment',methods=['GET','POST'])
+def mgr_view_payment():
+    if 'loggedin' in session and session['loggedin']:
+        cursor = utils.getCursor()
+        cursor.execute("SELECT p.payment_id, u.user_name, CONCAT(m.first_name, ' ', m.last_name) AS member_name, p.amount, p.payment_type, p.payment_date, p.status FROM payments p JOIN user u ON p.user_id = u.user_id JOIN member m ON u.related_member_id = m.member_id;")
+        payment_list = cursor.fetchall()
+        
+        return render_template('/manager/mgr_view_payment.html',payment_list=payment_list,role=session['role'])
+          
+    else:
+        return redirect(url_for('login'))
+    
+
+@app.route('/mgr_view_payment_search')
+def mgr_view_payment_search():
+    if 'loggedin' in session and session['loggedin']:
+        query = request.args.get('search', '')
+      
+        cursor = utils.getCursor()
+        cursor.execute("SELECT p.payment_id, u.user_name, CONCAT(m.first_name, ' ', m.last_name) AS member_name, p.amount, p.payment_type, p.payment_date, p.status FROM payments p JOIN user u ON p.user_id = u.user_id JOIN member m ON u.related_member_id = m.member_id;")
+        payments = cursor.fetchall()
+
+        if query is None or query == '':
+            return redirect(url_for('mgr_view_payment'))
+        
+        matched_profiles = []
+            
+        for payment in payments:
+            payment_id = str(payment['payment_id'])
+            amount = str(payment['amount'])
+            if query.lower() in payment_id.lower():
+               cursor.execute("SELECT p.payment_id, u.user_name, CONCAT(m.first_name, ' ', m.last_name) AS member_name, p.amount, p.payment_type, p.payment_date, p.status FROM payments p JOIN user u ON p.user_id = u.user_id JOIN member m ON u.related_member_id = m.member_id WHERE p.payment_id LIKE CONCAT('%', %s, '%');", (payment_id,))
+               payment_list = cursor.fetchall()
+               matched_profiles.extend(payment_list)
+            
+            elif query.lower() in payment['payment_type'].lower():
+               cursor.execute("SELECT p.payment_id, u.user_name, CONCAT(m.first_name, ' ', m.last_name) AS member_name, p.amount, p.payment_type, p.payment_date, p.status FROM payments p JOIN user u ON p.user_id = u.user_id JOIN member m ON u.related_member_id = m.member_id WHERE p.payment_type LIKE CONCAT('%', %s, '%');",(payment['payment_type'],))
+               payment_list = cursor.fetchall()
+               matched_profiles.extend(payment_list)
+               
+            elif query.lower() in payment['payment_date'].strftime('%Y-%m-%d').lower():
+               cursor.execute("SELECT p.payment_id, u.user_name, CONCAT(m.first_name, ' ', m.last_name) AS member_name, p.amount, p.payment_type, p.payment_date, p.status FROM payments p JOIN user u ON p.user_id = u.user_id JOIN member m ON u.related_member_id = m.member_id WHERE p.payment_date LIKE CONCAT('%', %s, '%');", (payment['payment_date'].strftime('%Y-%m-%d'),))
+               payment_list = cursor.fetchall()
+               matched_profiles.extend(payment_list)
+               
+            elif query.lower() in payment['user_name'].lower():
+               cursor.execute("SELECT p.payment_id, u.user_name, CONCAT(m.first_name, ' ', m.last_name) AS member_name, p.amount, p.payment_type, p.payment_date, p.status FROM payments p JOIN user u ON p.user_id = u.user_id JOIN member m ON u.related_member_id = m.member_id WHERE u.user_name LIKE CONCAT('%', %s, '%');", (payment['user_name'],))
+               payment_list = cursor.fetchall()
+               matched_profiles.extend(payment_list)
+
+            elif query.lower() in amount.lower():
+               cursor.execute("SELECT p.payment_id, u.user_name, CONCAT(m.first_name, ' ', m.last_name) AS member_name, p.amount, p.payment_type, p.payment_date, p.status FROM payments p JOIN user u ON p.user_id = u.user_id JOIN member m ON u.related_member_id = m.member_id WHERE p.amount LIKE CONCAT('%', %s, '%');", (amount,))
+               payment_list = cursor.fetchall()
+               matched_profiles.extend(payment_list)
+
+            elif query.lower() in payment['status'].lower():
+               cursor.execute("SELECT p.payment_id, u.user_name, CONCAT(m.first_name, ' ', m.last_name) AS member_name, p.amount, p.payment_type, p.payment_date, p.status FROM payments p JOIN user u ON p.user_id = u.user_id JOIN member m ON u.related_member_id = m.member_id WHERE p.status LIKE CONCAT('%', %s, '%');",(payment['status'],))
+               payment_list = cursor.fetchall()
+               matched_profiles.extend(payment_list)
+
+        if not matched_profiles:
+            flash('No matching payments found.', 'info')
+            return redirect(url_for('mgr_view_payment'))
+        else:
+            return render_template("manager/mgr_view_payment.html", payment_list=matched_profiles, role=session['role'])
+    else:
+         return redirect(url_for('login'))
+

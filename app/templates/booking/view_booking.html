@@ -6,17 +6,36 @@
 
 {% block content %}
 
-<!-- Search form -->
-<form action="{{ url_for('bookings_search') }}" method="get" class="mb-4">
-    <div class="row">
-        <div class="col-md-4">
-            <input type="text" name="search" class="form-control" placeholder="Search from here..." />
+<!-- Breadcrumb -->
+<section class="py-3 py-md-4 py-xl-5 bg-light">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <h1 class="h4">View Bookings</h1>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb m-0 fs-7">
+              <li class="breadcrumb-item"><a class="link-primary text-decoration-none" href="{{ url_for('manager_dashboard') }}">Home</a></li>
+              <li class="breadcrumb-item">Bookings</li>
+              <li class="breadcrumb-item active" aria-current="page">View All</li>
+            </ol>
+          </nav>
         </div>
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-success">Search</button>
-        </div>
+      </div>
     </div>
-</form>
+  </section>
+
+<div class="container mt-5">
+    <h4>Bookings Details</h4>
+    <div class="form-group row">
+        <form class="col-sm-10" action="{{ url_for('bookings_search') }}"  method="GET">
+            <div class="input-group">
+                <input type="text" class="form-control" id="search" name="search" placeholder="Search from here...">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-success">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
 
 {% with messages = get_flashed_messages() %}
 {% if messages %}

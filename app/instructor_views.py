@@ -428,6 +428,27 @@ def instructor_workshops():
         return redirect(url_for('login'))
 
 
+## Instructor View Workshop Details##
+@app.route('/instructor/workshop_details/<int:workshop_id>')
+def workshop_details(workshop_id):
+    if 'loggedin' not in session or not session['loggedin']:
+        return redirect(url_for('login'))
+
+    if session.get('role') != 'Instructor':
+        return redirect(url_for('login'))  # Redirect to login if not an instructor
+
+    cursor = utils.getCursor()
+    cursor.execute("""
+        SELECT w.*, l.name as location_name, i.first_name, i.last_name
+        FROM workshops w
+        LEFT JOIN locations l ON w.location_id = l.location_id
+        LEFT JOIN instructor i ON w.instructor_id = i.instructor_id
+        WHERE w.workshop_id = %s
+        """, (workshop_id, ))
+    workshop = cursor.fetchone()
+    cursor.close()
+
+    return render_template('instructor/instr_workshop_details.html', workshop=workshop)
 
 ## Instructor View News ##
 @app.route('/instr_view_news')

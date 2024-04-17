@@ -143,6 +143,7 @@ CREATE TABLE IF NOT EXISTS bookings (
     one_on_one_id INT NULL,
     booking_type ENUM('Workshop', 'Lesson'),
     status ENUM('Booked', 'Cancelled'),
+    is_attended BOOLEAN DEFAULT FALSE, 
     FOREIGN KEY (user_id) REFERENCES member(member_id) ON DELETE CASCADE,
     FOREIGN KEY (workshop_id) REFERENCES workshops(workshop_id) ON DELETE SET NULL,
     FOREIGN KEY (one_on_one_id) REFERENCES one_on_one_lessons(lesson_id) ON DELETE SET NULL,

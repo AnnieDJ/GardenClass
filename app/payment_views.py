@@ -18,12 +18,14 @@ def member_pay_one_one_one_lesson(lesson_id):
                          FROM one_on_one_lessons \
                          JOIN bookings\
                          ON one_on_one_lessons.lesson_id = bookings.one_on_one_id\
-                         WHERE one_on_one_lessons.lesson_id =%s;',(lesson_id,))
+                         WHERE one_on_one_lessons.lesson_id =%s AND bookings.status = %s;',(lesson_id,'Booked',))
         one_on_one_lesson = cursor.fetchone()
+        cursor.fetchall()
         
         cursor.execute('SELECT * FROM bank_info WHERE member_id = %s;' ,(session['id'],))
         bank_info = cursor.fetchone()
-        
+        cursor.fetchall()
+          
         if one_on_one_lesson is not None and one_on_one_lesson['booking_status'] == 'Booked':
             if request.method == 'POST':
                 bank_name = request.form.get('bank_name')
@@ -56,7 +58,7 @@ def member_pay_lesson(lesson_id):
                         FROM lessons \
                         JOIN bookings\
                         ON lessons.lesson_id = bookings.lesson_id\
-                        WHERE lessons.lesson_id =%s;',(lesson_id,))
+                        WHERE lessons.lesson_id =%s AND bookings.status = %s;',(lesson_id,'Booked',))
         lesson = cursor.fetchone()
         #avoid error:Unread result found
         cursor.fetchall()
@@ -96,7 +98,7 @@ def member_pay_workshop(workshop_id):
                         FROM workshops \
                         JOIN bookings\
                         ON workshops.workshop_id = bookings.workshop_id\
-                        WHERE workshops.workshop_id =%s;',(workshop_id,))
+                        WHERE workshops.workshop_id =%s AND bookings.status = %s;',(workshop_id,'Booked',))
         workshop = cursor.fetchone()
         cursor.fetchall()
         

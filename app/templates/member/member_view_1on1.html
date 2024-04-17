@@ -120,12 +120,7 @@
         <td>{{ lesson.location_id }}</td>
         <td>{{ lesson.price }}</td>
         <td>
-          <button
-            onclick="showBookingSummary({{ lesson }})"
-            class="btn btn-primary"
-          >
-            Book Now
-          </button>
+          <a href="{{ url_for('booking_one_on_one', course_id=lesson.lesson_id) }}" class="btn btn-primary" {% if disabled %} disabled{% endif %}>Book Now</a>
         </td>
       </tr>
       {% else %}

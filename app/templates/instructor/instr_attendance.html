@@ -11,8 +11,23 @@
     />
   </head>
   <body>
-    <div class="container mt-4">
-      <h1>Attendance Records</h1>
+      <!-- Breadcrumb -->
+    <section class="py-3 py-md-4 py-xl-5 bg-light">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <h1 class="h4">Attendance Records</h1>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb m-0 fs-7">
+                <li class="breadcrumb-item"><a class="link-primary text-decoration-none" href="{{ url_for('instructor_dashboard') }}">Home</a></li>
+                <li class="breadcrumb-item">Attendance</li>
+                <li class="breadcrumb-item active" aria-current="page">View All</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </section>
 
       <!-- Display message -->
     {% with messages = get_flashed_messages() %}
@@ -23,7 +38,9 @@
       {% endif %}
     {% endwith %}
 
-
+    <section>
+      <div class="container mt-5">
+        <div class="form-group row">  
       <!-- Add this section above your table -->
       <div class="mb-3">
         <form action="{{ url_for('attendance_records') }}" method="get">
@@ -105,7 +122,7 @@
         </tbody>
       </table>
     </div>
-
+  </section>
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
   </body>
 </html>

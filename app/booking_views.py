@@ -147,9 +147,11 @@ def booking_course(course_type, course_id):
 def view_mybookings():
     if 'loggedin' in session and session['loggedin']:
         cursor = utils.getCursor()
-        cursor.execute('SELECT booking_id,title,booking_type,status FROM bookings JOIN lessons on bookings.lesson_id = lessons.lesson_id\
+        cursor.execute('SELECT booking_id,title,booking_type,status FROM bookings JOIN lessons ON bookings.lesson_id = lessons.lesson_id\
                         UNION\
-                        SELECT booking_id,title,booking_type,status FROM bookings JOIN workshops on bookings.workshop_id = workshops.workshop_id\
+                        SELECT booking_id,title,booking_type,status FROM bookings JOIN workshops ON bookings.workshop_id = workshops.workshop_id\
+                        UNION\
+                        SELECT booking_id,lesson_name,booking_type,bookings.status FROM bookings JOIN one_on_one_lessons ON bookings.one_on_one_id = one_on_one_lessons.lesson_id\
                         WHERE user_id =%s;',(session['id'],))
         my_bookings = cursor.fetchall()
         
@@ -166,7 +168,7 @@ def cancel_booking(booking_id):
     else:
         return redirect(url_for('login'))
     
-@app.route('/view_booking',methods=['GET','POST'])
+@app.route('/view_booking')
 def view_booking():
     if 'loggedin' in session and session['loggedin']:
         cursor = utils.getCursor()
@@ -406,3 +408,49 @@ def bookings_search():
             return render_template("booking/view_booking.html", booking_list=matched_profiles, role=session['role'])
     else:
          return redirect(url_for('login'))
+
+@app.route('/booking_one_on_one/<int:course_id>')
+def booking_one_on_one(course_id):
+    if 'loggedin' in session and session['loggedin']:
+        cursor = utils.getCursor()
+        disabled = False
+        msg = ''
+        
+        cursor.execute('SELECT * FROM bookings WHERE user_id = %s AND one_on_one_id = %s AND status = %s;',(session['id'], course_id,'Booked',))
+        exist_bookings = cursor.fetchall()          
+           
+        cursor.execute('SELECT one_on_one_lessons.lesson_id as course_id,instructor.instructor_id,instructor.first_name as instr_first, instructor.last_name as instr_last,one_on_one_lessons.lesson_name, one_on_one_lessons.date, one_on_one_lessons.start_time,one_on_one_lessons.end_time,locations.name as location,locations.address\
+                           FROM one_on_one_lessons \
+                          JOIN instructor ON one_on_one_lessons.instructor_id = instructor.instructor_id\
+                          JOIN locations ON locations.location_id = one_on_one_lessons.location_id\
+                          WHERE one_on_one_lessons.lesson_id = %s;',(course_id,)) 
+        course = cursor.fetchone()
+           
+        if course is None:
+    
+           return redirect(url_for('member_dashboard'))
+        else:          
+       
+          cursor.fetchall()
+          
+          if exist_bookings:
+              disabled = True
+              msg = 'You have already booked this lesson'
+              
+              ool_query = """SELECT * FROM one_on_one_lessons 
+                           WHERE instructor_id = %s AND status = 'Scheduled' 
+                           ORDER BY date, start_time"""
+                           
+              cursor.execute(ool_query, (course['instructor_id'],))
+              one_on_one_lessons_data = cursor.fetchall() 
+              
+              return render_template('member/member_view_1on1.html', 
+                               one_on_one_lessons_data=one_on_one_lessons_data, 
+                               role=session['role'],disabled = disabled, msg = msg)        
+             
+          else:
+            cursor.execute('INSERT INTO bookings (user_id,one_on_one_id,booking_type,status) VALUES(%s,%s,%s,%s)',(session['id'],course['course_id'],'Lesson','Booked',))
+            return redirect(url_for('member_pay_one_one_one_lesson',lesson_id = course['course_id']))       
+                
+    else:
+        return redirect(url_for('login'))

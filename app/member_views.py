@@ -4,6 +4,7 @@ from flask import session,request
 from datetime import datetime, timedelta
 from app import utils
 import re
+import base64
 
 
 @app.context_processor
@@ -146,10 +147,18 @@ def member_view_instr():
         
         cursor = utils.getCursor()
         cursor.execute("SELECT instructor_id, title, first_name, last_name, position, phone_number, email, instructor_profile, \
-                instructor_image_name FROM instructor")
+                instructor_image_name,instructor_image FROM instructor")
         member_view_instr = cursor.fetchall()
         
-        return render_template('/member/member_view_instr.html', member_view_instr=member_view_instr, role=session.get('role', 'member'))
+        encoded_instructor_profile = []
+        for instructor in member_view_instr:
+           if instructor['instructor_image'] is not None:
+              image_encode = base64.b64encode(instructor['instructor_image']).decode('utf-8')
+              encoded_instructor_profile.append((instructor['instructor_id'], instructor['title'], instructor['first_name'], instructor['last_name'], instructor['position'], instructor['phone_number'], instructor['email'], instructor['instructor_profile'], instructor['instructor_image_name'], image_encode))
+           else:
+              encoded_instructor_profile.append((instructor['instructor_id'], instructor['title'], instructor['first_name'], instructor['last_name'], instructor['position'], instructor['phone_number'], instructor['email'], instructor['instructor_profile'], instructor['instructor_image_name'], None))
+
+        return render_template('/member/member_view_instr.html', member_view_instr=encoded_instructor_profile, role=session.get('role', 'member'))
     else:
         return redirect(url_for('member_dashboard'))
 

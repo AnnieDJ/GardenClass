@@ -258,17 +258,25 @@
                 <div class="card">
                   <div class="card-body text-center">
                     <p>
-                      <img
-                        class="img-fluid"
-                        src="{{ url_for('static', filename='img/instructors/' ~ instructor.instructor_image_name) }}"
-                        alt="instructor image"
-                      />
+                      {% if instructor[9] is not none %}
+                        {% if instructor[8].endswith('.jpg') %}
+                            <img class="img-fluid" src="data:image/jpg;base64,{{ instructor[9] }}" alt="{{ instructor[2] }}">
+                        {% elif instructor[8].endswih('.jpeg') %}
+                            <img class="img-fluid" src="data:image/jpeg;base64,{{ instructor[9] }}" alt="{{ instructor[2] }}">
+                        {% elif instructor[8].endswith('.png') %}
+                            <img class="img-fluid" src="data:image/png;base64,{{ instructor[9] }}" alt="{{ instructor[2] }}">
+                        {% elif instructor[8].endswith('.gif') %}
+                            <img class="img-fluid" src="data:image/gif;base64,{{ instructor[9] }}" alt="{{ instructor[2] }}">
+                        {% endif %}
+                    {% else %}
+                        <!-- Handle the case where instructor_profile is None -->
+                    {% endif %}
                     </p>
                     <h4 class="card-title">
-                      {{ instructor.title }} {{ instructor.first_name }} {{
-                      instructor.last_name }}
+                      {{ instructor[1] }} {{ instructor[2] }} {{
+                      instructor[3] }}
                     </h4>
-                    <p class="card-text">{{ instructor.position }}</p>
+                    <p class="card-text">{{ instructor[4] }}</p>
                   </div>
                 </div>
               </div>
@@ -276,11 +284,11 @@
                 <div class="card">
                   <div class="card-body text-center mt-4">
                     <h4 class="card-title">
-                      About {{ instructor.first_name }}
+                      About {{ instructor[2] }}
                     </h4>
-                    <p class="card-text">{{ instructor.instructor_profile }}</p>
+                    <p class="card-text">{{ instructor[7] }}</p>
                     <a
-                      href="{{ url_for('member_view_1on1', instructor_id=instructor.instructor_id) }}"
+                      href="{{ url_for('member_view_1on1', instructor_id=instructor[0]) }}"
                       class="btn btn-primary btn-sm"
                       style="color: white; font-weight: bold"
                     >

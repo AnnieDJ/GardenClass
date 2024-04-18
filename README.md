@@ -52,42 +52,42 @@
 - Login: The page where you enter your username and password to access your account.
 - Register: The page where you create a new account by providing your information such as username, password, and email etc.
 - Member dashboard：
-- - Manage own profile
-- - Update own password
-- - View the workshop schedule
-- - Book a workshop and pay the fee
-- - Book an individual one-on-one lesson with an instructor and pay the fee
-- - Manage bookings 
-- - Manage membership subscription details
-- - View news
+ - Manage own profile
+ - Update own password
+ - View the workshop schedule
+ - Book a workshop and pay the fee
+ - Book an individual one-on-one lesson with an instructor and pay the fee
+ - Manage bookings 
+ - Manage membership subscription details
+ - View news
 - Instructor dashboard:
-- - Manager own profile
-- - Update own password
-- - View workshop schedule
-- - Manage own one-on-one lesson and group lesson schedule
-- - Record attendance at workshops and one-on-one lessons
-- - View news
+ - Manager own profile
+ - Update own password
+ - View workshop schedule
+ - Manage own one-on-one lesson and group lesson schedule
+ - Record attendance at workshops and one-on-one lessons
+ - View news
 - Manager dashboard:
-- - Manager own profile
-- - Manager instructor and member profile
-- - Update own password
-- - Manage the workshop schedule
-- - Manage own one-on-one lesson and group lesson schedule
-- - Record attendance at workshops and one-on-one lessons
-- - Manage news
+ - Manager own profile
+ - Manager instructor and member profile
+ - Update own password
+ - Manage the workshop schedule
+ - Manage own one-on-one lesson and group lesson schedule
+ - Record attendance at workshops and one-on-one lessons
+ - Manage news
 
 ## System Login Information
 - Manager Account 
-- - username: jane_smith
-- - password: John1234
+ - username: jane_smith
+ - password: John1234
 
 - Instructor Account
-- - username: john_instructor
-- - password: John1234
+ - username: john_instructor
+ - password: John1234
 
 - Member Account
-- - username: john_doe
-- - password: John1234
+ - username: john_doe
+ - password: John1234
 
 
 

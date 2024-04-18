@@ -51,7 +51,19 @@
                                 <div class="card-header text-bg-primary">Welcome</div>
                                 <div class="card-body">
                                   <div class="text-center mb-3">
+                                    {% if manager_profile[0][9]  %}
+                                           {% if manager_profile[0][8].endswith('.jpg') %}
+                                                <img class="card-img-top" src="data:image/jpg;base64,{{ manager_profile[0][9] }}" class="img-fluid rounded-circle" alt="{{ manager_profile[0][1] }}">
+                                           {% elif manager_profile[0][8].endswith('.jpeg') %}
+                                                <img class="card-img-top" src="data:image/jpeg;base64,{{ manager_profile[0][9] }}" class="img-fluid rounded-circle" alt="{{ manager_profile[0][1] }}">
+                                           {% elif manager_profile[0][8].endswith('.png') %}
+                                                <img class="card-img-top" src="data:image/png;base64,{{ manager_profile[0][9] }}" class="img-fluid rounded-circle" alt="{{ manager_profile[0][1] }}">
+                                           {% elif manager_profile[0][8].endswith('.gif') %}
+                                                <img class="card-img-top" src="data:image/gif;base64,{{ manager_profile[0][9] }}" class="img-fluid rounded-circle" alt="{{ manager_profile[0][1] }}">
+                                           {% endif %}
+                                    {% else %}
                                     <img src="{{ url_for('static', filename='img/manager.jpg') }}" class="img-fluid rounded-circle" alt="Profile Photo">
+                                    {% endif %}
                                   </div>
                                   <h5 class="text-center mb-1">{{ manager_profile[0][3] }} {{ manager_profile[0][4] }}</h5>
                                   <p class="text-center text-secondary mb-4">Rākau Manager</p>
@@ -145,8 +157,20 @@
                                     <div class="col-12">
                                       <div class="row gy-2">
                                         <label class="col-12 form-label m-0">Profile Image</label>
-                                        <div class="col-12">
-                                          <img src="{{ url_for('static', filename='img/manager.jpg') }}" width="200" height="200" class="img-fluid" alt="Profile Photo">
+                                        <div class="col-8">
+                                          {% if manager_profile[0][9] is not none %}
+                                               {% if manager_profile[0][8].endswith('.jpg') %}
+                                                     <img class="card-img-top" src="data:image/jpg;base64,{{ manager_profile[0][9] }}" class="img-fluid rounded-circle" alt="{{ manager_profile[0][1] }}">
+                                               {% elif manager_profile[0][8].endswith('.jpeg') %}
+                                                     <img class="card-img-top" src="data:image/jpeg;base64,{{ manager_profile[0][9] }}" class="img-fluid rounded-circle" alt="{{ manager_profile[0][1] }}">
+                                               {% elif manager_profile[0][8].endswith('.png') %}
+                                                     <img class="card-img-top" src="data:image/png;base64,{{ manager_profile[0][9] }}" class="img-fluid rounded-circle" alt="{{ manager_profile[0][1] }}">
+                                               {% elif manager_profile[0][8].endswith('.gif') %}
+                                                     <img class="card-img-top" src="data:image/gif;base64,{{ manager_profile[0][9] }}" class="img-fluid rounded-circle" alt="{{ manager_profile[0][1] }}">
+                                               {% endif %}
+                                          {% else %}
+                                              <img src="{{ url_for('static', filename='img/manager.jpg') }}" class="img-fluid rounded-circle" alt="Profile Photo">
+                                          {% endif %}
                                         </div>
                                         <div class="col-12">
                                           <input type="file" id="manager_image" name="manager_image" hidden>

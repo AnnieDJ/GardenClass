@@ -204,19 +204,19 @@ def cancel_booking(booking_id):
 def view_booking():
     if 'loggedin' in session and session['loggedin']:
         cursor = utils.getCursor()
-        cursor.execute('SELECT bookings.booking_id,workshops.title,workshops.date,workshops.start_time,workshops.end_time, workshops.price,workshops.capacity,locations.address,bookings.booking_type,member.user_name,member.first_name,member.last_name\
+        cursor.execute('SELECT bookings.booking_id,workshops.title,workshops.date,workshops.start_time,workshops.end_time, workshops.price,workshops.capacity,locations.address,bookings.booking_type,member.user_name,member.first_name,member.last_name,bookings.status\
                          FROM bookings\
                          JOIN workshops ON bookings.workshop_id = workshops.workshop_id\
                          JOIN locations ON workshops.location_id = locations.location_id\
                          JOIN member ON member.member_id = bookings.user_id\
                          UNION\
-                         SELECT bookings.booking_id,lessons.title,lessons.date,lessons.start_time,lessons.end_time, lessons.price,lessons.capacity,locations.address,bookings.booking_type,member.user_name,member.first_name,member.last_name\
+                         SELECT bookings.booking_id,lessons.title,lessons.date,lessons.start_time,lessons.end_time, lessons.price,lessons.capacity,locations.address,bookings.booking_type,member.user_name,member.first_name,member.last_name,bookings.status\
                          FROM bookings\
                          JOIN lessons ON bookings.lesson_id = lessons.lesson_id\
                          JOIN locations ON lessons.location_id = locations.location_id\
                          JOIN member ON member.member_id = bookings.user_id\
                          UNION\
-                         SELECT bookings.booking_id,one_on_one_lessons.lesson_name as title,one_on_one_lessons.date,one_on_one_lessons.start_time,one_on_one_lessons.end_time, one_on_one_lessons.price,1 AS capacity,locations.address,bookings.booking_type,member.user_name,member.first_name,member.last_name\
+                         SELECT bookings.booking_id,one_on_one_lessons.lesson_name as title,one_on_one_lessons.date,one_on_one_lessons.start_time,one_on_one_lessons.end_time, one_on_one_lessons.price,1 AS capacity,locations.address,bookings.booking_type,member.user_name,member.first_name,member.last_name,bookings.status\
                          FROM bookings\
                          JOIN one_on_one_lessons ON bookings.one_on_one_id = one_on_one_lessons.lesson_id\
                          JOIN locations ON one_on_one_lessons.location_id = locations.location_id\

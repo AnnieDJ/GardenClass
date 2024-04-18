@@ -64,6 +64,7 @@
                 <th>Booking Type</th>
                 <th>Member User Name</th>
                 <th>Member Name</th>
+                <th>Status</th>
                 <th>Edit</th>
                 <th>Delete</th>
             </tr>
@@ -81,7 +82,8 @@
                 <td>{{ booking.address }}</td>
                 <td>{{ booking.booking_type }}</td>
                 <td>{{ booking.user_name }}</td>
-                <td>{{ booking.first_name }} {{ booking.last_name }}</td>       
+                <td>{{ booking.first_name }} {{ booking.last_name }}</td>
+                <td>{{ booking.status }}</td>       
                 <td>                  
                      <a href="{{ url_for('edit_booking', booking_id=booking.booking_id) }}" class="btn btn-success">Edit</a>
                 </td>

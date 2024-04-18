@@ -15,13 +15,13 @@
 
     <!--=============== CSS ===============-->
     <link rel="stylesheet" href="static/css/styles.css" />
+    <link rel="stylesheet" href="static/css/calendar.css" />
 
     <title>Rākau Gardening Society</title>
 
     <!-- calendar -->
-    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css' rel='stylesheet' />
+    <!--link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css' rel='stylesheet' /-->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
-
 
   </head>
   <body>
@@ -176,6 +176,13 @@
       </h2>
 
       <div id='calendar'></div>
+      <div id="myModal" class="modal">
+        <div class="modal-content">
+          <span class="close" onclick="closeModal()">&times;</span>
+          <h2 id="modal-title"></h2>
+          <div id="modal-body"></div>
+        </div>
+      </div>
     </section>
 
 
@@ -435,28 +442,7 @@
 
     <!--=============== MAIN JS ===============-->
     <script src="static/js/main.js"></script>
-
-
-    <script>  
-    document.addEventListener('DOMContentLoaded', function() {
-      var calendarEl = document.getElementById('calendar');
-
-      var calendar = new FullCalendar.Calendar(calendarEl, {
-          timeZone: 'UTC',
-          initialView: 'dayGridMonth',
-          events: '/get_course_info', // get courses info
-          headerToolbar: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay'
-        }
-        
-      });
-
-      calendar.render();
-    });
-</script>
-
+    <script src="static/js/calendar_homepage.js"></script>
 
   </body>
 </html>

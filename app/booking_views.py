@@ -54,6 +54,38 @@ def get_course_info():
         return jsonify(course_data)
     else:
         return redirect(url_for('login'))
+    
+@app.route('/get_workshop_mainpage')
+def get_workshop_mainpage():
+        cursor = utils.getCursor()
+        cursor.execute('SELECT workshops.workshop_id as course_id,instructor.first_name as instr_first, instructor.last_name as instr_last,workshops.title, workshops.date, workshops.start_time,workshops.end_time ,locations.name as location,locations.address,\'workshop\' as type\
+                        FROM workshops \
+                        JOIN instructor ON workshops.instructor_id = instructor.instructor_id\
+                        JOIN locations ON locations.location_id = workshops.location_id;')
+        courses = cursor.fetchall()
+        course_data = []
+        for course in courses:
+            start_time = datetime.datetime.combine(course['date'], datetime.datetime.min.time()) + course['start_time']
+            end_time = datetime.datetime.combine(course['date'], datetime.datetime.min.time()) + course['end_time']
+        
+            course_id = course['course_id']
+            title = course['type'] +': '+course['title'] 
+            instructor_name = course['instr_first'] + ' ' + course['instr_last']
+            address = course['location']+': '+course['address']
+            type = course['type']
+        
+            course_data.append({
+                 'title': title,  
+                 'start': start_time.isoformat(),  
+                 'end': end_time.isoformat(),
+                 'instructor':instructor_name,
+                 'location':address,
+                 'course_id':course_id,
+                 'type': type
+               })
+                 
+        return jsonify(course_data)
+  
 @app.route('/booking_course/<string:course_type>/<int:course_id>', methods=['GET', 'POST'])
 def booking_course(course_type, course_id):
     if 'loggedin' in session and session['loggedin']:

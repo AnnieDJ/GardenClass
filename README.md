@@ -29,23 +29,8 @@
 - Adopting the Scrum framework with scheduled sprints, this approach emphasises collaboration, regular progress reviews, and adaptability to changes. The project will utilise sprint planning, daily stand-ups, sprint reviews, and retrospectives to ensure alignment with user needs and project goals.
 
 ## Database Design
-- The model includes tables for 'member', 'instructor', and 'manager', each holding specific attributes such as names, contact information, and relevant roles within the society.
-
-- The 'user' table simplifies login and centralizes user management by grouping all user types under role-based access, ensuring clear separation of roles for security and functionality.
-
-- The 'workshops' ,'lessons' and 'one_on_one_lessons' tables are managed through their respective tables, which include detailed scheduling and financial information. 
-
-- The 'bookings' table for all 'workshops' ,'lessons' and 'one_on_one_lessons' tables are consolidated in the 'bookings' table, which simplifies the management of user reservations.
-
-- The 'payments' table underpins the financial transactions, linking to members and tracking the status of each payment. 
-
-- The 'bank_info' table facilitates financial transactions by connecting to members and monitoring the status of bank transactions.
-
-- The 'new' table serves as a communication tool within the society, linked to the managers who are the primary authors of updates and announcements. 
-
-- The "subscriptions" table stores information about user subscriptions within the society.
-
 - The database is designed with normalisation principles to minimise redundancy and ensure data integrity. It features a role-based access control system, facilitating appropriate permissions and security.
+- The structure also includes provisions for future expansions, such as additional innovative features to enhance user experience, in line with the society's desires.
 
 ## Project Framework
 - Homepage: The main page where you see general information and options to navigate further.

@@ -169,7 +169,7 @@
                         <th>Date</th>
                         <th>Start Time</th>
                         <th>End Time</th>
-                        <th>Location ID</th>
+                        <th>Location</th>
                         <th>Price</th>
                         <th>Status</th>
                         
@@ -184,7 +184,7 @@
                         <td>{{ lesson['date'] }}</td>
                         <td>{{ lesson['start_time'] }}</td>
                         <td>{{ lesson['end_time'] }}</td>
-                        <td>{{ lesson['location_id'] }}</td>
+                        <td>{{ lesson['name'] }}:{{lesson['address']}}</td>
                         <td>{{ lesson['price'] }}</td>
                         <td>
                           <button class="btn btn-primary edit-btn" data-lesson-id="{{ lesson['lesson_id'] }}"
@@ -220,6 +220,11 @@
                   <!-- The hidden input seems correctly set up if "lessonID" is the key expected by the backend -->
                   <input type="hidden" id="editGroupLessonID" name="lesson_id">
                 
+                  <div class="form-group">
+                    <label for="editGpLessonTitle">Title</label>
+                    <!-- Added name="title" -->
+                    <input type="text" class="form-control" id="editGpLessonTitle" name="title">
+                  </div>
                   <div class="form-group">
                     <label for="editGpLessonDate">Date</label>
                     <!-- Added name="date" -->
@@ -290,7 +295,7 @@
           <div class="tab-pane fade show active" id="oneOnOneTabContent" role="tabpanel" aria-labelledby="one-on-one-tab">
             <form id="addOneOnOneLessonForm">
               <div class="mb-3">
-                <input type="hidden" id="oneOnOneInstructorID" name="instructor_id" value="{{ session['instructor_id'] }}">
+                <input type="hidden" id="oneOnOneInstructorID" name="instructor_id" value="{{ session['id'] }}">
               </div>
               <!-- Form fields for one-on-one lesson -->
               <div class="mb-3">
@@ -337,7 +342,7 @@
             <form id="addGroupLessonForm">
               <!-- Form fields for group lesson -->
               <div class="mb-3">
-                <input type="hidden" id="groupLessonInstructorID" name="instructor_id" value="{{ session['instructor_id'] }}">
+                <input type="hidden" id="groupLessonInstructorID" name="instructor_id" value="{{ session['id'] }}">
               </div>
               <div class="mb-3">
                 <label for="groupLessonTitle" class="form-label">Title</label>
@@ -400,7 +405,7 @@
                                 <th>Date</th>
                                 <th>Start Time</th>
                                 <th>End Time</th>
-                                <th>Location ID</th>
+                                <th>Location</th>
                                 <th>Capacity</th>
                                 <th>Price</th>
                             </tr>
@@ -413,7 +418,7 @@
                               <td class="group-lesson-date">{{ lesson['date'] }}</td>
                               <td class="group-lesson-start-time">{{ lesson['start_time'] }}</td>
                               <td class="group-lesson-end-time">{{ lesson['end_time'] }}</td>
-                              <td class="group-lesson-location-id">{{ lesson['location_id'] }}</td>
+                              <td class="group-lesson-location-id">{{ lesson['name'] }}:{{lesson['address']}}</td>
                               <td class="group-lesson-price">{{ lesson['price'] }}</td>
                               <td class="group-lesson-capacity">{{ lesson['capacity'] }}</td>
                               <td>
@@ -563,27 +568,28 @@
     });
 
     $('#saveGroupLesson').on('click', function() {
-        var groupLessonID = $('#editGroupLessonModal').data('group-lesson-id');
-        var formData = $('#editGroupLessonForm').serialize();
-
-        $.ajax({
-            type: 'POST',
-            url: '/instructor/update_group_lesson/' + groupLessonID,
-            data: formData,
-            success: function(response) {
-                if(response.success) {
-                    alert('Group lesson updated successfully!');
-                    $('#editGroupLessonModal').modal('hide');
-                    location.reload();
-                } else {
-                    alert('Failed to update group lesson: ' + response.message);
-                }
-            },
-            error: function() {
-                alert('Error updating group lesson.');
-            }
-        });
-    });
+      var groupLessonID = $('#editGroupLessonModal').data('group-lesson-id');
+      var formData = $('#editGroupLessonModal').find('#editGroupLessonForm').serialize();
+  
+      console.log(formData); // 打印 formData
+      $.ajax({
+          type: 'POST',
+          url: '/instructor/update_group_lesson/' + groupLessonID,
+          data: formData,
+          success: function(response) {
+              if(response.success) {
+                  alert('Group lesson updated successfully!');
+                  $('#editGroupLessonModal').modal('hide');
+                  location.reload();
+              } else {
+                  alert('Failed to update group lesson: ' + response.message);
+              }
+          },
+          error: function() {
+              alert('Error updating group lesson.');
+          }
+      });
+  });  
 
 
     // Handle "Edit" button clicks for individual lessons

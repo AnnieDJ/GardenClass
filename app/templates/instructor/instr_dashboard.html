@@ -179,27 +179,25 @@
                 <table class="table">
                   <thead>
                     <tr>
-                      <th scope="col">Member ID</th>
-                      <th scope="col">Name</th>
+                      <th scope="col">Lesson Title</th>
                       <th scope="col">Date</th>
                       <th scope="col">Start Time</th>
                       <th scope="col">End Time</th>
                       <th scope="col">Location</th>
                       <th scope="col">Price</th>
-                      <th scope="col">Status</th>
+                      <th scope="col">Capacity</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {% for lessons in lessons %}
+                    {% for lesson in lessons %}
                     <tr>
-                      <th scope="row">{{ lessons['member_id'] }}</th>
-                        <td>{{ lessons['first_name'] }} {{ lessons['last_name'] }}</td>
-                        <td>{{ lessons['date'] }}</td>
-                        <td>{{ lessons['start_time'] }}</td>
-                        <td>{{ lessons['end_time'] }}</td>
-                        <td>{{ lessons['location_id'] }}</td>
-                        <td>{{ lessons['price'] }}</td>
-                        <td>{{ lessons['status'] }}</td>
+                        <td>{{ lesson['title'] }}</td>
+                        <td>{{ lesson['date'] }}</td>
+                        <td>{{ lesson['start_time'] }}</td>
+                        <td>{{ lesson['end_time'] }}</td>
+                        <td>{{ lesson['name'] }}: {{lesson['address']}}</td>
+                        <td>{{ lesson['price'] }}</td>
+                        <td>{{ lesson['capacity'] }}</td>
                     </tr>
                     {% endfor %}
                   </tbody>

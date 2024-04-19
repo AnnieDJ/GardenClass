@@ -19,7 +19,7 @@
 - Scope: The project encompasses the development of a web application to manage memberships, workshops, lessons, instructor schedules, payments, and news dissemination, ensuring a comprehensive solution for both administrative staff and society members.
 
 ## Technology Stack
-- Frontend: HTML, CSS, JavaScript 
+- Frontend: HTML, CSS, Bootstrap, JavaScript 
 - Backend: Flask (Python) 
 - Database: MySQL
 - Security: Implement password hashing and salting 
@@ -55,10 +55,14 @@
 - Manager dashboard:
 - - Manager own profile
 - - Manager instructor and member profile
-- - Update own password
+- - Track payments from members
 - - Manage the workshop schedule
 - - Manage own one-on-one lesson and group lesson schedule
 - - Record attendance at workshops and one-on-one lessons
+- - View report of overall and individual members attendance
+- - View a list of members with expired subscriptions and near to expire subscriptions
+- - Update own password
+- - Manage list of locations
 - - Manage news
 
 ## System Login Information

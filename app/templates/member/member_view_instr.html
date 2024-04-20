@@ -258,10 +258,10 @@
                 <div class="card">
                   <div class="card-body text-center">
                     <p>
-                      {% if instructor[9] is not none %}
+                      {% if instructor[9] is not none  %}
                         {% if instructor[8].endswith('.jpg') %}
                             <img class="img-fluid" src="data:image/jpg;base64,{{ instructor[9] }}" alt="{{ instructor[2] }}">
-                        {% elif instructor[8].endswih('.jpeg') %}
+                        {% elif instructor[8].endswith('.jpeg') %}
                             <img class="img-fluid" src="data:image/jpeg;base64,{{ instructor[9] }}" alt="{{ instructor[2] }}">
                         {% elif instructor[8].endswith('.png') %}
                             <img class="img-fluid" src="data:image/png;base64,{{ instructor[9] }}" alt="{{ instructor[2] }}">

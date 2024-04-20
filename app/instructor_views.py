@@ -677,3 +677,27 @@ def record_attendance():
 def present_attendance():
     records =[]
     return render_template('/instructor/attendance.html', records=records)
+
+@app.route('/instructor/delete_one_on_one_lesson_instr/<int:lesson_id>')
+def delete_one_on_one_lesson_instr(lesson_id):
+    
+    if 'loggedin' in session and session['loggedin']:
+        
+        cursor = utils.getCursor()
+        cursor.execute('DELETE FROM one_on_one_lessons WHERE lesson_id=%s',(lesson_id,))
+        
+        return redirect(url_for('instructor_lessons'))
+    else:
+        return redirect(url_for('login'))
+    
+@app.route('/instructor/delete_group_lesson_instr/<int:lesson_id>')
+def delete_group_lesson_instr(lesson_id):
+    
+    if 'loggedin' in session and session['loggedin']:
+        
+        cursor = utils.getCursor()
+        cursor.execute('DELETE FROM lessons WHERE lesson_id=%s',(lesson_id,))
+        
+        return redirect(url_for('instructor_lessons'))
+    else:
+        return redirect(url_for('login'))

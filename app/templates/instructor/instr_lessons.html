@@ -171,8 +171,8 @@
                         <th>End Time</th>
                         <th>Location</th>
                         <th>Price</th>
-                        <th>Status</th>
-                        
+                        <th>Edit</th>
+                        <th>Delete</th>                       
                     </tr>
                 </thead>
                 <tbody>
@@ -193,7 +193,9 @@
                           data-date="{{ lesson['date'] }}" data-start-time="{{ lesson['start_time'] }}"
                           data-end-time="{{ lesson['end_time'] }}" data-location-id="{{ lesson['location_id'] }}"
                           data-price="{{ lesson['price'] }}" data-status="{{ lesson['status'] }}">Edit</button>
-                          <button class="btn btn-danger cancel-one-on-one-btn" data-lesson-id="{{ lesson['lesson_id'] }}">Delete</button>
+                        </td>
+                        <td>
+                          <button class="btn btn-danger cancel-one-on-one-btn" onclick="confirmDelete('{{ url_for('delete_one_on_one_lesson_instr', lesson_id=lesson['lesson_id']) }}')">Delete</button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -408,6 +410,8 @@
                                 <th>Location</th>
                                 <th>Capacity</th>
                                 <th>Price</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -431,8 +435,10 @@
                                         data-location-id="{{ lesson['location_id'] }}"
                                         data-price="{{ lesson['price'] }}"
                                         data-capacity="{{ lesson['capacity'] }}">Edit</button>                        
-                                  <button class="btn btn-danger cancel-group-btn" data-group-lesson-id="{{ lesson['lesson_id'] }}">Delete</button>
-                                  </td>
+                                </td>
+                                <td>
+                                  <button class="btn btn-danger cancel-one-on-one-btn" onclick="confirmDelete('{{ url_for('delete_group_lesson_instr', lesson_id=lesson['lesson_id']) }}')">Delete</button>
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -635,6 +641,13 @@
 
     // Additional event handlers for canceling/deleting lessons can be added here...
 });
+
+// confrim delete
+function confirmDelete(url) {
+  if (confirm("Are you sure you want to delete this item?")) {
+      window.location.href = url;
+  }
+}
 
     </script>
     

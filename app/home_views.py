@@ -238,9 +238,8 @@ def payment():
              cursor.execute('INSERT INTO subscriptions (user_id,type,start_date,end_date,status) VALUES (%s,%s,%s,%s,%s)',(user_id,pay_type,payment_date,expiry_date,'Active'))
              # Clear session data after registration
              session.clear()
-             return redirect(url_for('home'))
     
-    return render_template('/register/payment.html')
+    return redirect(url_for('home'))
 
 
 

@@ -5,6 +5,7 @@ from app import utils
 from datetime import datetime
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
+import re
 
 
 @app.route('/payment/member_pay_one_one_one_lesson/<int:lesson_id>', methods=['GET', 'POST'])
@@ -28,22 +29,33 @@ def member_pay_one_one_one_lesson(lesson_id):
           
         if one_on_one_lesson is not None and one_on_one_lesson['booking_status'] == 'Booked':
             if request.method == 'POST':
-                bank_name = request.form.get('bank_name')
-                bank_card = request.form.get('bank_card')
-                security_code = request.form.get('security_code')
                 
-                payment_date = utils.current_date_time()
+                # Validation checks
+                if not all(request.form.values()):
+                   msg = 'Please fill out all the fields!'
+                elif not re.match(r'^\d{16}$', request.form['bank_card']):
+                     msg = 'Invalid bank card!'
+                elif not re.match(r'^\d{3}$', request.form['security_code']):
+                     msg = 'Invalid Security Code!'
+                
+                elif not msg: 
+                    bank_name = request.form.get('bank_name')
+                    bank_card = request.form.get('bank_card')
+                    security_code = request.form.get('security_code')
+                
+                    payment_date = utils.current_date_time()
                
-                cursor.execute('UPDATE bank_info SET bank_name = %s,security_code = %s, bank_card = %s WHERE member_id = %s',(bank_name,security_code,bank_card,session['id'],))
-                cursor.execute('INSERT payments (user_id,amount,payment_type,payment_date,status) VALUES (%s,%s,%s,%s,%s)',(session['id'],one_on_one_lesson['price'],'Lesson',payment_date,'Completed'))
-                return redirect(url_for('member_dashboard'))
+                    cursor.execute('UPDATE bank_info SET bank_name = %s,security_code = %s, bank_card = %s WHERE member_id = %s',(bank_name,security_code,bank_card,session['id'],))
+                    cursor.execute('INSERT payments (user_id,amount,payment_type,payment_date,status) VALUES (%s,%s,%s,%s,%s)',(session['id'],one_on_one_lesson['price'],'Lesson',payment_date,'Completed'))
+                    return redirect(url_for('member_dashboard'))
+                return render_template('/payment/pay_one_on_one_lesson.html', bank_info = bank_info, username=session['username'], role=session['role'],msg = msg,disable =disable)   
             else:
-             return render_template('/payment/pay_one_on_one_lesson.html', bank_info = bank_info, username=session['username'], role=session['role'])   
+             return render_template('/payment/pay_one_on_one_lesson.html', bank_info = bank_info, username=session['username'], role=session['role'],msg = msg,disable =disable)   
         
         else: 
             msg = 'There is no fee for this course.'
             disable = True  
-            return render_template('/payment/pay_one_on_one_lesson.html', bank_info = bank_info, username=session['username'], role=session['role'])
+            return render_template('/payment/pay_one_on_one_lesson.html', bank_info = bank_info, username=session['username'], role=session['role'],msg = msg,disable =disable)
     else:
       return redirect(url_for('login'))
     
@@ -69,22 +81,34 @@ def member_pay_lesson(lesson_id):
         
         if lesson is not None and lesson['booking_status'] == 'Booked':
             if request.method == 'POST':
-                bank_name = request.form.get('bank_name')
-                bank_card = request.form.get('bank_card')
-                security_code = request.form.get('security_code')
                 
-                payment_date = utils.current_date_time()
+                 # Validation checks
+                if not all(request.form.values()):
+                   msg = 'Please fill out all the fields!'
+                elif not re.match(r'^\d{16}$', request.form['bank_card']):
+                     msg = 'Invalid bank card!'
+                elif not re.match(r'^\d{3}$', request.form['security_code']):
+                     msg = 'Invalid Security Code!'
+                
+                elif not msg: 
+                    bank_name = request.form.get('bank_name')
+                    bank_card = request.form.get('bank_card')
+                    security_code = request.form.get('security_code')
+                
+                    payment_date = utils.current_date_time()
                
-                cursor.execute('UPDATE bank_info SET bank_name = %s, security_code = %s, bank_card = %s WHERE member_id = %s',(bank_name,security_code,bank_card,session['id'],))
-                cursor.execute('INSERT payments (user_id,amount,payment_type,payment_date,status) VALUES (%s,%s,%s,%s,%s)',(session['id'],lesson['price'],'Lesson',payment_date,'Completed',))
-                return redirect(url_for('member_dashboard'))
+                    cursor.execute('UPDATE bank_info SET bank_name = %s, security_code = %s, bank_card = %s WHERE member_id = %s',(bank_name,security_code,bank_card,session['id'],))
+                    cursor.execute('INSERT payments (user_id,amount,payment_type,payment_date,status) VALUES (%s,%s,%s,%s,%s)',(session['id'],lesson['price'],'Lesson',payment_date,'Completed',))
+                    return redirect(url_for('member_dashboard'))
+                
+                return render_template('/payment/pay_lessons.html', bank_info = bank_info, username=session['username'], role=session['role'],msg = msg,disable =disable)
             else:
-             return render_template('/payment/pay_lessons.html', bank_info = bank_info, username=session['username'], role=session['role'])   
+             return render_template('/payment/pay_lessons.html', bank_info = bank_info, username=session['username'], role=session['role'],msg = msg,disable =disable)   
         
         else: 
             msg = 'There is no fee for this course.'
             disable = True  
-            return render_template('/payment/pay_lessons.html', bank_info = bank_info, username=session['username'], role=session['role'])
+            return render_template('/payment/pay_lessons.html', bank_info = bank_info, username=session['username'], role=session['role'],msg = msg,disable =disable)
    else:
       return redirect(url_for('login'))
 @app.route('/payment/member_pay_workshop/<int:workshop_id>', methods=['GET', 'POST'])
@@ -108,22 +132,34 @@ def member_pay_workshop(workshop_id):
         
         if workshop and workshop['booking_status'] == 'Booked':
             if request.method == 'POST':
-                bank_name = request.form.get('bank_name')
-                bank_card = request.form.get('bank_card')
-                security_code = request.form.get('security_code')
                 
-                payment_date = utils.current_date_time()
+                # Validation checks
+                if not all(request.form.values()):
+                   msg = 'Please fill out all the fields!'
+                elif not re.match(r'^\d{16}$', request.form['bank_card']):
+                     msg = 'Invalid bank card!'
+                elif not re.match(r'^\d{3}$', request.form['security_code']):
+                     msg = 'Invalid Security Code!'
+                
+                elif not msg: 
+                    bank_name = request.form.get('bank_name')
+                    bank_card = request.form.get('bank_card')
+                    security_code = request.form.get('security_code')
+                
+                    payment_date = utils.current_date_time()
                
-                cursor.execute('UPDATE bank_info SET bank_name = %s, security_code = %s, bank_card = %s WHERE member_id = %s',(bank_name,security_code,bank_card,session['id'],))
-                cursor.execute('INSERT payments (user_id,amount,payment_type,payment_date,status) VALUES (%s,%s,%s,%s,%s)',(session['id'],workshop['price'],'Workshop',payment_date,'Completed'))
-                return redirect(url_for('member_dashboard'))
+                    cursor.execute('UPDATE bank_info SET bank_name = %s, security_code = %s, bank_card = %s WHERE member_id = %s',(bank_name,security_code,bank_card,session['id'],))
+                    cursor.execute('INSERT payments (user_id,amount,payment_type,payment_date,status) VALUES (%s,%s,%s,%s,%s)',(session['id'],workshop['price'],'Workshop',payment_date,'Completed'))
+                    return redirect(url_for('member_dashboard'))
+                
+                return render_template('/payment/pay_workshop.html', bank_info = bank_info, username=session['username'], role=session['role'],msg = msg,disable =disable )   
             else:
-             return render_template('/payment/pay_workshop.html', bank_info = bank_info, username=session['username'], role=session['role'])   
+             return render_template('/payment/pay_workshop.html', bank_info = bank_info, username=session['username'], role=session['role'],msg = msg,disable =disable )   
         
         else: 
             msg = 'There is no fee for this course.'
             disable = True  
-            return render_template('/payment/pay_workshop.html', bank_info = bank_info, username=session['username'], role=session['role'])
+            return render_template('/payment/pay_workshop.html', bank_info = bank_info, username=session['username'], role=session['role'],msg = msg,disable =disable )
     else:
       return redirect(url_for('login'))
 @app.route('/payment/member_pay_subscription', methods=['GET', 'POST'])

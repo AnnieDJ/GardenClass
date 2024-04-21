@@ -1258,10 +1258,6 @@ def add_instructor():
 @app.route('/manager/attendance')
 def  mgr_attendance_records():
     if 'loggedin' in session and session.get('loggedin'):   
-        date_filter = request.args.get('date', None)
-        type_filter = request.args.get('type', None)
-        status_filter = request.args.get('status', None)
-    
             
         sql = """SELECT b.booking_id, m.first_name AS member_first_name, m.last_name AS member_last_name,b.booking_type, b.status,
                     l.title AS title,
@@ -1285,31 +1281,106 @@ def  mgr_attendance_records():
                     JOIN instructor AS i ON w.instructor_id = i.instructor_id 
                     WHERE status = \'Booked\';"""
             
-        filter_params = []    
-            
-        # Apply date filter
-        if date_filter:
-            sql += " AND COALESCE(l.date, w.date) = %s"
-            filter_params.append(date_filter)
-
-        # Apply class type filter
-        if type_filter:
-            sql += " AND b.booking_type = %s"
-            filter_params.append(type_filter)
-
-        # Apply booking status filter
-        if status_filter:
-            sql += " AND b.status = %s"
-            filter_params.append(status_filter)
+       
             
         cursor = utils.getCursor()
-        cursor.execute(sql, filter_params)    
+        cursor.execute(sql)    
         records = cursor.fetchall()
         print(records)
             
         return render_template('manager/mgr_attendance.html', records=records)
 
-
+@app.route('/mgr_attendance_search')
+def mgr_attendance_search():
+    if 'loggedin' in session and session['loggedin']:
+        query = request.args.get('search', '')
+      
+        cursor = utils.getCursor()
+        cursor.execute("""SELECT b.booking_id, m.first_name AS member_first_name, m.last_name AS member_last_name,b.booking_type, b.status,
+                    l.title AS title,
+                    l.date AS class_date,
+                    l.start_time AS class_start_time,
+                    i.instructor_id, i.first_name AS instructor_first_name, i.last_name AS instructor_last_name
+                    FROM bookings AS b
+                    JOIN member AS m ON b.user_id = m.member_id
+                    JOIN lessons AS l ON b.lesson_id = l.lesson_id
+                    JOIN instructor AS i ON l.instructor_id = i.instructor_id 
+                    WHERE status = \'Booked\'
+                    UNION
+                    SELECT b.booking_id, m.first_name AS member_first_name, m.last_name AS member_last_name,b.booking_type, b.status,
+                    w.title AS title,
+                    w.date AS class_date,
+                    w.start_time AS class_start_time,
+                    i.instructor_id, i.first_name AS instructor_first_name, i.last_name AS instructor_last_name
+                    FROM bookings AS b
+                    JOIN member AS m ON b.user_id = m.member_id
+                    JOIN workshops AS w ON b.workshop_id = w.workshop_id
+                    JOIN instructor AS i ON w.instructor_id = i.instructor_id 
+                    WHERE status = \'Booked\';""")
+        users = cursor.fetchall()
+        
+        if query is None or query == '':
+            return redirect(url_for('mgr_attendance_records'))
+        
+        matched_profiles = []
+        for user in users:
+            if query.lower() in user['booking_type'].lower():
+               cursor.execute(""" SELECT b.booking_id, m.first_name AS member_first_name, m.last_name AS member_last_name,b.booking_type, b.status,
+                    l.title AS title,
+                    l.date AS class_date,
+                    l.start_time AS class_start_time,
+                    i.instructor_id, i.first_name AS instructor_first_name, i.last_name AS instructor_last_name
+                    FROM bookings AS b
+                    JOIN member AS m ON b.user_id = m.member_id
+                    JOIN lessons AS l ON b.lesson_id = l.lesson_id
+                    JOIN instructor AS i ON l.instructor_id = i.instructor_id 
+                    WHERE status = \'Booked\' AND booking_type LIKE CONCAT('%', %s, '%')
+                    UNION
+                    SELECT b.booking_id, m.first_name AS member_first_name, m.last_name AS member_last_name,b.booking_type, b.status,
+                    w.title AS title,
+                    w.date AS class_date,
+                    w.start_time AS class_start_time,
+                    i.instructor_id, i.first_name AS instructor_first_name, i.last_name AS instructor_last_name
+                    FROM bookings AS b
+                    JOIN member AS m ON b.user_id = m.member_id
+                    JOIN workshops AS w ON b.workshop_id = w.workshop_id
+                    JOIN instructor AS i ON w.instructor_id = i.instructor_id 
+                    WHERE status = \'Booked\' AND booking_type LIKE CONCAT('%', %s, '%');""",(user['booking_type'],user['booking_type'],))
+               member_profile_list = cursor.fetchall()
+               matched_profiles.extend(member_profile_list)
+            
+            elif query.lower() in user['class_date'].strftime('%Y-%m-%d').lower():
+                cursor.execute(""" SELECT b.booking_id, m.first_name AS member_first_name, m.last_name AS member_last_name,b.booking_type, b.status,
+                    l.title AS title,
+                    l.date AS class_date,
+                    l.start_time AS class_start_time,
+                    i.instructor_id, i.first_name AS instructor_first_name, i.last_name AS instructor_last_name
+                    FROM bookings AS b
+                    JOIN member AS m ON b.user_id = m.member_id
+                    JOIN lessons AS l ON b.lesson_id = l.lesson_id
+                    JOIN instructor AS i ON l.instructor_id = i.instructor_id 
+                    WHERE status = \'Booked\' AND l.date LIKE CONCAT('%', %s, '%')
+                    UNION
+                    SELECT b.booking_id, m.first_name AS member_first_name, m.last_name AS member_last_name,b.booking_type, b.status,
+                    w.title AS title,
+                    w.date AS class_date,
+                    w.start_time AS class_start_time,
+                    i.instructor_id, i.first_name AS instructor_first_name, i.last_name AS instructor_last_name
+                    FROM bookings AS b
+                    JOIN member AS m ON b.user_id = m.member_id
+                    JOIN workshops AS w ON b.workshop_id = w.workshop_id
+                    JOIN instructor AS i ON w.instructor_id = i.instructor_id 
+                    WHERE status = \'Booked\' AND w.date LIKE CONCAT('%', %s, '%');""", (user['class_date'].strftime('%Y-%m-%d'),user['class_date'].strftime('%Y-%m-%d'),))
+                member_profile_list = cursor.fetchall()
+                matched_profiles.extend(member_profile_list)
+        
+        if not matched_profiles:
+            flash('No matching attendance found.', 'info')
+            return redirect(url_for('mgr_attendance_records'))
+        else:
+            return render_template("manager/mgr_attendance.html", records=matched_profiles, role=session['role'])
+    else:
+         return redirect(url_for('login'))
 
 
 ## Manager Attendance Records as Present) ##

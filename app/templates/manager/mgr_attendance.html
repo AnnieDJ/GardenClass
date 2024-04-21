@@ -22,42 +22,14 @@
 
       <!-- Add this section above your table -->
       <div class="mb-3">
-        <form action="{{ url_for('mgr_attendance_records') }}" method="get">
-          <div class="row">
-            <div class="col">
-              <label for="dateFilter" class="form-label">Filter by date:</label>
-              <input
-                type="date"
-                class="form-control"
-                id="dateFilter"
-                name="date"
-              />
-            </div>
-            <div class="col">
-              <label for="typeFilter" class="form-label"
-                >Filter by class type:</label
-              >
-              <select class="form-select" id="typeFilter" name="type">
-                <option value="">All Types</option>
-                <option value="Workshop">Workshop</option>
-                <option value="Lesson">Lesson</option>
-              </select>
-            </div>
-            <div class="col">
-              <label for="statusFilter" class="form-label"
-                >Filter by booking status:</label
-              >
-              <select class="form-select" id="statusFilter" name="status">
-                <option value="">All Statuses</option>
-                <option value="Booked">Booked</option>
-                <option value="Cancelled">Cancelled</option>
-              </select>
-            </div>
+        <form class="col-sm-6" action="/mgr_attendance_search" method="GET">
+          <div class="input-group">
+              <input type="text" class="form-control" id="search" name="search" placeholder="Enter class type, class time">
+              <div class="input-group-append">
+                  <button type="submit" class="btn btn-success">Search</button>
+              </div>
           </div>
-          <button type="submit" class="btn btn-success mt-2">
-            Apply Filters
-          </button>
-        </form>
+      </form>
       </div>
 
       <table class="table">

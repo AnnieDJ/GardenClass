@@ -273,7 +273,7 @@ def bookings_search():
                          JOIN locations ON lessons.location_id = locations.location_id\
                          JOIN member ON member.member_id = bookings.user_id\
                          UNION\
-                         SELECT bookings.booking_id,one_on_one_lessons.lesson_name as title,one_on_one_lessons.date,one_on_one_lessons.start_time,one_on_one_lessons.end_time, one_on_one_lessons.price,1 AS capacity,locations.address,bookings.booking_type,member.user_name,member.first_name,member.last_name\
+                         SELECT bookings.booking_id,COALESCE(one_on_one_lessons.lesson_name, \'one on one lesson\') AS title,one_on_one_lessons.date,one_on_one_lessons.start_time,one_on_one_lessons.end_time, one_on_one_lessons.price,1 AS capacity,locations.address,bookings.booking_type,member.user_name,member.first_name,member.last_name\
                          FROM bookings\
                          JOIN one_on_one_lessons ON bookings.one_on_one_id = one_on_one_lessons.lesson_id\
                          JOIN locations ON one_on_one_lessons.location_id = locations.location_id\

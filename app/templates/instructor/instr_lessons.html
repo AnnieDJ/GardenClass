@@ -577,7 +577,6 @@
       var groupLessonID = $('#editGroupLessonModal').data('group-lesson-id');
       var formData = $('#editGroupLessonModal').find('#editGroupLessonForm').serialize();
   
-      console.log(formData); // 打印 formData
       $.ajax({
           type: 'POST',
           url: '/instructor/update_group_lesson/' + groupLessonID,

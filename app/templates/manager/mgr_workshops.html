@@ -322,15 +322,16 @@ $('#editWorkshopForm').on('submit', function(e) {
 
 //handle createAddWrokShops popup
 $(document).ready(function() {
-  // Trigger the add workshop modal
-  $('#addWorkshopModal').on('click', function() {
-    // Show the add workshop modal
-    $('#addWorkshopModal').modal('show');
-
-    // Fetch and populate the instructor dropdown
+  
+  $('#addWorkshopModal').on('show.bs.modal', function() {
+    // empty instructor dropdown list
+    $('#addInstructor').empty();
+    // reload instructors
     fetchInstructors();
-
-    // Fetch and populate the location dropdown
+  
+    // empty location dropdown list
+    $('#addLocation').empty();
+    // reload locations
     fetchLocations();
   });
 

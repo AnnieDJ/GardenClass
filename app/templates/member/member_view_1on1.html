@@ -66,12 +66,6 @@
       class="form-inline search-form"
     >
       <input
-        type="text"
-        class="form-control"
-        name="lesson_name"
-        placeholder="Enter 1on1 Lesson name"
-      />
-      <input
         type="date"
         class="form-control"
         name="date"
@@ -84,13 +78,6 @@
         placeholder="Enter Location"
       />
       <button type="submit" class="btn btn-primary search-btn">Search</button>
-      <button
-        type="button"
-        class="btn btn-info cancel-btn"
-        onclick="clearForm()"
-      >
-        Cancel
-      </button>
     </form>
   </div>
 
@@ -98,7 +85,6 @@
     <thead>
       <tr>
         <th><strong>Instructor</strong></th>
-        <th><strong>Topic</strong></th>
         <th><strong>Date</strong></th>
         <th><strong>Start Time</strong></th>
         <th><strong>End Time</strong></th>
@@ -113,7 +99,6 @@
 
       <tr class="lesson-item">
         <td>{{ lesson.instructor_id }}</td>
-        <td>{{ lesson.lesson_name }}</td>
         <td>{{ lesson.date }}</td>
         <td>{{ lesson.start_time }}</td>
         <td>{{ lesson.end_time }}</td>

@@ -612,20 +612,29 @@ def attendance_records():
     if 'loggedin' in session and session.get('loggedin'):   
         date_filter = request.args.get('date', None)
         type_filter = request.args.get('type', None)
-        status_filter = request.args.get('status', None)
     
             
         sql = """SELECT b.booking_id, m.first_name AS member_first_name, m.last_name AS member_last_name,b.booking_type, b.status,
-                    COALESCE(l.title, w.title) AS title,
-                    COALESCE(l.date, w.date) AS class_date,
-                    COALESCE(l.start_time, w.start_time) AS class_start_time,
+                    l.title AS title,
+                    l.date AS class_date,
+                    l.start_time AS class_start_time,
                     i.instructor_id, i.first_name AS instructor_first_name, i.last_name AS instructor_last_name
                     FROM bookings AS b
                     JOIN member AS m ON b.user_id = m.member_id
-                    LEFT JOIN lessons AS l ON b.lesson_id = l.lesson_id
-                    LEFT JOIN workshops AS w ON b.workshop_id = w.workshop_id
-                    LEFT JOIN instructor AS i ON l.instructor_id = i.instructor_id OR w.instructor_id = i.instructor_id
-                    WHERE 1 = 1"""
+                    JOIN lessons AS l ON b.lesson_id = l.lesson_id
+                    JOIN instructor AS i ON l.instructor_id = i.instructor_id 
+                    WHERE status = \'Booked\'
+                    UNION
+                    SELECT b.booking_id, m.first_name AS member_first_name, m.last_name AS member_last_name,b.booking_type, b.status,
+                    w.title AS title,
+                    w.date AS class_date,
+                    w.start_time AS class_start_time,
+                    i.instructor_id, i.first_name AS instructor_first_name, i.last_name AS instructor_last_name
+                    FROM bookings AS b
+                    JOIN member AS m ON b.user_id = m.member_id
+                    JOIN workshops AS w ON b.workshop_id = w.workshop_id
+                    JOIN instructor AS i ON w.instructor_id = i.instructor_id 
+                    WHERE status = \'Booked\';"""
             
         filter_params = []    
             
@@ -638,11 +647,6 @@ def attendance_records():
         if type_filter:
             sql += " AND b.booking_type = %s"
             filter_params.append(type_filter)
-
-        # Apply booking status filter
-        if status_filter:
-            sql += " AND b.status = %s"
-            filter_params.append(status_filter)
             
         cursor = utils.getCursor()
         cursor.execute(sql, filter_params)    

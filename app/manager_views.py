@@ -993,15 +993,15 @@ def update_workshops():
       
         start_time_formatted = start_time_obj.strftime("%H:%M:%S")
         end_time_formatted = end_time_obj.strftime("%H:%M:%S")
-        workshop_image = request.form.get('workshop_image')
+        
         cursor = utils.getCursor()
 
         update_query = """
         UPDATE workshops
-        SET date = %s, start_time = %s, end_time = %s, location_id = %s, capacity = %s, price = %s, workshop_image = %s
+        SET date = %s, start_time = %s, end_time = %s, location_id = %s, capacity = %s, price = %s
         WHERE workshop_id = %s
         """
-        update_values = (date, start_time_formatted, end_time_formatted, location_id, capacity, price, workshop_image,workshop_id)
+        update_values = (date, start_time_formatted, end_time_formatted, location_id, capacity, price,workshop_id)
 
         try:
             cursor.execute(update_query, update_values)

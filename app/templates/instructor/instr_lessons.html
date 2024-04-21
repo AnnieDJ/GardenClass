@@ -171,6 +171,7 @@
                         <th>End Time</th>
                         <th>Location</th>
                         <th>Price</th>
+                        <th>Status</th>
                         <th>Edit</th>
                         <th>Delete</th>                       
                     </tr>
@@ -186,6 +187,7 @@
                         <td>{{ lesson['end_time'] }}</td>
                         <td>{{ lesson['name'] }}:{{lesson['address']}}</td>
                         <td>{{ lesson['price'] }}</td>
+                        <td>{{ lesson['status'] }}</td>
                         <td>
                           <button class="btn btn-primary edit-btn" data-lesson-id="{{ lesson['lesson_id'] }}"
                           data-member-id="{{ lesson['member_id'] }}" data-user-name="{{ lesson['user_name'] }}"
@@ -408,8 +410,8 @@
                                 <th>Start Time</th>
                                 <th>End Time</th>
                                 <th>Location</th>
-                                <th>Capacity</th>
                                 <th>Price</th>
+                                <th>Capacity</th>
                                 <th>Edit</th>
                                 <th>Delete</th>
                             </tr>

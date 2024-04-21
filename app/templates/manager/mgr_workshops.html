@@ -128,12 +128,13 @@
               {% endif %}
                 <div class="card-body">
                     <h5 class="card-title">{{ workshop.title }}</h5>
-                    <p class="card-text"><strong>Instructor:</strong> {{ workshop.first_name }} {{ workshop.last_name }}</p>
+                    <p class="card-text"><strong>Instructor:</strong> {{ workshop.instructor_id }} : {{ workshop.first_name }} {{ workshop.last_name }}</p>
                     <p class="card-text"><strong>Date:</strong> {{ workshop.date }}</p>
                     <p class="card-text"><strong>Start Time:</strong> {{ workshop.start_time }}</p>
                     <p class="card-text"><strong>End Time:</strong> {{ workshop.end_time }}</p>
                     <p class="card-text"><strong>Capacity:</strong> {{ workshop.capacity }}</p>
                     <p class="card-text"><strong>Price:</strong> ${{ workshop.price }}</p>
+                    <p class="card-text"><strong>Location:</strong> {{ workshop.location_id }}:{{workshop.name}}:{{workshop.address}}</p>
                     <div class="d-flex justify-content-between">
                         <button class="btn btn-warning edit-workshop-btn" data-bs-toggle="modal" data-bs-target="#editWorkshopModal" data-workshop-id="{{ workshop.workshop_id }}">Edit</button>
                         <button class="btn btn-danger delete-btn" data-id="{{ workshop.workshop_id }}">Delete</button>

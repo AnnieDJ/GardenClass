@@ -1119,7 +1119,7 @@ def add_workshop():
                 file.save(file_path)
 
                 # Updating path to remove 'static/'
-                finalFilePath = file_path.replace("static/", "")
+                finalFilePath = file_path.replace("app/static/", "")
                 fixPath = finalFilePath.replace("\\", "/")
 
                 # Update workshop record with the new image path

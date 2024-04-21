@@ -498,8 +498,10 @@ def instructor_workshops():
         location_id = request.args.get('location_id')  # Updated variable name to match column
         
         query = """
-        SELECT w.*, i.first_name, i.last_name FROM workshops w
+        SELECT w.*, i.first_name, i.last_name,locations.name,locations.address 
+        FROM workshops w
         JOIN instructor i ON w.instructor_id = i.instructor_id
+        JOIN locations ON w.location_id = locations.location_id
         """
         
         params = []

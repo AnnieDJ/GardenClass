@@ -55,7 +55,7 @@
             <p class="card-text"><strong>Date:</strong> {{ workshop.date or 'No Date Available' }}</p>
             <p class="card-text"><strong>Time:</strong> {{ workshop.start_time or 'No Start Time' }} - {{ workshop.end_time or 'No End Time' }}</p>
             <p class="card-text"><strong>Location:</strong> {{ workshop.location_name or 'No Location' }}</p>
-            <p class="card-text"><strong>Instructor:</strong> {{ workshop.instructor_first_name or 'No First Name' }} {{ workshop.instructor_last_name or 'No Last Name' }}</p>
+            <p class="card-text"><strong>Instructor:</strong> {{workshop.instructor_id}} : {{ workshop.first_name or 'No First Name' }} {{ workshop.last_name or 'No Last Name' }}</p>
             <p class="card-text"><strong>Capacity:</strong> {{ workshop.capacity or 'No Capacity' }}</p>
             <p class="card-text"><strong>Price:</strong> ${{ workshop.price or 'No Price' }}</p>
             <p class="card-text"><strong>Details:</strong> {{ workshop.details or 'No Details Available' }}</p>

@@ -179,12 +179,12 @@ def booking_course(course_type, course_id):
 def view_mybookings():
     if 'loggedin' in session and session['loggedin']:
         cursor = utils.getCursor()
-        cursor.execute('SELECT booking_id,title,booking_type,status FROM bookings JOIN lessons ON bookings.lesson_id = lessons.lesson_id\
+        cursor.execute('SELECT booking_id,title,booking_type,status FROM bookings JOIN lessons ON bookings.lesson_id = lessons.lesson_id WHERE user_id =%s\
                         UNION\
-                        SELECT booking_id,title,booking_type,status FROM bookings JOIN workshops ON bookings.workshop_id = workshops.workshop_id\
+                        SELECT booking_id,title,booking_type,status FROM bookings JOIN workshops ON bookings.workshop_id = workshops.workshop_id WHERE user_id =%s\
                         UNION\
                         SELECT booking_id,lesson_name,booking_type,bookings.status FROM bookings JOIN one_on_one_lessons ON bookings.one_on_one_id = one_on_one_lessons.lesson_id\
-                        WHERE user_id =%s;',(session['id'],))
+                        WHERE user_id =%s;',(session['id'],session['id'],session['id'],))
         my_bookings = cursor.fetchall()
         
         return render_template('/booking/member_booking_content.html',my_bookings=my_bookings,role=session['role'])

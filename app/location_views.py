@@ -44,11 +44,33 @@ def manage_location(location_id):
 def delete_location(location_id):
     if 'loggedin' in session and session['loggedin']:
         
-        cursor = utils.getCursor()
-        cursor.execute('DELETE FROM locations WHERE location_id=%s',(location_id,))    
-        cursor.close()
+        msg = ''
         
-        return redirect(url_for('view_location'))
+        cursor = utils.getCursor()
+        cursor.execute('SELECT * FROM workshops where location_id = %s;',(location_id,))
+        workshops = cursor.fetchall()
+        
+        cursor.execute('SELECT * FROM lessons where location_id = %s;',(location_id,))
+        lessons = cursor.fetchall()
+        
+        cursor.execute('SELECT * FROM one_on_one_lessons where location_id = %s;',(location_id,))
+        one_on_one_lessons = cursor.fetchall()
+        
+        if one_on_one_lessons or lessons or workshops:
+            
+            cursor.execute('SELECT * FROM locations;')
+            location_list = cursor.fetchall()
+            
+            msg = 'The Location cannot be deleted!'
+            
+            return render_template('/locations/location.html', location_list = location_list, role = session['role'], msg = msg)
+        
+        else:
+               
+           cursor.execute('DELETE FROM locations WHERE location_id=%s',(location_id,))    
+           cursor.close()
+        
+           return redirect(url_for('view_location'))
    
     else:
          return redirect(url_for('login'))

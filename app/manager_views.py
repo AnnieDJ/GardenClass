@@ -1069,7 +1069,6 @@ def delete_workshop(workshop_id):
         
         cursor = utils.getCursor()
              
-        cursor.execute("DELETE FROM workshops WHERE workshop_id = %s", (workshop_id,))
         cursor.execute("SELECT title FROM workshops WHERE workshop_id = %s", (workshop_id,))
         workshop_title = cursor.fetchall()[0]['title']
         
@@ -1077,6 +1076,7 @@ def delete_workshop(workshop_id):
         content = f"workshop %s has been cancelled becasue manager has deleted it." %workshop_title
         date = utils.current_date_time()
         
+        cursor.execute("DELETE FROM workshops WHERE workshop_id = %s", (workshop_id,))
         cursor.execute("INSERT INTO news(title,content,date_published,author_id) VALUES(%s,%s,%s,%s)",(title,content,date,session['id'],))
         return redirect(url_for('manager_workshops'))
     else:

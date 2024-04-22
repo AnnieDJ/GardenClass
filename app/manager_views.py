@@ -911,9 +911,15 @@ def delete_one_on_one_lesson(lesson_id):
         return jsonify({'success': False, 'message': 'You must be logged in to perform this action.'}), 401
     try:
         cursor = utils.getCursor()
-        cursor.execute("DELETE FROM one_on_one_lessons WHERE lesson_id = %s", (lesson_id,))
+        cursor.execute("SELECT * FROM bookings WHERE one_on_one_id = %s AND status = 'Booked'",(lesson_id,))
+        lesson = cursor.fetchall()
+        
+        if lesson:
+            return jsonify({'success': False, 'message': 'One-on-one lesson cannot be deleted.'})
+        else:
+            cursor.execute("DELETE FROM one_on_one_lessons WHERE lesson_id = %s", (lesson_id,))
        
-        return jsonify({'success': True, 'message': 'One-on-one lesson deleted successfully.'})
+            return jsonify({'success': True, 'message': 'One-on-one lesson deleted successfully.'})
     except Exception as e:
         
         return jsonify({'success': False, 'message': f'Failed to delete one-on-one lesson. Error: {e}'})
@@ -925,10 +931,16 @@ def delete_group_lesson(lesson_id):
         return jsonify({'success': False, 'message': 'You must be logged in to perform this action.'}), 401
     try:
             cursor = utils.getCursor()
-            # Execute the SQL command to delete the lesson
-            cursor.execute("DELETE FROM lessons WHERE lesson_id = %s", (lesson_id,))
+            cursor.execute("SELECT * FROM bookings WHERE lesson_id = %s AND status = 'Booked'",(lesson_id,))
+            lesson = cursor.fetchall()
             
-            return jsonify({'success': True, 'message': 'group lesson deleted successfully.'})
+            if lesson:
+               return jsonify({'success': False, 'message': 'Group lesson cannot be deleted.'})
+            else:
+               # Execute the SQL command to delete the lesson
+               cursor.execute("DELETE FROM lessons WHERE lesson_id = %s", (lesson_id,))
+            
+               return jsonify({'success': True, 'message': 'group lesson deleted successfully.'})
     except Exception as e:
         
         return jsonify({'success': False, 'message': f'Failed to delete group lesson. Error: {e}'})
@@ -1049,9 +1061,29 @@ def get_workshopslocations():
 @app.route('/manager/delete_workshop/<int:workshop_id>', methods=['POST'])
 def delete_workshop(workshop_id):
     if 'loggedin' in session and session['role'] == 'Manager':
+        
+        msg = ''
         cursor = utils.getCursor()
-        cursor.execute("DELETE FROM workshops WHERE workshop_id = %s", (workshop_id,))
-        return redirect(url_for('manager_workshops'))
+        
+        cursor.execute("SELECT * FROM bookings WHERE workshop_id = %s AND status = 'Booked'",(workshop_id,))
+        workshop = cursor.fetchall()
+        
+        if workshop:
+           cursor.execute("""SELECT w.*, i.first_name, i.last_name,locations.name,locations.address
+                             FROM workshops w
+                             JOIN instructor i ON w.instructor_id = i.instructor_id
+                             JOIN locations ON w.location_id = locations.location_id""")
+           workshops_data = cursor.fetchall()
+           
+           msg = 'The Workshop cannot be deleted!'
+           
+           print("msg is -----> %s,",msg)
+           
+           return render_template('manager/mgr_workshops.html', workshops=workshops_data, role=session['role'],msg = msg)
+        else:
+              
+          cursor.execute("DELETE FROM workshops WHERE workshop_id = %s", (workshop_id,))
+          return redirect(url_for('manager_workshops'))
     else:
         return redirect(url_for('login'))
     

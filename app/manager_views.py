@@ -1077,8 +1077,6 @@ def delete_workshop(workshop_id):
            
            msg = 'The Workshop cannot be deleted!'
            
-           print("msg is -----> %s,",msg)
-           
            return render_template('manager/mgr_workshops.html', workshops=workshops_data, role=session['role'],msg = msg)
         else:
               

@@ -290,43 +290,6 @@ def book_lesson():
     finally:
         cursor.close()
 
-
-@app.route('/member_view_news')
-def member_view_news():
-    if 'loggedin' in session and session['loggedin']:
-        cursor = utils.getCursor()
-        
-        title = request.args.get('title')
-        date = request.args.get('date')
-        
-        sql_query = """
-        SELECT n.news_id, n.title, n.content, n.date_published, 
-               m.first_name, m.last_name
-        FROM news n
-        JOIN manager m ON n.author_id = m.manager_id
-        WHERE 1=1
-        """
-
-        query_params = []
-        
-        if title:
-            sql_query += " AND n.title LIKE %s"
-            query_params.append(f"%{title}%")
-        if date:
-            sql_query += " AND DATE(n.date_published) = %s"
-            query_params.append(date)
-        
-        sql_query += " ORDER BY n.date_published DESC"
-        
-        cursor.execute(sql_query, query_params)
-        news_articles = cursor.fetchall()
-        return render_template('member/member_view_news.html', news_articles=news_articles)
-        
-    else: 
-        return redirect(url_for('login'))  # make sure to redirect to the correct login route
-
-
-
 @app.route('/member_news_details/<int:news_id>')
 def member_news_details(news_id):
     cursor = utils.getCursor()

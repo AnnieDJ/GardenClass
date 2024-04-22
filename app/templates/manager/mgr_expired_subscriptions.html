@@ -59,6 +59,7 @@
                     <th>Start Time</th>
                     <th>End Time</th>
                     <th>Status</th>
+                    <th>Edit</th>
                 </tr>
             </thead>
             <tbody>
@@ -70,6 +71,7 @@
                     <td>{{ sub['start_date'] }}</td>
                     <td>{{ sub['end_date'] }}</td>
                     <td>{{ sub['status'] }}</td>
+                    <td><a href="{{ url_for('expired_subscriptions_send_news', subscription_id=sub['subscription_id']) }}" class="btn btn-success">Send News</a></td>
                 </tr>
                 {% endfor %}
             </tbody>

@@ -123,9 +123,9 @@ def member_view_news():
         
         sql_query = """
         SELECT n.news_id, n.title, n.content, n.date_published, 
-               m.first_name, m.last_name
+                COALESCE(m.first_name, 'system') AS first_name, COALESCE(m.last_name, 'system') AS last_name
         FROM news n
-        JOIN manager m ON n.author_id = m.manager_id
+        LEFT JOIN manager m ON n.author_id = m.manager_id
         WHERE 1=1
         """
 

@@ -1164,11 +1164,11 @@ def add_workshop():
         return jsonify({'success': False, 'message': 'Unauthorized access.'})
 
 
-@app.route('/manager/expired_subscriptions', methods=['GET', 'POST'])
+@app.route('/manager/expired_subscriptions')
 def expired_subscriptions():
     if 'loggedin' in session and session['loggedin']:
          cursor = utils.getCursor()
-         cursor.execute('SELECT member.first_name,member.last_name, subscriptions.*\
+         cursor.execute('SELECT subscriptions.subscription_id,member.first_name,member.last_name, subscriptions.*\
                           FROM subscriptions\
                           JOIN member\
                           ON subscriptions.user_id = member.member_id\
@@ -1177,6 +1177,28 @@ def expired_subscriptions():
          subscription = cursor.fetchall()
     
          return render_template('/manager/mgr_expired_subscriptions.html', subscription=subscription, role=session['role'])
+    else:
+        return redirect(url_for('login'))
+    
+@app.route('/manager/expired_subscriptions_send_news/<int:subscription_id>')
+def expired_subscriptions_send_news(subscription_id):
+    if 'loggedin' in session and session['loggedin']:
+         cursor = utils.getCursor()
+         
+         cursor.execute("SELECT * FROM subscriptions WHERE subscription_id = %s",(subscription_id,))
+         sub = cursor.fetchall()
+         
+         if sub:
+            member_id = sub[0]['user_id']
+         
+            title = "Pay Subscription"
+            content = "Please pay your subscription because it will be expired soon or has expired."
+            date = utils.current_date_time()
+         
+            cursor.execute("INSERT INTO news(title,content,date_published,user_id,author_id) VALUES(%s,%s,%s,%s,%s)",(title,content,date,member_id,session['id'],))   
+            return redirect(url_for('view_news'))
+         else:
+            return redirect(url_for('expired_subscriptions')) 
     else:
         return redirect(url_for('login'))
     

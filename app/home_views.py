@@ -238,7 +238,13 @@ def payment():
              cursor.execute('INSERT INTO subscriptions (user_id,type,start_date,end_date,status) VALUES (%s,%s,%s,%s,%s)',(user_id,pay_type,payment_date,expiry_date,'Active'))
              # Clear session data after registration
              session.clear()
-             
+         
+       else:
+             title = "Pay Subscription"
+             content = "Please pay The subscription as soon as you can, thanks."
+             date = utils.current_date_time()
+             cursor.execute("INSERT INTO news(title,content,date_published,user_id) VALUES(%s,%s,%s,%s)",(title,content,date,user_id,))   
+              
        return redirect(url_for('home'))
          
     

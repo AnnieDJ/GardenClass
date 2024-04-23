@@ -583,9 +583,7 @@ def update_lesson():
             location_id = request.form.get('locationID')
             status = request.form.get('status')
             price = request.form.get('price') 
-        
-
-        
+    
             cursor = utils.getCursor()
 
         
@@ -653,7 +651,6 @@ def update_lesson():
                 print(f"An error occurred: {e}")
                 return jsonify({'success': False, 'message': 'Database update error.'})
 
-
 @app.route('/api/locations', methods=['GET'])
 def get_locations():
     try:
@@ -665,8 +662,7 @@ def get_locations():
     except Exception as e:
         print(f"An error occurred: {e}")
         return jsonify({"error": "Could not fetch locations"}), 500
-
-
+    
 @app.route('/edit', methods=['GET', "POST"])
 def edit():
     nid = request.args.get('nid', type=int)
@@ -713,6 +709,8 @@ def add_lesson():
         location_id = request.form.get('location_id')
         title = request.form.get('title')
         lesson_type = request.form.get('lesson_type')
+        
+        date_f = datetime.strptime(date, '%Y-%m-%d')
 
         cursor = utils.getCursor()
 
@@ -745,23 +743,41 @@ def add_lesson():
                             'success': False,
                             'message': f'Invalid capacity. Capacity must be greater than 0 and cannot exceed {location_max_capacity}.'
                         })
+            
+                    elif start_time >= end_time:
+                          return jsonify({'success': False,'message': 'Start time must be earlier than end time.'})
+                    elif date_f < utils.current_date_time():
+                          return jsonify({'success': False,'message': 'Date must be later than current date.'})
+                    elif int(capacity) <0 or float(price) < 0.0:
+                         return jsonify({'success': False,'message': 'Price and capacity must be greater than or equal to 0.'})
+            
+                    else:
        
-                    cursor.execute("""
-                        INSERT INTO lessons (instructor_id, date, start_time, end_time, capacity, location_id, title, price)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-                    """, (instructor_id, date, start_time, end_time, capacity, location_id, title, price))
+                        cursor.execute("""
+                                INSERT INTO lessons (instructor_id, date, start_time, end_time, capacity, location_id, title, price)
+                                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                                 """, (instructor_id, date, start_time, end_time, capacity, location_id, title, price))
                 else:
                     
-                    return jsonify({
-                        'success': False,
-                        'message': 'Location not found or does not have a capacity set.'
-                    })
+                        return jsonify({
+                            'success': False,
+                            'message': 'Location not found or does not have a capacity set.'
+                        })
 
             elif lesson_type == 'one_on_one':
-                cursor.execute("""
-                    INSERT INTO one_on_one_lessons (instructor_id, member_id, date, start_time, end_time, price, status, location_id)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-                """, (instructor_id, member_id, date, start_time, end_time, price, status, location_id))
+                
+                    if start_time >= end_time:
+                          return jsonify({'success': False,'message': 'Start time must be earlier than end time.'})
+                    elif date_f < utils.current_date_time():
+                          return jsonify({'success': False,'message': 'Date must be later than current date.'})
+                    elif float(price) < 0.0:
+                         return jsonify({'success': False,'message': 'Price must be greater than or equal to 0.'})
+                    else:
+                     
+                         cursor.execute("""
+                                 INSERT INTO one_on_one_lessons (instructor_id, member_id, date, start_time, end_time, price, status, location_id)
+                                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                                 """, (instructor_id, member_id, date, start_time, end_time, price, status, location_id))
 
             else:
                 return jsonify({'success': False, 'message': 'Invalid lesson type specified.'})
@@ -795,35 +811,46 @@ def refresh_lesson():
             location_id = request.form.get('locationID')
             capacity=request.form.get('capacity')
             price = request.form.get('price') 
-        
-        
-        
-            cursor = utils.getCursor()
-
-        
-            update_query = """
-            UPDATE lessons
-            SET date = %s, start_time = %s, end_time = %s, location_id = %s, capacity = %s, price = %s
-            WHERE lesson_id = %s
-            """
-            update_values = (date, start_time_formatted, end_time_formatted, location_id, capacity, price, lesson_id)
-
-            try:
+ 
+            date_f = datetime.strptime(date, '%Y-%m-%d')
+      
+            cursor = utils.getCursor()       
             
-                cursor.execute(update_query, update_values)
-
+            cursor.execute('SELECT * FROM locations WHERE location_id = %s',(location_id,))
+            location_capacity = cursor.fetchone()
             
-                if cursor.rowcount > 0:
-                    return jsonify({'success': True})
-                else:
-                    return jsonify({'success': False, 'message': 'Failed to find the corresponding course information or update failed.'})
-            except Exception as e:
+            if start_time >= end_time:
+                     return jsonify({'success': False,'message': 'Start time must be earlier than end time.'})
+            elif date_f < utils.current_date_time():
+                     return jsonify({'success': False,'message': 'Date must be later than current date.'})
+            elif int(capacity) <0 or float(price) < 0.0:
+                     return jsonify({'success': False,'message': 'Price and capacity must be greater than or equal to 0.'})
+            elif int(capacity) > location_capacity['capacity']:
+                     return jsonify({'success': False,'message': 'Capacity must be less than or equal to location capacity.'})
+            else:
+
+        
+                 update_query = """
+                        UPDATE lessons
+                        SET date = %s, start_time = %s, end_time = %s, location_id = %s, capacity = %s, price = %s
+                        WHERE lesson_id = %s
+                      """
+                 update_values = (date, start_time_formatted, end_time_formatted, location_id, capacity, price, lesson_id)
+
+                 try:
+            
+                      cursor.execute(update_query, update_values)
+
+                      if cursor.rowcount > 0:
+                          return jsonify({'success': True})
+                      else:
+                          return jsonify({'success': False, 'message': 'Failed to find the corresponding course information or update failed.'})
+                 except Exception as e:
                 
-                print(f"An error occurred: {e}")
-                return jsonify({'success': False, 'message': 'Database update error.'})
-            finally:
+                      return jsonify({'success': False, 'message': 'Database update error:{e}.'})
+                 finally:
             
-                cursor.close()
+                      cursor.close()
         else:
             lesson_id = request.form.get('lessonID')
             date = request.form.get('date')
@@ -839,35 +866,47 @@ def refresh_lesson():
             location_id = request.form.get('locationID')
             capacity=request.form.get('capacity')
             price = request.form.get('price') 
-        
-        
-        
-            cursor = utils.getCursor()
-
-        
-            update_query = """
-            UPDATE lessons
-            SET date = %s, start_time = %s, end_time = %s, location_id = %s, capacity = %s, price = %s
-            WHERE lesson_id = %s
-            """
-            update_values = (date, start_time_formatted, end_time_formatted, location_id, capacity, price, lesson_id)
-
-            try:
+     
+            date_f = datetime.strptime(date, '%Y-%m-%d')
+      
+            cursor = utils.getCursor()       
             
-                cursor.execute(update_query, update_values)
+            cursor.execute('SELECT * FROM locations WHERE location_id = %s',(location_id,))
+            location_capacity = cursor.fetchone()
+            
+            if start_time >= end_time:
+                     return jsonify({'success': False,'message': 'Start time must be earlier than end time.'})
+            elif date_f < utils.current_date_time():
+                     return jsonify({'success': False,'message': 'Date must be later than current date.'})
+            elif int(capacity) <0 or float(price) < 0.0:
+                     return jsonify({'success': False,'message': 'Price and capacity must be greater than or equal to 0.'})
+            elif int(capacity) > location_capacity['capacity']:
+                     return jsonify({'success': False,'message': 'Capacity must be less than or equal to location capacity.'})
+            else:
+
+        
+                update_query = """
+                       UPDATE lessons
+                       SET date = %s, start_time = %s, end_time = %s, location_id = %s, capacity = %s, price = %s
+                       WHERE lesson_id = %s
+                    """
+                update_values = (date, start_time_formatted, end_time_formatted, location_id, capacity, price, lesson_id)
+
+                try:
+            
+                      cursor.execute(update_query, update_values)
 
             
-                if cursor.rowcount > 0:
-                    return jsonify({'success': True})
-                else:
-                    return jsonify({'success': False, 'message': 'Failed to find the corresponding course information or update failed.'})
-            except Exception as e:
+                      if cursor.rowcount > 0:
+                             return jsonify({'success': True})
+                      else:
+                             return jsonify({'success': False, 'message': 'Failed to find the corresponding course information or update failed.'})
+                except Exception as e:
                 
-                print(f"An error occurred: {e}")
-                return jsonify({'success': False, 'message': 'Database update error.'})
-            finally:
+                      return jsonify({'success': False, 'message': 'Database update error:{e}.'})
+                finally:
             
-                cursor.close()
+                      cursor.close()
 
           #  return redirect(url_for('login'))
 
@@ -999,6 +1038,7 @@ def update_workshops():
         
         location_id = request.form.get('location_id')
         
+        title = request.form.get('title')
         price = request.form.get('price')
         capacity = request.form.get('capacity')
         date = request.form.get('date')
@@ -1012,26 +1052,40 @@ def update_workshops():
         end_time_formatted = end_time_obj.strftime("%H:%M:%S")
         
         cursor = utils.getCursor()
+        
+        date_f = datetime.strptime(date, '%Y-%m-%d')
+            
+        cursor.execute('SELECT * FROM locations WHERE location_id = %s',(location_id,))
+        location_capacity = cursor.fetchone()
+            
+        if start_time >= end_time:
+            return jsonify({'success': False,'message': 'Start time must be earlier than end time.'})
+        elif date_f < utils.current_date_time():
+            return jsonify({'success': False,'message': 'Date must be later than current date.'})
+        elif int(capacity) <0 or float(price) < 0.0:
+            return jsonify({'success': False,'message': 'Price and capacity must be greater than or equal to 0.'})
+        elif int(capacity) > location_capacity['capacity']:
+            return jsonify({'success': False,'message': 'Capacity must be less than or equal to location capacity.'})
+        else:
 
-        update_query = """
-        UPDATE workshops
-        SET date = %s, start_time = %s, end_time = %s, location_id = %s, capacity = %s, price = %s
-        WHERE workshop_id = %s
-        """
-        update_values = (date, start_time_formatted, end_time_formatted, location_id, capacity, price,workshop_id)
+            update_query = """
+                    UPDATE workshops
+                    SET date = %s, start_time = %s, end_time = %s, location_id = %s, capacity = %s, price = %s, title = %s
+                    WHERE workshop_id = %s
+                    """
+            update_values = (date, start_time_formatted, end_time_formatted, location_id, capacity, price, title, workshop_id)
 
-        try:
-            cursor.execute(update_query, update_values)
+            try:
+                cursor.execute(update_query, update_values)
 
            
-            if cursor.rowcount > 0:
-                return jsonify({'success': True})
-            else:
-                return jsonify({'success': False, 'message': 'Failed to find the corresponding course information or update failed.'})
-        except Exception as e:
+                if cursor.rowcount > 0:
+                    return jsonify({'success': True})
+                else:
+                    return jsonify({'success': False, 'message': 'Failed to find the corresponding course information or update failed.'})
+            except Exception as e:
             
-            print(f"An error occurred: {e}")
-            return jsonify({'success': False, 'message': 'Database update error.'})
+                 return jsonify({'success': False, 'message': 'Database update error:{e}.'})
 
     else:
         return redirect(url_for('login'))
@@ -1129,35 +1183,50 @@ def add_workshop():
             date = request.form['addDate']
             start_time = request.form['starttime']
             end_time = request.form['endtime']
-
-            # Insert into DB
-            sql = "INSERT INTO workshops (title, instructor_id, location_id, price, capacity, date, start_time, end_time) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-            val = (title, instructor_id, location_id, price, capacity, date, start_time, end_time)
-            cursor.execute(sql, val)
-            workshop_id = cursor.lastrowid
-
-            # Handle file upload
-            file = request.files.get('image')
-            if file and allowed_file(file.filename):
-                filename = f"{workshop_id}.{file.filename.rsplit('.', 1)[1]}"
-                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-
-                # Create directory if it does not exist
-                os.makedirs(os.path.dirname(file_path), exist_ok=True)
-
-                file.save(file_path)
-
-                # Updating path to remove 'static/'
-                finalFilePath = file_path.replace("app/static/", "")
-                fixPath = finalFilePath.replace("\\", "/")
-
-                # Update workshop record with the new image path
-                update_sql = "UPDATE workshops SET workshop_image = %s WHERE workshop_id = %s"
-                cursor.execute(update_sql, (fixPath, workshop_id))
+            
+            date_f = datetime.strptime(date, '%Y-%m-%d')
+            
+            cursor.execute('SELECT * FROM locations WHERE location_id = %s',(location_id,))
+            location_capacity = cursor.fetchone()
+            
+            if start_time >= end_time:
+                return jsonify({'success': False,'message': 'Start time must be earlier than end time.'})
+            elif date_f < utils.current_date_time():
+                return jsonify({'success': False,'message': 'Date must be later than current date.'})
+            elif int(capacity) <0 or float(price) < 0.0:
+                return jsonify({'success': False,'message': 'Price and capacity must be greater than or equal to 0.'})
+            elif int(capacity) > location_capacity['capacity']:
+                return jsonify({'success': False,'message': 'Capacity must be less than or equal to location capacity.'})
             else:
-                finalFilePath = 'workshops_images/workshop23.png'
 
-            return jsonify({'success': True, 'message': 'Workshop added successfully.', 'id': workshop_id})
+                # Insert into DB
+                sql = "INSERT INTO workshops (title, instructor_id, location_id, price, capacity, date, start_time, end_time) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+                val = (title, instructor_id, location_id, price, capacity, date, start_time, end_time)
+                cursor.execute(sql, val)
+                workshop_id = cursor.lastrowid
+
+                # Handle file upload
+                file = request.files.get('image')
+                if file and allowed_file(file.filename):
+                    filename = f"{workshop_id}.{file.filename.rsplit('.', 1)[1]}"
+                    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+                    # Create directory if it does not exist
+                    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+                    file.save(file_path)
+
+                    # Updating path to remove 'static/'
+                    finalFilePath = file_path.replace("app/static/", "")
+                    fixPath = finalFilePath.replace("\\", "/")
+
+                    # Update workshop record with the new image path
+                    update_sql = "UPDATE workshops SET workshop_image = %s WHERE workshop_id = %s"
+                    cursor.execute(update_sql, (fixPath, workshop_id))
+                else:
+                    finalFilePath = 'workshops_images/workshop23.png'
+
+                return jsonify({'success': True, 'message': 'Workshop added successfully.', 'id': workshop_id})
         except Exception as e:
             return jsonify({'success': False, 'message': str(e)})
     else:

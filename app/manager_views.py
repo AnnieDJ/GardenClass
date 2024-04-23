@@ -295,9 +295,11 @@ def edit_member_profile(member_id):
                hashed_password = utils.hashing.hash_value(password , salt='schwifty')
                cursor.execute("UPDATE member SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s, address = %s, date_of_birth = %s, subscription_date = %s, type = %s, expiry_date = %s WHERE member_id = %s",(title,first_name,last_name,position,phone_number,email,address,date_of_birth,subscription_date, type,expiry_date,member_id,))
                cursor.execute("UPDATE user SET password = %s WHERE related_member_id = %s",(hashed_password,member_id,))
+               cursor.execute("UPDATE subscriptions SET start_date = %s,end_date = %s, type = %s WHERE user_id = %s",(subscription_date,expiry_date,type,member_id,))
                    
             else: 
                cursor.execute("UPDATE member SET title = %s, first_name = %s, last_name = %s, position = %s, phone_number = %s, email = %s, address = %s, date_of_birth = %s, subscription_date = %s, type = %s, expiry_date = %s WHERE member_id = %s",(title,first_name,last_name,position,phone_number,email,address,date_of_birth,subscription_date, type,expiry_date,member_id,))
+               cursor.execute("UPDATE subscriptions SET start_date = %s,end_date = %s, type = %s WHERE user_id = %s",(subscription_date,expiry_date,type,member_id,))
              
             return redirect(url_for('member_profile_list'))
             

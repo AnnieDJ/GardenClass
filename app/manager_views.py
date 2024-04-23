@@ -258,7 +258,10 @@ def member_profile_list():
     if 'loggedin' in session and session['loggedin']: 
         
         cursor = utils.getCursor()
-        cursor.execute("SELECT * FROM member;")
+        cursor.execute("""SELECT member_id,user_name,title,first_name,last_name,position,phone_number,email,address,date_of_birth,
+                          subscriptions.start_date AS subscription_date,subscriptions.type,subscriptions.end_date AS expiry_date
+                          FROM member 
+                          JOIN subscriptions ON member.member_id = subscriptions.user_id;""")
         member_profile = cursor.fetchall()
         
             
@@ -299,7 +302,10 @@ def edit_member_profile(member_id):
             return redirect(url_for('member_profile_list'))
             
         else:
-            cursor.execute('SELECT * FROM member WHERE member_id = %s;',(member_id,))      
+            cursor.execute('SELECT member_id,user_name,title,first_name,last_name,position,phone_number,email,address,date_of_birth,\
+                            subscriptions.start_date AS subscription_date,subscriptions.type,subscriptions.end_date AS expiry_date\
+                            FROM member \
+                            JOIN subscriptions ON member.member_id = subscriptions.user_id; WHERE member_id = %s;',(member_id,))      
             member = cursor.fetchone()
             return render_template("/manager/edit_member_profile.html", member=member, role = session['role'])
         
@@ -1706,9 +1712,15 @@ def edit_member_sub(sub_id):
             type = request.form.get('type')
             status = request.form.get('status')
             
-            cursor.execute("UPDATE subscriptions SET start_date = %s, end_date = %s, type = %s, status = %s WHERE subscription_id = %s",(start_date, end_date, type, status,sub_id,))
+            date_f = datetime.strptime(end_date, '%Y-%m-%d')
             
-            return redirect(url_for('mgr_view_member_sub'))
+            if date_f < utils.current_date_time() and status == 'Active':
+                flash('End date cannot be in the past.', 'info')
+                return redirect(url_for('edit_member_sub', sub_id=sub_id))
+            else:
+               cursor.execute("UPDATE subscriptions SET start_date = %s, end_date = %s, type = %s, status = %s WHERE subscription_id = %s",(start_date, end_date, type, status,sub_id,))
+            
+               return redirect(url_for('mgr_view_member_sub'))
         
         else:
             cursor.execute("SELECT member.user_name,member.first_name,member.last_name,subscriptions.start_date,subscriptions.end_date,subscriptions.type,subscriptions.status,subscriptions.subscription_id FROM subscriptions JOIN member ON member.member_id = subscriptions.user_id WHERE subscriptions.subscription_id = %s",(sub_id,))

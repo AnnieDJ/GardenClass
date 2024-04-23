@@ -20,6 +20,17 @@
     </div>
   </section>
 
+  {% with messages = get_flashed_messages() %}
+{% if messages %}
+    <div class="alert alert-info" role="alert">
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+{% endwith %}
 
 <section>
 <div class="container">

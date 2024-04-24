@@ -69,9 +69,6 @@
 - Manager Account 
 - - username: alice_manager
 - - password: John1234
-- - username: peter_manager
-- - password: John1234
-
 
 - Instructor Account
 - - username: john_instructor

@@ -67,7 +67,7 @@
 
 ## System Login Information
 - Manager Account 
-- - username: jane_smith
+- - username: alice_manager
 - - password: John1234
 
 - Instructor Account
@@ -75,8 +75,8 @@
 - - password: John1234
 
 - Member Account
-- - username: john_doe
-- - password: John1234
+- - username: jenny
+- - password: Jenny1234
 
 
 

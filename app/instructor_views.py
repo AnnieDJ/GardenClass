@@ -9,7 +9,7 @@ import base64
 from flask import jsonify
 import re
 
-
+#Show the information about instructor in the whole session 
 @app.context_processor
 def inject_instructor_details():
     if 'loggedin' in session and session['loggedin']:
@@ -192,6 +192,7 @@ def update_instructor_lesson(lesson_id):
 
 
 
+# instructor update group lessons
 @app.route('/instructor/update_group_lesson/<int:lesson_id>', methods=['POST'])
 def update_group_lesson(lesson_id):
     if 'loggedin' in session and session['role'] == 'Instructor':
@@ -233,7 +234,7 @@ def api_locations():
     else:
         return jsonify({'success': False, 'message': 'Unauthorized'}), 401
     
-
+# getting memebers for front end
 @app.route('/api/members', methods=['GET'])
 def api_members():
     if 'loggedin' in session:
@@ -245,7 +246,8 @@ def api_members():
     else:
         return jsonify({'success': False, 'message': 'Unauthorized'}), 401
 
-    
+ 
+# instructor add lessons   
 @app.route('/instructor/add_lesson', methods=['POST'])
 def add_lessons():
     # Check if the user is logged in
@@ -306,6 +308,7 @@ def add_lessons():
         # User is not logged in
         return jsonify({'success': False, 'message': 'User is not logged in.'}), 401 
 
+# add one on one lesson
 @app.route('/add_one_on_one_lesson',methods=['POST'])
 def add_one_on_one_lesson():
     if 'loggedin' in session and session['loggedin']:
@@ -352,6 +355,7 @@ def add_one_on_one_lesson():
         return jsonify({'success': False, 'message': 'User is not logged in.'}), 401
  
 
+# instructor add group lesson
 @app.route('/add_group_lesson',methods=['POST'])
 def add_group_lessonn():
     if 'loggedin' in session and session['loggedin']:
@@ -764,6 +768,7 @@ def present_attendance():
     records =[]
     return render_template('/instructor/attendance.html', records=records)
 
+# instructor delete one on one lessons
 @app.route('/instructor/delete_one_on_one_lesson_instr/<int:lesson_id>')
 def delete_one_on_one_lesson_instr(lesson_id):
     
@@ -775,7 +780,8 @@ def delete_one_on_one_lesson_instr(lesson_id):
         return redirect(url_for('instructor_lessons'))
     else:
         return redirect(url_for('login'))
-    
+
+# instructor delete group lessons   
 @app.route('/instructor/delete_group_lesson_instr/<int:lesson_id>')
 def delete_group_lesson_instr(lesson_id):
     

@@ -54,7 +54,8 @@ def get_course_info():
         return jsonify(course_data)
     else:
         return redirect(url_for('login'))
-    
+  
+#showing calendar and workshop information in home page  
 @app.route('/get_workshop_mainpage')
 def get_workshop_mainpage():
         cursor = utils.getCursor()
@@ -85,7 +86,8 @@ def get_workshop_mainpage():
                })
                  
         return jsonify(course_data)
-  
+
+#member booking workshop and group lessons  
 @app.route('/booking_course/<string:course_type>/<int:course_id>', methods=['GET', 'POST'])
 def booking_course(course_type, course_id):
     if 'loggedin' in session and session['loggedin']:
@@ -174,7 +176,8 @@ def booking_course(course_type, course_id):
            
     else:
         return redirect(url_for('login'))
-    
+ 
+#member view bookings that they booked   
 @app.route('/view_mybookings')
 def view_mybookings():
     if 'loggedin' in session and session['loggedin']:
@@ -190,6 +193,8 @@ def view_mybookings():
         return render_template('/booking/member_booking_content.html',my_bookings=my_bookings,role=session['role'])
     else:
         return redirect(url_for('login'))
+
+#cancel bookings which have already been booked
 @app.route('/cancel_booking/<int:booking_id>',methods=['GET','POST'])
 def cancel_booking(booking_id):
     if 'loggedin' in session and session['loggedin']:
@@ -199,7 +204,8 @@ def cancel_booking(booking_id):
         return redirect(url_for('view_mybookings'))
     else:
         return redirect(url_for('login'))
-    
+
+# manager view all bookings    
 @app.route('/view_booking')
 def view_booking():
     if 'loggedin' in session and session['loggedin']:
@@ -227,7 +233,8 @@ def view_booking():
           
     else:
         return redirect(url_for('login'))
-    
+ 
+#manager delete bookings   
 @app.route('/delete_booking/<int:booking_id>')
 def delete_booking(booking_id):
     if 'loggedin' in session and session['loggedin']:
@@ -237,7 +244,8 @@ def delete_booking(booking_id):
         return redirect(url_for('view_booking'))
     else:
         return redirect(url_for('login'))
-    
+ 
+#manager edit bookings   
 @app.route('/edit_booking/<int:booking_id>',methods=['GET','POST'])
 def edit_booking(booking_id):
     if 'loggedin' in session and session['loggedin']:
@@ -255,6 +263,7 @@ def edit_booking(booking_id):
     else:
         return redirect(url_for('login'))
 
+#booking search bar
 @app.route('/bookings_search')
 def bookings_search():
     if 'loggedin' in session and session['loggedin']:
@@ -441,6 +450,7 @@ def bookings_search():
     else:
          return redirect(url_for('login'))
 
+#view one on one lessons bookings
 @app.route('/booking_one_on_one/<int:course_id>')
 def booking_one_on_one(course_id):
     if 'loggedin' in session and session['loggedin']:

@@ -7,6 +7,7 @@ import re
 import base64
 
 
+# showing the member profile in the whole session
 @app.context_processor
 def inject_member_details():
     if 'loggedin' in session and session['loggedin']:
@@ -304,7 +305,8 @@ def member_news_details(news_id):
     else:
         # If no article found with the provided id, you can redirect to a 404 page or back to the news list
         return "Article not found", 404
-     
+ 
+# member manager own subscriptions    
 @app.route('/member_own_subscription')
 def member_own_subscription():
      if 'loggedin' in session and session['loggedin']:

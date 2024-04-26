@@ -3,6 +3,7 @@ from flask import  render_template,flash
 from flask import session,request, redirect,url_for
 from app import utils
 
+# view news
 @app.route('/news/view_news')
 def view_news():
     if 'loggedin' in session and session['loggedin']:
@@ -15,7 +16,8 @@ def view_news():
         return render_template('/news/news.html', news_list = news_list, role = session['role'])
     else:
          return redirect(url_for('login'))
-     
+
+# manage news     
 @app.route('/news/manage_news/<int:news_id>', methods=['GET', 'POST'])
 def manage_news(news_id):
     if 'loggedin' in session and session['loggedin']:
@@ -38,7 +40,7 @@ def manage_news(news_id):
     else:
         return redirect(url_for('login'))
 
-     
+# delete news    
 @app.route('/news/delete_news/<int:news_id>',methods =['GET', 'POST'])
 def delete_news(news_id):
     if 'loggedin' in session and session['loggedin']:
@@ -52,7 +54,8 @@ def delete_news(news_id):
     else:
          return redirect(url_for('login'))
     
-     
+ 
+# add news    
 @app.route('/news/add_news', methods=['GET', 'POST'])
 def add_news():
     if 'loggedin' in session and session['loggedin']:
@@ -75,7 +78,7 @@ def add_news():
     else:
         return redirect(url_for('login'))
 
-
+# news search
 @app.route('/news_search')
 def news_search():
     if 'loggedin' in session and session['loggedin']:
@@ -113,6 +116,7 @@ def news_search():
     else:
          return redirect(url_for('login'))
 
+# member view news
 @app.route('/member_view_news')
 def member_view_news():
     if 'loggedin' in session and session['loggedin']:

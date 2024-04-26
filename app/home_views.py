@@ -63,7 +63,7 @@ def home():
     return render_template('index.html', instructors=instructor_data, message=msg)
 
 
-
+#Login function
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # Check if the message exists in the session

@@ -11,10 +11,12 @@ import os
 from werkzeug.utils import secure_filename
 
 
+# verify the format of the image
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
+# show the manager information for the whole session
 @app.context_processor
 def inject_user_details():
     if 'loggedin' in session and session['loggedin']:
@@ -350,7 +352,7 @@ def check_email():
         else:
           return jsonify({'valid': True})  
 
-    
+# manager search instructor    
 @app.route('/instr_search')
 def instr_search():
     if 'loggedin' in session and session['loggedin']:
@@ -422,6 +424,7 @@ def instr_search():
     else:
          return redirect(url_for('login'))
 
+# manager search members
 @app.route('/member_search')
 def member_search():
     if 'loggedin' in session and session['loggedin']:
@@ -464,7 +467,7 @@ def member_search():
     else:
          return redirect(url_for('login'))
 
-
+# add locations
 @app.route('/add/locations', methods=['GET'])
 def add_locations_details():
     cursor = utils.getCursor()
@@ -499,7 +502,7 @@ def add_locations_details():
 
 
 
-
+#manager view group lessons
 @app.route('/manager/mgr_lessons')
 def manager_lessons():
     if 'loggedin' in session and session['loggedin']:
@@ -571,7 +574,8 @@ def manager_lessons():
                                role=session['role'])
     else:
         return redirect(url_for('login'))
-    
+ 
+# manager update group lessons   
 @app.route('/update_lesson', methods=['POST'])
 def update_lesson():
     if 'loggedin' in session:
@@ -659,6 +663,7 @@ def update_lesson():
                 print(f"An error occurred: {e}")
                 return jsonify({'success': False, 'message': 'Database update error.'})
 
+# showing locations in frontend
 @app.route('/api/locations', methods=['GET'])
 def get_locations():
     try:
@@ -670,7 +675,8 @@ def get_locations():
     except Exception as e:
         print(f"An error occurred: {e}")
         return jsonify({"error": "Could not fetch locations"}), 500
-    
+ 
+# update one on one lessons    
 @app.route('/edit', methods=['GET', "POST"])
 def edit():
     nid = request.args.get('nid', type=int)
@@ -702,7 +708,7 @@ def edit():
     else:
         return redirect(url_for('login'))
 
-
+# adding one on one lessons
 @app.route('/add_lesson', methods=['POST'])
 def add_lesson():
     if 'loggedin' in session:
@@ -919,7 +925,7 @@ def refresh_lesson():
           #  return redirect(url_for('login'))
 
 
-
+# edit group lessons
 @app.route('/edit_group_lessons', methods=['GET', "POST"])
 def edit_lessons():
     nid = request.args.get('nid', type=int)
@@ -952,6 +958,7 @@ def edit_lessons():
         return redirect(url_for('login'))
 
 
+# delete one on one lessons
 @app.route('/delete_one_on_one_lesson/<int:lesson_id>', methods=['POST'])
 def delete_one_on_one_lesson(lesson_id):
     if 'loggedin' not in session:
@@ -975,6 +982,7 @@ def delete_one_on_one_lesson(lesson_id):
         return jsonify({'success': False, 'message': f'Failed to delete one-on-one lesson. Error: {e}'})
 
 
+# delete group lessons
 @app.route('/delete_group_lesson/<int:lesson_id>', methods=['POST'])
 def delete_group_lesson(lesson_id):
     if 'loggedin' not in session:
@@ -997,7 +1005,7 @@ def delete_group_lesson(lesson_id):
         
         return jsonify({'success': False, 'message': f'Failed to delete group lesson. Error: {e}'})
 
-
+# view workshop
 @app.route('/manager/workshops')
 def manager_workshops():
     if 'loggedin' in session and session['loggedin']:
@@ -1038,6 +1046,7 @@ def manager_workshops():
     else:
         return redirect(url_for('login'))
 
+# update workshop information
 @app.route('/update_workshop', methods=['POST'])
 def update_workshops():
     if 'loggedin' in session:
@@ -1098,6 +1107,7 @@ def update_workshops():
     else:
         return redirect(url_for('login'))
 
+# showing instructions
 @app.route('/api/instructors', methods=['GET'])
 def get_instructors():
     cursor = utils.getCursor()
@@ -1110,7 +1120,8 @@ def get_instructors():
         for ins in instructors
     ]
     return jsonify(instructors_list)
-    
+ 
+#show workshop locations   
 @app.route('/api/workshopslocations', methods=['GET'])
 def get_workshopslocations():
     cursor = utils.getCursor()  
@@ -1124,7 +1135,7 @@ def get_workshopslocations():
     return jsonify(locations_list)
 
 
-
+# manager delete workshop
 @app.route('/manager/delete_workshop/<int:workshop_id>', methods=['POST'])
 def delete_workshop(workshop_id):
     if 'loggedin' in session and session['role'] == 'Manager':
@@ -1143,41 +1154,8 @@ def delete_workshop(workshop_id):
         return redirect(url_for('manager_workshops'))
     else:
         return redirect(url_for('login'))
-    
-# @app.route('/manager/add_workshop', methods=['POST'])
-# def add_workshop():
-#     if 'loggedin' in session and session['role'] == 'Manager':
-#         try:
-            
-#             title = request.form.get('title')
-#             instructor_id = request.form.get('instructor_id')
-#             location_id = request.form.get('location_id')
-#             price = request.form.get('price')
-#             capacity = request.form.get('capacity')
-#             date = request.form.get('addDate')
-#             start_time = request.form.get('starttime')
-#             end_time = request.form.get('endtime')
-#             workshop_image = 'workshops_images/workshop1.png'  
 
-#             cursor = utils.getCursor()
-
-           
-#             sql = "INSERT INTO workshops (title, instructor_id, location_id, price, capacity, date, start_time, end_time, workshop_image) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
-#             val = (title, instructor_id, location_id, price, capacity, date, start_time, end_time, workshop_image)
-
-           
-#             cursor.execute(sql, val)
-         
-
-#             return jsonify({'success': True, 'message': 'Workshop added successfully.'})
-#         except Exception as e:
-#             return jsonify({'success': False, 'message': str(e)})
-#     else:
-#         return jsonify({'success': False, 'message': 'Unauthorized access.'})
-
-
-import os
-
+# add workshop
 @app.route('/manager/add_workshop', methods=['POST'])
 def add_workshop():
     if 'loggedin' in session and session['role'] == 'Manager':
@@ -1241,6 +1219,7 @@ def add_workshop():
         return jsonify({'success': False, 'message': 'Unauthorized access.'})
 
 
+#manager view expired subscription
 @app.route('/manager/expired_subscriptions')
 def expired_subscriptions():
     if 'loggedin' in session and session['loggedin']:
@@ -1256,7 +1235,8 @@ def expired_subscriptions():
          return render_template('/manager/mgr_expired_subscriptions.html', subscription=subscription, role=session['role'])
     else:
         return redirect(url_for('login'))
-    
+
+# manager send news to expired memebers   
 @app.route('/manager/expired_subscriptions_send_news/<int:subscription_id>')
 def expired_subscriptions_send_news(subscription_id):
     if 'loggedin' in session and session['loggedin']:
@@ -1278,7 +1258,8 @@ def expired_subscriptions_send_news(subscription_id):
             return redirect(url_for('expired_subscriptions')) 
     else:
         return redirect(url_for('login'))
-    
+
+# search expired subscriptions    
 @app.route('/expired_sub_search')
 def expired_sub_search():
     if 'loggedin' in session and session['loggedin']:
@@ -1330,7 +1311,8 @@ def expired_sub_search():
             return render_template("manager/mgr_expired_subscriptions.html", subscription=matched_profiles, role=session['role'])
     else:
          return redirect(url_for('login'))
-     
+
+# add instructor     
 @app.route('/manager/add_instructor', methods=['GET', 'POST'])
 def add_instructor():
     if 'loggedin' in session and session['loggedin']:
@@ -1416,6 +1398,7 @@ def  mgr_attendance_records():
             
         return render_template('manager/mgr_attendance.html', records=records)
 
+# attedance search
 @app.route('/mgr_attendance_search')
 def mgr_attendance_search():
     if 'loggedin' in session and session['loggedin']:
@@ -1563,6 +1546,7 @@ def mgr_view_payment():
         return redirect(url_for('login'))
     
 
+# manager view payment search
 @app.route('/mgr_view_payment_search')
 def mgr_view_payment_search():
     if 'loggedin' in session and session['loggedin']:
@@ -1633,7 +1617,8 @@ def mgr_view_member_sub():
           
     else:
         return redirect(url_for('login'))
-    
+
+#manager view member subscription search   
 @app.route('/mgr_view_sub_search')
 def mgr_view_sub_search():
     if 'loggedin' in session and session['loggedin']:

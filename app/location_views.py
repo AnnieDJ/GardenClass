@@ -3,6 +3,7 @@ from flask import  render_template,flash
 from flask import session,request, redirect,url_for
 from app import utils
 
+# manager view all locations
 @app.route('/location/view_location')
 def view_location():
     if 'loggedin' in session and session['loggedin']:
@@ -15,7 +16,8 @@ def view_location():
         return render_template('/locations/location.html', location_list = location_list, role = session['role'])
     else:
          return redirect(url_for('login'))
-     
+
+# edit location     
 @app.route('/location/manage_location/<int:location_id>',methods =['GET', 'POST'])
 def manage_location(location_id):
     if 'loggedin' in session and session['loggedin']:
@@ -39,7 +41,8 @@ def manage_location(location_id):
             return render_template('/locations/edit_location.html', location = location, role = session['role'])
     else:
          return redirect(url_for('login'))
-     
+ 
+# delete location     
 @app.route('/location/delete_location/<int:location_id>',methods =['GET', 'POST'])
 def delete_location(location_id):
     if 'loggedin' in session and session['loggedin']:
@@ -74,7 +77,8 @@ def delete_location(location_id):
    
     else:
          return redirect(url_for('login'))
-     
+ 
+ # add location    
 @app.route('/location/add_location',methods =['GET', 'POST'])
 def add_location():
     if 'loggedin' in session and session['loggedin']:
@@ -95,7 +99,8 @@ def add_location():
             return render_template('/locations/add_location.html', role = session['role'])
     else:
          return redirect(url_for('login'))
-     
+ 
+# search locations    
 @app.route('/location_search')
 def location_search():
     if 'loggedin' in session and session['loggedin']:

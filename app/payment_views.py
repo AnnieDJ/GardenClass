@@ -8,6 +8,7 @@ from dateutil.relativedelta import relativedelta
 import re
 
 
+# payment for one on one lesson
 @app.route('/payment/member_pay_one_one_one_lesson/<int:lesson_id>', methods=['GET', 'POST'])
 def member_pay_one_one_one_lesson(lesson_id):
     if 'loggedin' in session and session['loggedin']:
@@ -58,7 +59,8 @@ def member_pay_one_one_one_lesson(lesson_id):
             return render_template('/payment/pay_one_on_one_lesson.html', bank_info = bank_info, username=session['username'], role=session['role'],msg = msg,disable =disable)
     else:
       return redirect(url_for('login'))
-    
+ 
+ #payment for group lessons   
 @app.route('/payment/member_pay_lesson/<int:lesson_id>', methods=['GET', 'POST'])
 def member_pay_lesson(lesson_id):
    if 'loggedin' in session and session['loggedin']:
@@ -111,6 +113,8 @@ def member_pay_lesson(lesson_id):
             return render_template('/payment/pay_lessons.html', bank_info = bank_info, username=session['username'], role=session['role'],msg = msg,disable =disable)
    else:
       return redirect(url_for('login'))
+  
+#payment for workshops
 @app.route('/payment/member_pay_workshop/<int:workshop_id>', methods=['GET', 'POST'])
 def member_pay_workshop(workshop_id):
     if 'loggedin' in session and session['loggedin']:
@@ -162,6 +166,8 @@ def member_pay_workshop(workshop_id):
             return render_template('/payment/pay_workshop.html', bank_info = bank_info, username=session['username'], role=session['role'],msg = msg,disable =disable )
     else:
       return redirect(url_for('login'))
+  
+# payment for subscriptions
 @app.route('/payment/member_pay_subscription', methods=['GET', 'POST'])
 def member_pay_subscription():
     if 'loggedin' in session and session['loggedin']:
